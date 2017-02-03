@@ -14,19 +14,17 @@ namespace GMPark
 			NavigationPage.SetBackButtonTitle(this, "");
 
 			Title = "Select a Role";
-
-			var next = new ToolbarItem
-			{
-				Text = "Next",
-				Command = new Command(GoToNextPage)
-			};
-
-			ToolbarItems.Add(next);
 		}
 
-		public void GoToNextPage()
+		async void EmployeeClicked(object sender, EventArgs args)
 		{
-			Navigation.PushAsync(new EnterUserInfoPage());
+			Button button = (Button)sender;
+			await Navigation.PushAsync(new EnterUserInfoPage());
+		}
+
+		async void VisitorClicked(object sender, EventArgs args)
+		{
+			await Navigation.PushAsync(new WhereAreYouGoingPage());
 		}
 	}
 }

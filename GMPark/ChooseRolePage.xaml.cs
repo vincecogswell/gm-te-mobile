@@ -22,11 +22,6 @@ namespace GMPark
 			};
 
 			ToolbarItems.Add(next);
-
-			listView.ItemsSource = new List<string>
-			{
-				"Employee", "Executive", "Visitor"
-			};
 		}
 
 		public void GoToNextPage()

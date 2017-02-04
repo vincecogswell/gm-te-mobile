@@ -7,7 +7,9 @@ namespace GMPark
 {
 	public partial class WhereAreYouGoingPage : ContentPage
 	{
-		public WhereAreYouGoingPage()
+		private string role;
+		
+		public WhereAreYouGoingPage(string role)
 		{
 			InitializeComponent();
 
@@ -15,24 +17,13 @@ namespace GMPark
 
 			Title = "Where are you going?";
 
-			var next = new ToolbarItem
-			{
-				Text = "Next",
-				Command = new Command(GoToNextPage)
-			};
-
-			ToolbarItems.Add(next);
-
-			listView.ItemsSource = new List<string>
-			{
-				"Cadillac", "Design Building", "Design Dome",
-				"ID Center", "Man A", "Man B", "Research & Development", "Vehicle Engineering Center"
-			};
+			this.role = role;
 		}
 
-		public void GoToNextPage()
+		async void OnClicked(object sender, EventArgs args)
 		{
-			Navigation.PushAsync(new MapPage());
+			Button button = (Button)sender;
+			await Navigation.PushAsync(new MapPage(this.role,button.Text));
 		}
 	}
 }

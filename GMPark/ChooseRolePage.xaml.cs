@@ -16,15 +16,15 @@ namespace GMPark
 			Title = "Select a Role";
 		}
 
-		async void EmployeeClicked(object sender, EventArgs args)
+		async void OnClicked(object sender, EventArgs args)
 		{
 			Button button = (Button)sender;
-			await Navigation.PushAsync(new EnterUserInfoPage());
+			await Navigation.PushAsync(new WhereAreYouGoingPage(button.Text));
 		}
 
-		async void VisitorClicked(object sender, EventArgs args)
-		{
-			await Navigation.PushAsync(new WhereAreYouGoingPage());
-		}
+		//async void VisitorClicked(object sender, EventArgs args)
+		//{
+		//	await Navigation.PushAsync(new WhereAreYouGoingPage());
+		//}
 	}
 }

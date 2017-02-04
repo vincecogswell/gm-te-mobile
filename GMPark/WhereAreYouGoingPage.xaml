@@ -2,7 +2,26 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="GMPark.WhereAreYouGoingPage">
 	<ContentPage.Content>
 		<ScrollView>
-			<ListView x:Name="listView" RowHeight="75" Footer=""></ListView>
+			<Grid>
+			  <Grid.RowDefinitions>
+			    <RowDefinition Height="100" />
+			    <RowDefinition Height="100" />
+				<RowDefinition Height="100" />
+				<RowDefinition Height="100" />
+				<RowDefinition Height="100" />
+				<RowDefinition Height="100" />
+				<RowDefinition Height="100" />
+				<RowDefinition Height="100" />
+			  </Grid.RowDefinitions>
+			  <Button Text="Cadillac" Clicked= "OnClicked" Font="Large" Grid.Row="0" Grid.Column="0" />
+			  <Button Text="Design Building" Clicked = "OnClicked" Font="Large" Grid.Row="1" Grid.Column="0" />
+			  <Button Text="Design Dome" Clicked= "OnClicked" Font="Large" Grid.Row="2" Grid.Column="0" />
+			  <Button Text="ID Center" Clicked= "OnClicked" Font="Large" Grid.Row="3" Grid.Column="0" />
+			  <Button Text="Man A" Clicked= "OnClicked" Font="Large" Grid.Row="4" Grid.Column="0" />
+			  <Button Text="Man B" Clicked= "OnClicked" Font="Large" Grid.Row="5" Grid.Column="0" />
+			  <Button Text="Research &amp; Development" Clicked= "OnClicked" Font="Large" Grid.Row="6" Grid.Column="0" />
+			  <Button Text="Vehicle Engineering Center" Clicked= "OnClicked" Font="Large" Grid.Row="7" Grid.Column="0" />
+			</Grid>
 		</ScrollView>
 	</ContentPage.Content>
 </ContentPage>

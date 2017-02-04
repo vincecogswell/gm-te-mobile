@@ -7,7 +7,7 @@ namespace GMPark
 {
 	public partial class EnterUserInfoPage : ContentPage
 	{
-		public EnterUserInfoPage()
+		public EnterUserInfoPage(string role)
 		{
 			InitializeComponent();
 
@@ -26,7 +26,7 @@ namespace GMPark
 
 		public void GoToNextPage()
 		{
-			Navigation.PushAsync(new WhereAreYouGoingPage());
+			//Navigation.PushAsync(new WhereAreYouGoingPage());
 		}
 	}
 }

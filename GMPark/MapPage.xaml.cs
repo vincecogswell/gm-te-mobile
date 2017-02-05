@@ -11,7 +11,7 @@ namespace GMPark
 		public MapPage(string role, string building)
 		{
 			InitializeComponent();
-			message.Text = "You are a" + role + ", and going to" + building ;
+			//message.Text = "You are a" + role + ", and going to" + building ;
 
 			//var map = new Map(
 			//	MapSpan.FromCenterAndRadius(

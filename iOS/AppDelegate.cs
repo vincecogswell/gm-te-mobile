@@ -13,7 +13,7 @@ namespace GMPark.iOS
 		public override bool FinishedLaunching(UIApplication app, NSDictionary options)
 		{
 			global::Xamarin.Forms.Forms.Init();
-			Xamarin.FormsGoogleMaps.Init("AIzaSyDNKV7LUQ_dTh1BGfM4ltK5LbAFzd8EBUY");
+			Xamarin.FormsGoogleMaps.Init("GMPark.Variables.GOOGLE_MAPS_IOS_API_KEY");
 
 			LoadApplication(new App());
 

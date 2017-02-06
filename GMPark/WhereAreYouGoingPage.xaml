@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="GMPark.WhereAreYouGoingPage">
 	<ContentPage.Content>
 		<ScrollView>
-			<Grid>
+			<!--<Grid>
 			  <Grid.RowDefinitions>
 			    <RowDefinition Height="100" />
 			    <RowDefinition Height="100" />
@@ -21,7 +21,7 @@
 			  <Button Text="Man B" Clicked= "OnClicked" Font="Large" Grid.Row="5" Grid.Column="0" />
 			  <Button Text="Research &amp; Development" Clicked= "OnClicked" Font="Large" Grid.Row="6" Grid.Column="0" />
 			  <Button Text="Vehicle Engineering Center" Clicked= "OnClicked" Font="Large" Grid.Row="7" Grid.Column="0" />
-			</Grid>
+			</Grid>-->
 		</ScrollView>
 	</ContentPage.Content>
 </ContentPage>

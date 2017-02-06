@@ -1,0 +1,22 @@
+[
+	{	"Name" : "Cadillac Building", 
+    	"Address" : "30009 Van Dyke, Warren, MI 48093"
+    },
+
+    {
+	    "Name" : "Design Building",
+        "Address" : "30001 Van Dyke, Warren, MI 48093"
+	},
+
+    {
+	    "Name" : "Design Dome",
+        "Address" : "30001 Van Dyke, Warren, MI 48093"
+	},
+
+    {
+	    "Name" : "ID Center",
+        "Address" : "30001 Van Dyke, Warren, MI 48093"
+	},
+
+
+]

@@ -1,0 +1,9 @@
+﻿using System;
+namespace GMPark
+{
+	public class structure
+	{
+		public string Name;
+		public string Address;
+	}
+}

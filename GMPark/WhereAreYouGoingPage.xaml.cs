@@ -37,7 +37,8 @@ namespace GMPark
 					var click = new Button()
 					{
 						Text = building.Name,
-						Font = Font.SystemFontOfSize(NamedSize.Large)
+						Font = Font.SystemFontOfSize(NamedSize.Large),
+						CommandParameter = building
 					};
 				click.Clicked += OnClicked;
 
@@ -56,8 +57,9 @@ namespace GMPark
 
 		async void OnClicked(object sender, EventArgs args)
 		{
-			Button button = (Button)sender;
-			await Navigation.PushAsync(new MapPage(this.role,button.Text));
+			var button = (Button)sender;
+			var building = (structure)button.CommandParameter;
+			await Navigation.PushAsync(new MapPage(this.role, building));
 		}
 	}
 }

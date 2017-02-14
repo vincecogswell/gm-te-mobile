@@ -9,7 +9,7 @@ namespace GMPark
 {
 	public partial class MapPage : ContentPage
 	{
-		public MapPage(string role, structure building)
+		public MapPage(string role, Building building)
 		{
 			InitializeComponent();
 			//message.Text = "You are a" + role + ", and going to" + building "
@@ -32,7 +32,7 @@ namespace GMPark
 
 		}
 
-		public async void GetPositions(structure building, Map map)
+		public async void GetPositions(Building building, Map map)
 		{
 			var geocoder = new Xamarin.Forms.GoogleMaps.Geocoder();
 			var positions = await geocoder.GetPositionsForAddressAsync(building.Address);

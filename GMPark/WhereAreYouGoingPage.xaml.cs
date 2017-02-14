@@ -25,12 +25,12 @@ namespace GMPark
 				text = reader.ReadToEnd();
 			}
 
-			List<structure> structures = JsonConvert.DeserializeObject<List<structure>>(text);
+			List<Building> buildings = JsonConvert.DeserializeObject<List<Building>>(text);
 
 			var grid = new Grid();
 			int i = 0;
 
-			foreach (structure building in structures)
+			foreach (Building building in buildings)
 			{
 				grid.RowDefinitions.Add(new RowDefinition { Height = 100 });
 
@@ -58,7 +58,7 @@ namespace GMPark
 		async void OnClicked(object sender, EventArgs args)
 		{
 			var button = (Button)sender;
-			var building = (structure)button.CommandParameter;
+			var building = (Building)button.CommandParameter;
 			await Navigation.PushAsync(new MapPage(this.role, building));
 		}
 	}

@@ -1,21 +1,21 @@
 [
 	{	"Name" : "Cadillac Building", 
-    	"Address" : "30009 Van Dyke Rd, Warren, MI"
+    	"Address" : "30009 Van Dyke, Warren, MI"
     },
 
     {
 	    "Name" : "Design Building",
-        "Address" : "30001 Van Dyke Rd, Warren, MI"
+        "Address" : "30001 Van Dyke, Warren, MI"
 	},
 
     {
 	    "Name" : "Design Dome",
-        "Address" : "30002 Van Dyke Rd, Warren, MI"
+        "Address" : "30002 Van Dyke, Warren, MI"
 	},
 
     {
 	    "Name" : "ID Center",
-        "Address" : "30003 Van Dyke Rd, Warren, MI"
+        "Address" : "30003 Van Dyke, Warren, MI"
 	},
 
 

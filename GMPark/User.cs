@@ -3,7 +3,8 @@ namespace GMPark
 {
 	public class User
 	{
-		public string name;
+		public string Name;
+		public string Role;
 		public DateTime checkin;
 	}
 }

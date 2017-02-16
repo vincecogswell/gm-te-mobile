@@ -51,6 +51,7 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Structures.json" />
+    <EmbeddedResource Include="msu-buildings.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">

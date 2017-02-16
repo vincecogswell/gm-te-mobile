@@ -1,0 +1,15 @@
+[
+	{	"Name" : "College of Engineering", 
+    	"Address" : "428 S Shaw Ln, East Lansing, MI"
+    },
+
+    {
+	    "Name" : "International Center",
+        "Address" : "427 N Shaw Ln, East Lansing, MI"
+	},
+
+    {
+	    "Name" : "Wells Hall",
+        "Address" : "619 Red Cedar Rd, East Lansing, MI"
+	},
+]

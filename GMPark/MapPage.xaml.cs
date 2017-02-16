@@ -13,7 +13,10 @@ namespace GMPark
 		{
 			InitializeComponent();
 			//message.Text = "You are a" + role + ", and going to" + building "
-
+			Device.BeginInvokeOnMainThread(() =>
+			{
+				DisplayAlert("Welcome", "You Are In MSU Campus", "OK");
+			});
 			var map = new Xamarin.Forms.GoogleMaps.Map(
 				MapSpan.FromCenterAndRadius(
 						new Position(0, 0), Distance.FromMiles(0.3)))
@@ -25,12 +28,19 @@ namespace GMPark
 			};
 
 			GetPositions(building, map);
+			var button = new Button()
+			{
+				Text = "Start Directions!",
+				Font = Font.SystemFontOfSize(NamedSize.Large),
+			};
 
 			var stack = new StackLayout { Spacing = 0, VerticalOptions = LayoutOptions.FillAndExpand };
 			stack.Children.Add(map);
+			stack.Children.Add(button);
 			this.Content = stack;
 
 		}
+
 
 		public async void GetPositions(Building building, Map map)
 		{
@@ -39,7 +49,7 @@ namespace GMPark
 
 			if (positions.Count() > 0)
 			{
-				map.MoveToRegion(MapSpan.FromCenterAndRadius(positions.First(), Distance.FromMeters(5)));
+				map.MoveToRegion(MapSpan.FromCenterAndRadius(positions.First(), Distance.FromMeters(150)));
 				var reg = map.VisibleRegion;
 
 				Pin pin = new Pin

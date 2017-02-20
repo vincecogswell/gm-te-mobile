@@ -13,10 +13,23 @@ namespace GMPark
 		{
 			InitializeComponent();
 			//message.Text = "You are a" + role + ", and going to" + building "
-			Device.BeginInvokeOnMainThread(() =>
+			Device.BeginInvokeOnMainThread(async() =>
 			{
-				DisplayAlert("Welcome", "You Are In MSU Campus", "OK");
+				await DisplayAlert("Welcome", "You Are In MSU Campus", "OK");
+
+				string option = await DisplayActionSheet("EGR Parking Lot", "Cancel", null, "Navigate", "Next");
+				if (option == "Navigate")
+				{
+					// Go to the direction page
+				}
+				else if (option == "Next")
+				{
+					// Display another action sheet
+				};
 			});
+
+
+
 			var map = new Xamarin.Forms.GoogleMaps.Map(
 				MapSpan.FromCenterAndRadius(
 						new Position(0, 0), Distance.FromMiles(0.3)))

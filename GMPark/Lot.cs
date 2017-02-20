@@ -9,8 +9,9 @@ namespace GMPark
 {
 	public class Lot : Struct
 	{
-		public bool employee, executive, visitor;
-		public List<Position> location;
-		public float percentage;
+		public string ID;
+		public bool Employee, Executive, Visitor;
+		public List<Location> Locations;
+		public float Percentage;
 	}
 }

@@ -1,4 +1,9 @@
-﻿using Xamarin.Forms;
+﻿using System.Collections.Generic;
+using System.Reflection;
+using System.IO;
+using System.Linq;
+using Newtonsoft.Json;
+using Xamarin.Forms;
 
 namespace GMPark
 {
@@ -11,6 +16,8 @@ namespace GMPark
 			MainPage = new NavigationPage(new ChooseRolePage());
 			// Phyllis testing push
 			// Robert testing push
+
+
 		}
 
 		protected override void OnStart()

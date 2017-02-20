@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 using Xamarin.Forms;
 
@@ -34,11 +35,12 @@ namespace GMPark
 			{
 				grid.RowDefinitions.Add(new RowDefinition { Height = 100 });
 
-					var click = new Button()
-					{
-						Text = building.Name,
-						Font = Font.SystemFontOfSize(NamedSize.Large),
-						CommandParameter = building
+				var click = new Button()
+				{
+					Text = building.Name,
+					Font = Font.SystemFontOfSize(NamedSize.Large),
+					FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
+					CommandParameter = building
 					};
 				click.Clicked += OnClicked;
 

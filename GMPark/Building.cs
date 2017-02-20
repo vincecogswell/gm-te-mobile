@@ -3,6 +3,7 @@ namespace GMPark
 {
 	public class Building : Struct
 	{
-		public string Address;
+		public string Name, Address;
+		public Location Position;
 	}
 }

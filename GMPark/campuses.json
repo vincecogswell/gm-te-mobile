@@ -1,0 +1,96 @@
+﻿[
+	{ "Name" : "Michigan State University",
+
+	  "Locations" : [ 
+
+	  				{ "Lat" : 42.735648, 
+	  				  "Long" : -84.485326 },
+
+					{ "Lat" : 42.733418,
+					  "Long" :-84.493587 },
+
+	  				{
+	  				  "Lat" : 42.711803,
+	  				  "Long" : -84.493703 },
+
+	  				{
+	  				  "Lat" : 42.711783,
+	  				  "Long" : -84.462119 },
+
+	  				{
+	  				  "Lat" : 42.729360,
+	  				  "Long" : -84.462183 } ],
+
+	  	"Buildings" : [
+
+					{	"Name" : "College of Engineering", 
+    					"Address" : "428 S Shaw Ln, East Lansing, MI" },
+
+    				{
+	    				"Name" : "International Center",
+        				"Address" : "427 N Shaw Ln, East Lansing, MI" },
+
+        			{
+	    				"Name" : "Wells Hall",
+        				"Address" : "619 Red Cedar Rd, East Lansing, MI" }, ],
+
+        "Lots" 		: [
+
+        			{	"ID" : "39",
+        				"Employee" : true,
+        				"Executive" : true,
+        				"Visitor" : true,
+        				"Locations" : [
+
+        				{ "Lat" : 42.725292,
+					  	  "Long" : -84.480404, },
+
+	  					{
+	  				  	  "Lat" : 42.725974, 
+	  				  	  "Long" : -84.480396 },
+
+	  					{
+	  				  	  "Lat" : 42.725978,
+	  				  	  "Long" : -84.481297 },
+
+	  					{
+	  				  	  "Lat" : 42.725885,
+	  				  	  "Long" : -84.481935 }, 
+
+	  				  	{
+	  				  	  "Lat" : 42.725398,
+	  				  	  "Long" : -84.481938 },
+
+	  				  	{
+	  				  	  "Lat" : 42.725288,
+	  				  	  "Long" :  -84.481359 } ],
+
+	  				  	"Percentage" : .5
+	  				},
+
+        			{	"ID" : "40",
+        				"Employee" : true,
+        				"Executive" : true,
+        				"Visitor" : true,
+        				"Locations" : [
+
+        				{ "Lat" : 42.725917,
+					  	  "Long" : -84.479650, },
+
+	  					{
+	  				  	  "Lat" : 42.725332,
+	  				  	  "Long" : -84.479645 },
+
+	  					{
+	  				  	  "Lat" : 42.725330,
+	  				  	  "Long" : -84.478205 },
+
+	  					{
+	  				  	  "Lat" : 42.725915, 
+	  				  	  "Long" : -84.478192 } ],
+
+	  				  	"Percentage" : .78
+	  				} ]
+        					
+        }
+]

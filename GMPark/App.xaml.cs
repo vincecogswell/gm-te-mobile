@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
-using System.IO;
-using System.Linq;
-using Newtonsoft.Json;
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 
 namespace GMPark
 {

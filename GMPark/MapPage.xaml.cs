@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Plugin.Geolocator;
+//using Plugin.Geolocator;
 using Xamarin.Forms;
 using Xamarin.Forms.GoogleMaps;
 
@@ -17,7 +17,7 @@ namespace GMPark
 		{
 			InitializeComponent();
 			//message.Text = "You are a" + role + ", and going to" + building "
-<<<<<<< HEAD
+/*<<<<<<< HEAD
 			Device.BeginInvokeOnMainThread(async() =>
 			{
 				await DisplayAlert("Welcome", "You Are In MSU Campus", "OK");
@@ -35,7 +35,7 @@ namespace GMPark
 
 
 =======
->>>>>>> e9984b5... Added json parsing for full campuses
+>>>>>>> e9984b5... Added json parsing for full campuses*/
 
 			var map = new Xamarin.Forms.GoogleMaps.Map(
 				MapSpan.FromCenterAndRadius(

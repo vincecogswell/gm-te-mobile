@@ -29,6 +29,10 @@
     				{
 	    				"Name" : "International Center",
         				"Address" : "427 N Shaw Ln, East Lansing, MI" },
+            
+            		{
+                		"Name" : "Shaw Hall",
+                		"Address" : "591 N Shaw Ln, East Lansing, MI" },
 
         			{
 	    				"Name" : "Wells Hall",
@@ -65,7 +69,7 @@
 	  				  	  "Lat" : 42.725288,
 	  				  	  "Long" :  -84.481359 } ],
 
-	  				  	"Percentage" : .5
+	  				  	"Percentage" : 50
 	  				},
 
         			{	"ID" : "40",
@@ -89,7 +93,7 @@
 	  				  	  "Lat" : 42.725915, 
 	  				  	  "Long" : -84.478192 } ],
 
-	  				  	"Percentage" : .78
+	  				  	"Percentage" : 78
 	  				} ]
         					
         }

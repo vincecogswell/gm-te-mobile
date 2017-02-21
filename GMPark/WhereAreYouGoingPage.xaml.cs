@@ -19,38 +19,50 @@ namespace GMPark
 			var scroll = new ScrollView();
 
 			var assembly = typeof(WhereAreYouGoingPage).GetTypeInfo().Assembly;
-			Stream stream = assembly.GetManifestResourceStream("GMPark.Structures.json");
+			Stream stream = assembly.GetManifestResourceStream("GMPark.campuses.json");
 			string text = "";
 			using (var reader = new System.IO.StreamReader(stream))
 			{
 				text = reader.ReadToEnd();
 			}
 
-			List<Building> buildings = JsonConvert.DeserializeObject<List<Building>>(text);
+			List<Campus> campuses = JsonConvert.DeserializeObject<List<Campus>>(text);
 
 			var grid = new Grid();
 			int i = 0;
 
-			foreach (Building building in buildings)
+			foreach(Campus campus in campuses)
 			{
 				grid.RowDefinitions.Add(new RowDefinition { Height = 100 });
-
-				var click = new Button()
+				var label = new Label()
 				{
-					Text = building.Name,
-					Font = Font.SystemFontOfSize(NamedSize.Large),
-					TextColor = Color.White,
-					FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
-					CommandParameter = building,
-					BorderWidth = 1,
-					BorderColor = Color.White,
-					Margin = new Thickness(8, 8, 8, 8),
-					BackgroundColor = Color.Transparent,
-					};
-				click.Clicked += OnClicked;
+					Text = campus.Name,
+				};
 
-				grid.Children.Add(click, 0, i);
+				grid.Children.Add(label, 0, i);
 				i += 1;
+
+				foreach (Building building in campus.Buildings)
+				{
+					grid.RowDefinitions.Add(new RowDefinition { Height = 100 });
+
+					var click = new Button()
+					{
+						Text = building.Name,
+						Font = Font.SystemFontOfSize(NamedSize.Large),
+						TextColor = Color.White,
+						FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
+						CommandParameter = building,
+						BorderWidth = 1,
+						BorderColor = Color.White,
+						Margin = new Thickness(8, 8, 8, 8),
+						BackgroundColor = Color.Transparent,
+					};
+					click.Clicked += OnClicked;
+
+					grid.Children.Add(click, 0, i);
+					i += 1;
+				}
 			}
 
 			NavigationPage.SetBackButtonTitle(this, "");

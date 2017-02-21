@@ -15,7 +15,7 @@ namespace GMPark
 		public WhereAreYouGoingPage(string role)
 		{
 			InitializeComponent();
-
+			this.BackgroundColor = Color.FromRgb(104, 151, 243);
 			var scroll = new ScrollView();
 
 			var assembly = typeof(WhereAreYouGoingPage).GetTypeInfo().Assembly;
@@ -39,8 +39,13 @@ namespace GMPark
 				{
 					Text = building.Name,
 					Font = Font.SystemFontOfSize(NamedSize.Large),
+					TextColor = Color.White,
 					FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
-					CommandParameter = building
+					CommandParameter = building,
+					BorderWidth = 1,
+					BorderColor = Color.White,
+					Margin = new Thickness(8, 8, 8, 8),
+					BackgroundColor = Color.Transparent,
 					};
 				click.Clicked += OnClicked;
 

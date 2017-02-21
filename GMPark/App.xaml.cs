@@ -8,9 +8,7 @@ namespace GMPark
 		{
 			InitializeComponent();
 
-			MainPage = new NavigationPage(new ChooseRolePage());
-			// Phyllis testing push
-			// Robert testing push
+			MainPage = new NavigationPage(new SplashScreen());
 
 
 		}

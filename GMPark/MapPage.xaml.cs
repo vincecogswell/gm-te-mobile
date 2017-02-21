@@ -52,13 +52,12 @@ namespace GMPark
 			>>>>>>> e9984b5... Added json parsing for full campuses*/
 
 			AddCampuses();
+			this.Title = building.Name;
 
 			Device.BeginInvokeOnMainThread(() =>
 				{
 					DisplayAlert("Welcome", "To the GM Technical Center", "Okay");
 				});
-
-			string text = "Lot closest is";
 
 			Task addBuild = AddBuildings(building.Name);
 			AddLots();
@@ -70,12 +69,20 @@ namespace GMPark
 
 			Task<Lot> lot = FindClosestLot(addBuild, building);
 
-			var label = new Label
+			var lotLabel = new Label
 			{
-				Text = text,
 				FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
 				TextColor = Color.Blue
 			};
+
+			var percentLabel = new Label
+			{
+				FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
+				TextColor = Color.Blue,
+			};
+
+			lotLabel.SetBinding(Label.TextProperty, new Binding("LotID", stringFormat: "The closest parking lot is Lot {0}"));
+			percentLabel.SetBinding(Label.TextProperty, new Binding("Percent", stringFormat: "The lot is {0}% full"));
 
 			var button = new Button()
 			{
@@ -85,18 +92,23 @@ namespace GMPark
 			};
 
 			var stack = new StackLayout { Spacing = 0, VerticalOptions = LayoutOptions.FillAndExpand };
-			stack.Children.Add(label);
+
+			stack.Children.Add(lotLabel);
+			stack.Children.Add(percentLabel);
 			stack.Children.Add(map);
 			stack.Children.Add(button);
+			stack.BindingContext = new { LotID = "36" };
+
+			stack.BindingContext = stack.Children[0].BindingContext;
+
 			this.Content = stack;
 
-			foreach (Pin pin in map.Pins)
+			UpdateLotInStack(lot, stack);
+
+			stack.BindingContextChanged += (sender, e) => Device.BeginInvokeOnMainThread(() =>
 			{
-				if (building.Name == pin.Label)
-				{
-					map.MoveToRegion(MapSpan.FromCenterAndRadius(pin.Position, Distance.FromMeters(150)));
-				}
-			}
+				DisplayAlert("Closest Lot Is", "THIS WORKS", "Okay");
+			});
 
 			/*var locator = CrossGeolocator.Current;
 			locator.PositionChanged += (sender, e) =>
@@ -239,20 +251,20 @@ namespace GMPark
 						polygon.Positions.Add(new Position(pos.Lat, pos.Long));
 					}
 
-					if (lot.Percentage < .26)
+					if (lot.Percentage < 26)
 					{
 						polygon.FillColor = Color.FromRgba(0, 255, 0, 64);
 						polygon.StrokeColor = Color.FromRgba(0, 255, 0, 128);
 
 					}
 
-					else if (lot.Percentage < .51)
+					else if (lot.Percentage < 51)
 					{
 						polygon.FillColor = Color.FromRgba(0, 128, 0, 64);
 						polygon.StrokeColor = Color.FromRgba(0, 128, 0, 128);
 					}
 
-					else if (lot.Percentage < .76)
+					else if (lot.Percentage < 76)
 					{
 						polygon.FillColor = Color.FromRgba(128, 128, 0, 64);
 						polygon.StrokeColor = Color.FromRgba(128, 128, 0, 128);
@@ -308,7 +320,13 @@ namespace GMPark
 			return closest;
 		}
 
-		//public async Task
+		public async Task UpdateLotInStack(Task<Lot> lot, StackLayout stack)
+		{
+			await lot;
+			stack.Children[0].BindingContext = new { LotID = lot.Result.ID };
+			stack.Children[1].BindingContext = new { Percent = lot.Result.Percentage };
+			
+		}
 
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 		//:::                                                                         :::

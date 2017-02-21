@@ -52,6 +52,7 @@ namespace GMPark
 			>>>>>>> e9984b5... Added json parsing for full campuses*/
 
 			AddCampuses();
+			this.Title = building.Name;
 
 			Device.BeginInvokeOnMainThread(() =>
 				{

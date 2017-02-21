@@ -63,10 +63,10 @@ namespace GMPark
 			Task addBuild = AddBuildings(building.Name);
 			AddLots();
 
-				/*lot.ContinueWith((Task<Lot> obj) => Device.BeginInvokeOnMainThread(() =>
-				{
-					DisplayAlert("Closest Lot Is", obj.Result.ID, "Okay");
-				}));*/
+			/*lot.ContinueWith((Task<Lot> obj) => Device.BeginInvokeOnMainThread(() =>
+			{
+				DisplayAlert("Closest Lot Is", obj.Result.ID, "Okay");
+			}));*/
 
 			Task<Lot> lot = FindClosestLot(addBuild, building);
 
@@ -89,8 +89,11 @@ namespace GMPark
 			{
 				Text = "Start Directions!",
 				Font = Font.SystemFontOfSize(NamedSize.Large),
-				FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS")
+				FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
+				CommandParameter = new double()
 			};
+			button.Clicked += OnClicked;
+			button.SetBinding(Button.CommandParameterProperty, new Binding("Pos"));
 
 			var stack = new StackLayout { Spacing = 0, VerticalOptions = LayoutOptions.FillAndExpand };
 
@@ -106,6 +109,7 @@ namespace GMPark
 
 			UpdateLotInStack(lot, stack);
 
+<<<<<<< HEAD
 			var address = "42.518514, -83.034738";
 			switch (Device.OS)
 			{
@@ -119,6 +123,8 @@ namespace GMPark
 					break;
 			};
 
+=======
+>>>>>>> b3a3d11... Navigation to parking lots added
 			var locator = CrossGeolocator.Current;
 			locator.PositionChanged += (sender, e) =>
 			{
@@ -128,6 +134,26 @@ namespace GMPark
 
 		async void OnClicked(object sender, EventArgs args)
 		{
+			var button = (Button)sender;
+			var pos = (Position)button.CommandParameter;
+
+			var geocoder = new Xamarin.Forms.GoogleMaps.Geocoder();
+			var addresses = await geocoder.GetAddressesForPositionAsync(pos);
+
+			if (addresses.Count() > 0)
+			{
+				switch (Device.OS)
+				{
+					case TargetPlatform.iOS:
+						Device.OpenUri(
+							new Uri(string.Format("http://maps.apple.com/?q={0}", WebUtility.UrlEncode(addresses.First()))));
+						break;
+					case TargetPlatform.Android:
+						Device.OpenUri(
+							new Uri(string.Format("geo:0,0?q={0}", WebUtility.UrlEncode(addresses.First()))));
+						break;
+				};
+			}
 		}
 
 
@@ -333,9 +359,18 @@ namespace GMPark
 		public async Task UpdateLotInStack(Task<Lot> lot, StackLayout stack)
 		{
 			await lot;
+			int i = 0;
+			double lat = 0;
+			double lon = 0;
 			stack.Children[0].BindingContext = new { LotID = lot.Result.ID };
 			stack.Children[1].BindingContext = new { Percent = lot.Result.Percentage };
-			
+			foreach (Location loc in lot.Result.Locations)
+			{
+				lat +=loc.Lat;
+				lon += loc.Long;
+				i += 1;
+			}
+			stack.Children[3].BindingContext = new { Pos = new Position(lat / i, lon / i) };
 		}
 
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

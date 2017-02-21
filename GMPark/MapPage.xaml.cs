@@ -108,27 +108,7 @@ namespace GMPark
 
 			UpdateLotInStack(lot, stack);
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-			var address = "42.518514, -83.034738";
-			switch (Device.OS)
-			{
-				case TargetPlatform.iOS:
-					Device.OpenUri(
-						new Uri(string.Format("http://maps.apple.com/?q={0}", WebUtility.UrlEncode(address))));
-					break;
-				case TargetPlatform.Android:
-					Device.OpenUri(
-						new Uri(string.Format("geo:0,0?q={0}", WebUtility.UrlEncode(address))));
-					break;
-			};
-
-=======
->>>>>>> b3a3d11... Navigation to parking lots added
-			var locator = CrossGeolocator.Current;
-=======
 			/*var locator = CrossGeolocator.Current;
->>>>>>> 4fd6bf3... Added GPS coordinate functionality for buildings
 			locator.PositionChanged += (sender, e) =>
 			{
 				var position = e.Position;

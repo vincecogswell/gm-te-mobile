@@ -150,13 +150,93 @@
 
 	  	"Buildings" : [
 
-					{	"Name" : "Cadillac Building", 
-    					"Address" : "GM, GM Tech Center Rd, Warren, MI" },
+			        {	"Name" : "Cadillac Building", 
+				    	"Address" : "42.518514, -83.034738"
+				    },
 
-    				{
-	    				"Name" : "Cadillac Innovation Center",
-        				"Address" : "GM Tech Center Rd, Warren, MI" } ],
+				    {
+					    "Name" : "Design Building",
+				        "Address" : "42.507060, -83.042386"
+					},
 
-        "Lots" 		: [ ]
+				    {
+					    "Name" : "Design Dome",
+				        "Address" : "42.508746, -83.042553"
+					},
+
+				    {
+					    "Name" : "ID Center",
+				        "Address" : "42.523085, -83.042270"
+					},],
+
+        "Lots" 		: [ {	"ID" : "1",
+        				"Employee" : true,
+        				"Executive" : true,
+        				"Visitor" : false,
+        				"Locations" : [
+
+        				{ "Lat" : 42.520300,
+					  	  "Long" : -83.037130, },
+
+	  					{
+	  				  	  "Lat" : 42.520300, 
+	  				  	  "Long" : -83.035969 },
+                    	{
+	  				  	  "Lat" : 42.517888,
+	  				  	  "Long" : -83.035969 },
+
+	  					{
+	  				  	  "Lat" : 42.517888,
+	  				  	  "Long" : -83.037130 }
+
+	  					 ],
+
+	  				  	"Percentage" : 50
+	  					},
+            			{	"ID" : "2",
+        				"Employee" : false,
+        				"Executive" : false,
+        				"Visitor" : true,
+        				"Locations" : [
+        				{ "Lat" : 42.517524,
+					  	  "Long" : -83.036105, },
+	  					{
+	  				  	  "Lat" : 42.517524, 
+	  				  	  "Long" : -83.034765 },
+                    	{
+	  				  	  "Lat" : 42.517188,
+	  				  	  "Long" : -83.034765 },
+
+	  					{
+	  				  	  "Lat" : 42.517188,
+	  				  	  "Long" : -83.036105 }
+
+	  					 ],
+
+	  				  	"Percentage" : 50
+	  					},
+            			{	"ID" : "3",
+        				"Employee" : true,
+        				"Executive" : true,
+        				"Visitor" : false,
+        				"Locations" : [
+        				{ "Lat" : 42.520157,
+					  	  "Long" : -83.033796, },
+
+	  					{
+	  				  	  "Lat" : 42.520157, 
+	  				  	  "Long" : -83.033193 },
+                    	{
+	  				  	  "Lat" : 42.517124,
+	  				  	  "Long" : -83.033193 },
+
+	  					{
+	  				  	  "Lat" : 42.517124,
+	  				  	  "Long" : -83.033796 }
+
+	  					 ],
+                		"Percentage" : 90
+	  					},
+        ]
 		}
 ]

@@ -36,7 +36,6 @@ namespace GMPark
 						Device.BeginInvokeOnMainThread(async() =>
 						{
 							await DisplayAlert("Welcome", "You Are In MSU Campus", "OK");
-
 							string option = await DisplayActionSheet("EGR Parking Lot", "Cancel", null, "Navigate", "Next");
 							if (option == "Navigate")
 							{
@@ -47,8 +46,6 @@ namespace GMPark
 								// Display another action sheet
 							};
 						});
-
-
 			=======
 			>>>>>>> e9984b5... Added json parsing for full campuses*/
 
@@ -203,17 +200,14 @@ namespace GMPark
 					{
 						maxLat = location.Lat;
 					}
-
 					if (location.Long > maxLong)
 					{
 						maxLong = location.Long;
 					}
-
 					if (location.Lat < minLat)
 					{
 						minLat = location.Lat;
 					}
-
 					if (location.Long < minLong)
 					{
 						minLong = location.Long;

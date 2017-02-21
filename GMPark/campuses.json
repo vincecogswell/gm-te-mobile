@@ -29,6 +29,14 @@
     				{
 	    				"Name" : "International Center",
         				"Address" : "427 N Shaw Ln, East Lansing, MI" },
+					
+					{
+                		"Name" : "Michigan State University Library",
+                		"Address" : "366 W Circle Dr, East Lansing, MI" },
+
+					{
+                		"Name" : "MSU Union",
+                		"Address" : "49 Abbot Rd, East Lansing, MI" },
             
             		{
                 		"Name" : "Shaw Hall",
@@ -122,7 +130,27 @@
 	  				  	  "Long" :  -84.482944 } ],
 
 	  				  	"Percentage" : 20
-	  				} ]
+	  				},
+		
+					{	"ID" : "11",
+        				"Employee" : true,
+        				"Executive" : true,
+        				"Visitor" : true,
+        				"Locations" : [
+
+        				{ "Lat" : 42.730437,
+					  	  "Long" :  -84.482199 },
+
+	  					{
+	  				  	  "Lat" : 42.729972,
+	  				  	  "Long" : -84.482234  },
+
+	  					{
+	  				  	  "Lat" : 42.730435,
+	  				  	  "Long" : -84.483154 } ],
+
+	  				  	"Percentage" : 90
+	  				} ],
         					
         },
 
@@ -151,39 +179,31 @@
 	  	"Buildings" : [
 
 			        {	"Name" : "Cadillac Building", 
-				    	"Address" : "42.518514, -83.034738"
+						"Address" : "42.518514, -83.034738 ",
+				    	"Position" : { "Lat" : 42.518514, 
+									   "Long" : -83.034738 }
 				    },
 
 				    {
 					    "Name" : "Design Building",
-				        "Address" : "42.507060, -83.042386"
+						"Address" : " 42.507060, -83.042386 ",
+				    	"Position" : { "Lat" : 42.507060, 
+									   "Long" : -83.042386 }
 					},
 
 				    {
 					    "Name" : "Design Dome",
-				        "Address" : "42.508746, -83.042553"
+						"Address" : "42.508746 -83.042553",
+				    	"Position" : { "Lat" : 42.508746, 
+									   "Long" : -83.042553 }
 					},
 
 				    {
 					    "Name" : "ID Center",
-				        "Address" : "42.523085, -83.042270"
-					},
-        			{
-					    "Name" : "Man A",
-				        "Address" : "42.513509, -83.039821"
-					},
-        			{
-					    "Name" : "Man B",
-				        "Address" : "42.515842, -83.039596"
-					},
-        			{
-					    "Name" : "Reserch & Development",
-				        "Address" : "42.515818, -83.042557"
-					},
-        			{
-					    "Name" : "Vehicle Engineering Center",
-				        "Address" : "42.511286, -83.031710"
-					},],
+						"Address" : "42.523085, -83.042270",
+				    	"Position" : { "Lat" : 42.523085, 
+									   "Long" : -83.042270 }
+					} ],
 
         "Lots" 		: [ {	"ID" : "1",
         				"Employee" : true,

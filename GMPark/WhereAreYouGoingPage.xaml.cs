@@ -31,31 +31,39 @@ namespace GMPark
 			var grid = new Grid();
 			int i = 0;
 
-			foreach(Campus campus in campuses)
+			foreach (Campus campus in campuses)
 			{
-				if (campus.Name == "Warren Tech Center"){
+				grid.RowDefinitions.Add(new RowDefinition { Height = 50 });
+				var label = new Label()
+				{
+					Text = campus.Name,
+					TextColor = Color.Aqua,
+					Margin = new Thickness(8, 8, 8, 8)
+				};
 
-					foreach (Building building in campus.Buildings)
+				grid.Children.Add(label, 0, i);
+				i += 1;
+
+				foreach (Building building in campus.Buildings)
+				{
+					grid.RowDefinitions.Add(new RowDefinition { Height = 100 });
+
+					var click = new Button()
 					{
-						grid.RowDefinitions.Add(new RowDefinition { Height = 100 });
+						Text = building.Name,
+						Font = Font.SystemFontOfSize(NamedSize.Large),
+						TextColor = Color.White,
+						FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
+						CommandParameter = building,
+						BorderWidth = 1,
+						BorderColor = Color.White,
+						Margin = new Thickness(8, 8, 8, 8),
+						BackgroundColor = Color.Transparent,
+					};
+					click.Clicked += OnClicked;
 
-						var click = new Button()
-						{
-							Text = building.Name,
-							Font = Font.SystemFontOfSize(NamedSize.Large),
-							TextColor = Color.White,
-							FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
-							CommandParameter = building,
-							BorderWidth = 1,
-							BorderColor = Color.White,
-							Margin = new Thickness(8, 8, 8, 8),
-							BackgroundColor = Color.Transparent,
-						};
-						click.Clicked += OnClicked;
-
-						grid.Children.Add(click, 0, i);
-						i += 1;
-					}
+					grid.Children.Add(click, 0, i);
+					i += 1;
 				}
 			}
 

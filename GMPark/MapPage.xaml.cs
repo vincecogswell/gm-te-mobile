@@ -28,7 +28,6 @@ namespace GMPark
 		List<Campus> campuses;
 
 		public MapPage(string role, Building building)
-
 		{
 			InitializeComponent();
 			//message.Text = "You are a" + role + ", and going to" + building "
@@ -110,6 +109,7 @@ namespace GMPark
 			UpdateLotInStack(lot, stack);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			var address = "42.518514, -83.034738";
 			switch (Device.OS)
 			{
@@ -126,10 +126,13 @@ namespace GMPark
 =======
 >>>>>>> b3a3d11... Navigation to parking lots added
 			var locator = CrossGeolocator.Current;
+=======
+			/*var locator = CrossGeolocator.Current;
+>>>>>>> 4fd6bf3... Added GPS coordinate functionality for buildings
 			locator.PositionChanged += (sender, e) =>
 			{
 				var position = e.Position;
-			};
+			};*/
 		}
 
 		async void OnClicked(object sender, EventArgs args)
@@ -164,18 +167,21 @@ namespace GMPark
 
 			if (positions.Count() > 0)
 			{
-				building.Position = new Location()
+				if (building.Position == null)
 				{
-					Lat = positions.First().Latitude,
-					Long = positions.First().Longitude
-				};
+					building.Position = new Location()
+					{
+						Lat = positions.First().Latitude,
+						Long = positions.First().Longitude
+					};
+				}
 
 				Pin pin = new Pin
 				{
 					Type = PinType.Place,
 					Label = building.Name,
 					Address = building.Address,
-					Position = positions.First()
+					Position = new Position(building.Position.Lat, building.Position.Long)
 				};
 
 				if (current)
@@ -184,12 +190,6 @@ namespace GMPark
 				}
 
 				map.Pins.Add(pin);
-				//var format = "0.00";
-				//this.Text = $"Center = {reg.Center.Latitude.ToString(format)}, {reg.Center.Longitude.ToString(format)}";
-			}
-			else
-			{
-				await this.DisplayAlert("Not found", "Geocoder returns no results", "Close");
 			}
 		}
 

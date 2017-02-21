@@ -106,7 +106,7 @@ namespace GMPark
 
 			UpdateLotInStack(lot, stack);
 
-			var address = "479 Allard Rd, Grosse Pointe Farms, MI";
+			var address = "42.518514, -83.034738";
 			switch (Device.OS)
 			{
 				case TargetPlatform.iOS:

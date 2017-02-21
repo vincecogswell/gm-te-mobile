@@ -13,62 +13,66 @@ namespace GMPark
 {
 	public partial class MapPage : ContentPage
 	{
+		Map map = new Map(
+				MapSpan.FromCenterAndRadius(
+						new Position(0, 0), Distance.FromMiles(0.3)))
+		{
+			IsShowingUser = true,
+			HeightRequest = 100,
+			WidthRequest = 960,
+			VerticalOptions = LayoutOptions.FillAndExpand,
+			HasZoomEnabled = true
+		};
+
+		List<Campus> campuses;
+
 		public MapPage(string role, Building building)
+
 		{
 			InitializeComponent();
 			//message.Text = "You are a" + role + ", and going to" + building "
-/*<<<<<<< HEAD
-			Device.BeginInvokeOnMainThread(async() =>
-			{
-				await DisplayAlert("Welcome", "You Are In MSU Campus", "OK");
+			/*<<<<<<< HEAD
+						Device.BeginInvokeOnMainThread(async() =>
+						{
+							await DisplayAlert("Welcome", "You Are In MSU Campus", "OK");
 
-				string option = await DisplayActionSheet("EGR Parking Lot", "Cancel", null, "Navigate", "Next");
-				if (option == "Navigate")
-				{
-					// Go to the direction page
-				}
-				else if (option == "Next")
-				{
-					// Display another action sheet
-				};
-			});
+							string option = await DisplayActionSheet("EGR Parking Lot", "Cancel", null, "Navigate", "Next");
+							if (option == "Navigate")
+							{
+								// Go to the direction page
+							}
+							else if (option == "Next")
+							{
+								// Display another action sheet
+							};
+						});
 
 
-=======
->>>>>>> e9984b5... Added json parsing for full campuses*/
+			=======
+			>>>>>>> e9984b5... Added json parsing for full campuses*/
 
-			var map = new Xamarin.Forms.GoogleMaps.Map(
-				MapSpan.FromCenterAndRadius(
-						new Position(0, 0), Distance.FromMiles(0.3)))
-			{
-				IsShowingUser = true,
-				HeightRequest = 100,
-				WidthRequest = 960,
-				VerticalOptions = LayoutOptions.FillAndExpand,
-				HasZoomEnabled = true
-			};
+			AddCampuses();
 
 			Device.BeginInvokeOnMainThread(() =>
 				{
 					DisplayAlert("Welcome", "To the GM Technical Center", "Okay");
 				});
 
-			List<Campus> campuses = AddCampuses(map);
+			string text = "Lot closest is";
 
-			foreach (Campus campus in campuses)
-			{
-				Task addBuild = AddBuildings(map, campus, building.Name);
-				AddLots(map, campus);
-			}
+			Task addBuild = AddBuildings(building.Name);
+			AddLots();
 
-			foreach (Pin pin in map.Pins)
-			{
-				continue;
-			}
+				/*lot.ContinueWith((Task<Lot> obj) => Device.BeginInvokeOnMainThread(() =>
+				{
+					DisplayAlert("Closest Lot Is", obj.Result.ID, "Okay");
+				}));*/
+
+			Task<Lot> lot = FindClosestLot(addBuild, building);
 
 			var label = new Label
 			{
-				Text = "Closest Parking Lot Is: 39, it is 50% full",
+				Text = text,
 				FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
 				TextColor = Color.Blue
 			};
@@ -143,7 +147,7 @@ namespace GMPark
 		 * a polygon object to visually represent it and adds it to the map.
 		 * Map map map that campuses are to be added to.
 		 */
-		public List<Campus> AddCampuses(Map map)
+		public List<Campus> AddCampuses()
 		{
 			var assembly = typeof(MapPage).GetTypeInfo().Assembly;
 			Stream stream = assembly.GetManifestResourceStream("GMPark.campuses.json");
@@ -153,7 +157,7 @@ namespace GMPark
 				text = reader.ReadToEnd();
 			}
 
-			List<Campus> campuses = JsonConvert.DeserializeObject<List<Campus>>(text);
+			campuses = JsonConvert.DeserializeObject<List<Campus>>(text);
 			///double maxLat = -91, maxLong = -181, minLat = 91, minLong = 181;
 
 			foreach (Campus campus in campuses)
@@ -197,76 +201,177 @@ namespace GMPark
 			mapView.Add(new Position(maxLat, maxLong));
 			mapView.Add(new Position(minLat, minLong));
 			//map.MoveToRegion(MapSpan.FromPositions(mapView));*/
-			
+
 			return campuses;
 		}
 
-		public async Task AddBuildings(Map map, Campus campus, string name)
+		public async Task AddBuildings(string name)
 		{
-			foreach (Building building in campus.Buildings)
+			foreach (Campus campus in campuses)
 			{
-				var curr = false;
-
-				if (name == building.Name)
+				foreach (Building building in campus.Buildings)
 				{
-					curr = true;
+					var curr = false;
+
+					if (name == building.Name)
+					{
+						curr = true;
+					}
+
+					await PlaceBuildingPin(building, map, curr);
+
 				}
-
-				await PlaceBuildingPin(building, map, curr);
-
 			}
 		}
 
-		public void AddLots(Map map, Campus campus)
+		public void AddLots()
 		{
-			foreach (Lot lot in campus.Lots)
+			foreach (Campus campus in campuses)
 			{
-				var polygon = new Polygon();
-				polygon.IsClickable = true;
-				polygon.StrokeWidth = 3f;
-
-				foreach (Location pos in lot.Locations)
+				foreach (Lot lot in campus.Lots)
 				{
-					polygon.Positions.Add(new Position(pos.Lat, pos.Long));
+					var polygon = new Polygon();
+					polygon.IsClickable = true;
+					polygon.StrokeWidth = 3f;
+
+					foreach (Location pos in lot.Locations)
+					{
+						polygon.Positions.Add(new Position(pos.Lat, pos.Long));
+					}
+
+					if (lot.Percentage < .26)
+					{
+						polygon.FillColor = Color.FromRgba(0, 255, 0, 64);
+						polygon.StrokeColor = Color.FromRgba(0, 255, 0, 128);
+
+					}
+
+					else if (lot.Percentage < .51)
+					{
+						polygon.FillColor = Color.FromRgba(0, 128, 0, 64);
+						polygon.StrokeColor = Color.FromRgba(0, 128, 0, 128);
+					}
+
+					else if (lot.Percentage < .76)
+					{
+						polygon.FillColor = Color.FromRgba(128, 128, 0, 64);
+						polygon.StrokeColor = Color.FromRgba(128, 128, 0, 128);
+
+					}
+
+					else
+					{
+						polygon.FillColor = Color.FromRgba(128, 0, 0, 64);
+						polygon.StrokeColor = Color.FromRgba(128, 0, 0, 128);
+					}
+
+					map.Polygons.Add(polygon);
 				}
-
-				if (lot.Percentage < .26)
-				{
-					polygon.FillColor = Color.FromRgba(0, 255, 0, 64);
-					polygon.StrokeColor = Color.FromRgba(0, 255, 0, 128);
-
-				}
-
-				else if (lot.Percentage < .51)
-				{
-					polygon.FillColor = Color.FromRgba(0, 128, 0, 64);
-					polygon.StrokeColor = Color.FromRgba(0, 128, 0, 128);
-				}
-
-				else if (lot.Percentage < .76)
-				{
-					polygon.FillColor = Color.FromRgba(128, 128, 0, 64);
-					polygon.StrokeColor = Color.FromRgba(128, 128, 0, 128);
-
-				}
-
-				else
-				{
-					polygon.FillColor = Color.FromRgba(128, 0, 0, 64);
-					polygon.StrokeColor = Color.FromRgba(128, 0, 0, 128);
-				}
-
-				map.Polygons.Add(polygon);
 			}
 		}
 
-		/*public Lot FindClosestLot(Building building, Campus campus)
+		public async Task<Lot> FindClosestLot(Task addBuild, Building building)
 		{
-			foreach(Building build in campus)
-			{
-				if(building.Name == build.Name)
-				{
-					var buildPos = buil*/
+			await addBuild;
+			Lot closest = null;
+			double dist = 0;
 
+			foreach (Campus campus in campuses)
+			{
+				foreach (Building build in campus.Buildings)
+				{
+					if (building.Name == build.Name)
+					{
+						foreach (Lot lot in campus.Lots)
+						{
+							foreach (Location location in lot.Locations)
+							{
+								if (closest == null)
+								{
+									closest = lot;
+								}
+
+								double currDist =
+									distance(build.Position.Lat, build.Position.Long, location.Lat, location.Long, 'M');
+
+								if (currDist < dist)
+								{
+									dist = currDist;
+									closest = lot;
+								}
+							}
+						}
+						break;
+					}
+				}
+			}
+			return closest;
+		}
+
+		//public async Task
+
+		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+		//:::                                                                         :::
+		//:::  This routine calculates the distance between two points (given the     :::
+		//:::  latitude/longitude of those points). It is being used to calculate     :::
+		//:::  the distance between two locations using GeoDataSource(TM) products    :::
+		//:::                                                                         :::
+		//:::  Definitions:                                                           :::
+		//:::    South latitudes are negative, east longitudes are positive           :::
+		//:::                                                                         :::
+		//:::  Passed to function:                                                    :::
+		//:::    lat1, lon1 = Latitude and Longitude of point 1 (in decimal degrees)  :::
+		//:::    lat2, lon2 = Latitude and Longitude of point 2 (in decimal degrees)  :::
+		//:::    unit = the unit you desire for results                               :::
+		//:::           where: 'M' is statute miles (default)                         :::
+		//:::                  'K' is kilometers                                      :::
+		//:::                  'N' is nautical miles                                  :::
+		//:::                                                                         :::
+		//:::  Worldwide cities and other features databases with latitude longitude  :::
+		//:::  are available at http://www.geodatasource.com                          :::
+		//:::                                                                         :::
+		//:::  For enquiries, please contact sales@geodatasource.com                  :::
+		//:::                                                                         :::
+		//:::  Official Web site: http://www.geodatasource.com                        :::
+		//:::                                                                         :::
+		//:::           GeoDataSource.com (C) All Rights Reserved 2015                :::
+		//:::                                                                         :::
+		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+		private double distance(double lat1, double lon1, double lat2, double lon2, char unit)
+		{
+			double theta = lon1 - lon2;
+			double dist = Math.Sin(deg2rad(lat1)) * Math.Sin(deg2rad(lat2)) + Math.Cos(deg2rad(lat1)) * Math.Cos(deg2rad(lat2)) * Math.Cos(deg2rad(theta));
+			dist = Math.Acos(dist);
+			dist = rad2deg(dist);
+			dist = dist * 60 * 1.1515;
+			if (unit == 'K')
+			{
+				dist = dist * 1.609344;
+			}
+			else if (unit == 'N')
+			{
+				dist = dist * 0.8684;
+			}
+			return (dist);
+		}
+
+		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+		//::  This function converts decimal degrees to radians             :::
+		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+		private double deg2rad(double deg)
+		{
+			return (deg * Math.PI / 180.0);
+		}
+
+		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+		//::  This function converts radians to decimal degrees             :::
+		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+		private double rad2deg(double rad)
+		{
+			return (rad / Math.PI * 180.0);
+		}
 	}
 }

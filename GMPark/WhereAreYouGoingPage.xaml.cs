@@ -19,7 +19,7 @@ namespace GMPark
 			var scroll = new ScrollView();
 
 			var assembly = typeof(WhereAreYouGoingPage).GetTypeInfo().Assembly;
-			Stream stream = assembly.GetManifestResourceStream("GMPark.msu-buildings.json");
+			Stream stream = assembly.GetManifestResourceStream("GMPark.Structures.json");
 			string text = "";
 			using (var reader = new System.IO.StreamReader(stream))
 			{

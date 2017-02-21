@@ -15,8 +15,9 @@ namespace GMPark
 			NavigationPage.SetBackButtonTitle(this, "");
 
 			List<string> roles = new List<string>();
-			roles.Add("Student");
-			roles.Add("Faculty");
+			roles.Add("Employee");
+			roles.Add("Executive");
+			roles.Add("Visitor");
 			var grid = new Grid();
 			int i = 0;
 			foreach (string role in roles)

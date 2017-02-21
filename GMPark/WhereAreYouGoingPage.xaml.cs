@@ -19,24 +19,24 @@ namespace GMPark
 			var scroll = new ScrollView();
 
 			var assembly = typeof(WhereAreYouGoingPage).GetTypeInfo().Assembly;
-			Stream stream = assembly.GetManifestResourceStream("GMPark.campuses.json");
+			Stream stream = assembly.GetManifestResourceStream("GMPark.msu-buildings.json");
 			string text = "";
 			using (var reader = new System.IO.StreamReader(stream))
 			{
 				text = reader.ReadToEnd();
 			}
 
-			List<Campus> campuses = JsonConvert.DeserializeObject<List<Campus>>(text);
+			List<Building> buildings = JsonConvert.DeserializeObject<List<Building>>(text);
 
 			var grid = new Grid();
 			int i = 0;
-			foreach (Campus campus in campuses)
-			{
-				grid.RowDefinitions.Add(new RowDefinition { Height = 50 });
 
-				var label = new Label()
+			foreach (Building building in buildings)
+			{
+				grid.RowDefinitions.Add(new RowDefinition { Height = 100 });
+
+				var click = new Button()
 				{
-<<<<<<< HEAD
 					Text = building.Name,
 					Font = Font.SystemFontOfSize(NamedSize.Large),
 					TextColor = Color.White,
@@ -48,31 +48,9 @@ namespace GMPark
 					BackgroundColor = Color.Transparent,
 					};
 				click.Clicked += OnClicked;
-=======
-					Text = campus.Name,
-					TextColor = Color.Black
-				};
->>>>>>> 8f538b44568762040c6a40a571eebb42050d19b1
 
-				grid.Children.Add(label, 0, i);
+				grid.Children.Add(click, 0, i);
 				i += 1;
-
-				foreach (Building building in campus.Buildings)
-				{
-					grid.RowDefinitions.Add(new RowDefinition { Height = 100 });
-
-					var click = new Button()
-					{
-						Text = building.Name,
-						Font = Font.SystemFontOfSize(NamedSize.Large),
-						FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
-						CommandParameter = building
-					};
-					click.Clicked += OnClicked;
-
-					grid.Children.Add(click, 0, i);
-					i += 1;
-				}
 			}
 
 			NavigationPage.SetBackButtonTitle(this, "");

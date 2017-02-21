@@ -167,6 +167,22 @@
 				    {
 					    "Name" : "ID Center",
 				        "Address" : "42.523085, -83.042270"
+					},
+        			{
+					    "Name" : "Man A",
+				        "Address" : "42.513509, -83.039821"
+					},
+        			{
+					    "Name" : "Man B",
+				        "Address" : "42.515842, -83.039596"
+					},
+        			{
+					    "Name" : "R&D",
+				        "Address" : "42.515818, -83.042557"
+					},
+        			{
+					    "Name" : "Vehicle Engineering Center",
+				        "Address" : "42.511286, -83.031710"
 					},],
 
         "Lots" 		: [ {	"ID" : "1",

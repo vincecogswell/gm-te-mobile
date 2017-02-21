@@ -79,7 +79,7 @@
         				"Locations" : [
 
         				{ "Lat" : 42.725917,
-					  	  "Long" : -84.479650, },
+					  	  "Long" : -84.479650 },
 
 	  					{
 	  				  	  "Lat" : 42.725332,
@@ -94,7 +94,69 @@
 	  				  	  "Long" : -84.478192 } ],
 
 	  				  	"Percentage" : 78
+	  				},
+            		
+            		{	"ID" : "56",
+        				"Employee" : true,
+        				"Executive" : true,
+        				"Visitor" : true,
+        				"Locations" : [
+
+        				{ "Lat" : 42.725671,
+					  	  "Long" :  -84.483690 },
+
+	  					{
+	  				  	  "Lat" : 42.724910, 
+	  				  	  "Long" :  -84.483669 },
+
+	  					{
+	  				  	  "Lat" : 42.724867,
+	  				  	  "Long" : -84.482424},
+
+	  					{
+	  				  	  "Lat" : 42.725257,
+	  				  	  "Long" : -84.482370 }, 
+
+	  				  	{
+	  				  	  "Lat" : 42.725620,
+	  				  	  "Long" :  -84.482944 } ],
+
+	  				  	"Percentage" : 20
 	  				} ]
         					
-        }
+        },
+
+	{ "Name" : "Warren Tech Center",
+
+	  "Locations" : [ 
+
+	  				{ "Lat" : 42.506779,  
+	  				  "Long" :-83.028577},
+
+					{ "Lat" : 42.506399,
+					  "Long" : -83.046103 },
+
+	  				{
+	  				  "Lat" : 42.520564,
+	  				  "Long" :  -83.046901 },
+
+	  				{
+	  				  "Lat" : 42.524581,
+	  				  "Long" :  -83.041365},
+
+	  				{
+	  				  "Lat" : 42.523689,
+	  				  "Long" : -83.029120 } ],
+
+	  	"Buildings" : [
+
+					{	"Name" : "Cadillac Building", 
+    					"Address" : "GM, GM Tech Center Rd, Warren, MI" },
+
+    				{
+	    				"Name" : "Cadillac Innovation Center",
+        				"Address" : "GM Tech Center Rd, Warren, MI" } ],
+
+        "Lots" 		: [ ]
+		}
 ]

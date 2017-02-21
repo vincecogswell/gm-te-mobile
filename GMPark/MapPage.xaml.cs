@@ -1,11 +1,12 @@
 using System;
+using System.Net;
 using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-//using Plugin.Geolocator;
+using Plugin.Geolocator;
 using Xamarin.Forms;
 using Xamarin.Forms.GoogleMaps;
 
@@ -51,7 +52,10 @@ namespace GMPark
 			=======
 			>>>>>>> e9984b5... Added json parsing for full campuses*/
 
+			// Creates campuses objects and draws them
 			AddCampuses();
+
+			// Assigns title of page to building that is to be going to
 			this.Title = building.Name;
 
 			Device.BeginInvokeOnMainThread(() =>
@@ -105,17 +109,28 @@ namespace GMPark
 
 			UpdateLotInStack(lot, stack);
 
-			stack.BindingContextChanged += (sender, e) => Device.BeginInvokeOnMainThread(() =>
+			var address = "479 Allard Rd, Grosse Pointe Farms, MI";
+			switch (Device.OS)
 			{
-				DisplayAlert("Closest Lot Is", "THIS WORKS", "Okay");
-			});
+				case TargetPlatform.iOS:
+					Device.OpenUri(
+						new Uri(string.Format("http://maps.apple.com/?q={0}", WebUtility.UrlEncode(address))));
+					break;
+				case TargetPlatform.Android:
+					Device.OpenUri(
+						new Uri(string.Format("geo:0,0?q={0}", WebUtility.UrlEncode(address))));
+					break;
+			};
 
-			/*var locator = CrossGeolocator.Current;
+			var locator = CrossGeolocator.Current;
 			locator.PositionChanged += (sender, e) =>
 			{
 				var position = e.Position;
-			};*/
+			};
+		}
 
+		async void OnClicked(object sender, EventArgs args)
+		{
 		}
 
 
@@ -286,7 +301,7 @@ namespace GMPark
 		{
 			await addBuild;
 			Lot closest = null;
-			double dist = 0;
+			double dist = -1.0;
 
 			foreach (Campus campus in campuses)
 			{
@@ -298,15 +313,16 @@ namespace GMPark
 						{
 							foreach (Location location in lot.Locations)
 							{
-								if (closest == null)
-								{
-									closest = lot;
-								}
-
 								double currDist =
 									distance(build.Position.Lat, build.Position.Long, location.Lat, location.Long, 'M');
 
-								if (currDist < dist)
+								if (dist < 0)
+								{
+									dist = currDist;
+									closest = lot;
+								}
+
+								else if (currDist < dist)
 								{
 									dist = currDist;
 									closest = lot;

@@ -56,7 +56,7 @@ namespace GMPark
 
 			Device.BeginInvokeOnMainThread(() =>
 				{
-					DisplayAlert("Welcome", "To the GM Technical Center", "Okay");
+					DisplayAlert("Welcome", "To Michigan State University!", "Okay");
 				});
 
 			Task addBuild = AddBuildings(building.Name);

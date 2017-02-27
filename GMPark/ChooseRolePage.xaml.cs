@@ -7,17 +7,16 @@ namespace GMPark
 {
 	public partial class ChooseRolePage : ContentPage
 	{
-		public ChooseRolePage()
+		private string name;
+		public ChooseRolePage(Campus campus)
 		{
 			InitializeComponent();
 
 			this.BackgroundColor = Color.FromRgb(104, 151, 243);
 			NavigationPage.SetBackButtonTitle(this, "");
 
-			List<string> roles = new List<string>();
-			roles.Add("Employee");
-			roles.Add("Executive");
-			roles.Add("Visitor");
+			List<string> roles = campus.Roles;
+			this.name = campus.Name;
 			var grid = new Grid();
 			int i = 0;
 			foreach (string role in roles)
@@ -30,7 +29,7 @@ namespace GMPark
 					TextColor = Color.White,
 					BackgroundColor=Color.Transparent,
 					FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
-					CommandParameter = role,
+					CommandParameter = campus.Buildings,
 					BorderWidth = 1,
 					BorderColor = Color.White,
 					Margin = new Thickness(8,8,8,8)
@@ -47,12 +46,8 @@ namespace GMPark
 		async void OnClicked(object sender, EventArgs args)
 		{
 			Button button = (Button)sender;
-			await Navigation.PushAsync(new WhereAreYouGoingPage(button.Text));
+			var buildings = (List<Building>)button.CommandParameter;
+			await Navigation.PushAsync(new WhereAreYouGoingPage(button.Text,buildings,this.name));
 		}
-
-		//async void VisitorClicked(object sender, EventArgs args)
-		//{
-		//	await Navigation.PushAsync(new WhereAreYouGoingPage());
-		//}
 	}
 }

@@ -56,6 +56,9 @@
     <EmbeddedResource Include="SplashScreen.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Include="ChooseCampus.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
@@ -96,6 +99,9 @@
     <Compile Include="Building.cs" />
     <Compile Include="SplashScreen.cs">
       <DependentUpon>SplashScreen.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ChooseCampus.xaml.cs">
+      <DependentUpon>ChooseCampus.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

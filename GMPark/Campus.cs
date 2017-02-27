@@ -18,6 +18,7 @@ namespace GMPark
 		public List<Location> Locations;
 		public List<Building> Buildings;
 		public List<Lot> Lots;
+		public List<string> Roles;
 	}
 
 }

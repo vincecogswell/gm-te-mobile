@@ -58,7 +58,7 @@ namespace GMPark
 
 		async void OnClicked(object sender, EventArgs args)
 		{
-			await Navigation.PushAsync(new ChooseRolePage());
+			await Navigation.PushAsync(new ChooseCampus());
 		}
 	}
 }

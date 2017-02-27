@@ -27,7 +27,7 @@ namespace GMPark
 
 		List<Campus> campuses;
 
-		public MapPage(string role, Building building)
+		public MapPage(string role, Building building, string name)
 		{
 			InitializeComponent();
 			//message.Text = "You are a" + role + ", and going to" + building "
@@ -56,7 +56,7 @@ namespace GMPark
 
 			Device.BeginInvokeOnMainThread(() =>
 				{
-					DisplayAlert("Welcome", "To Michigan State University!", "Okay");
+					DisplayAlert("Welcome", "To "+ name + "!", "Okay");
 				});
 
 			Task addBuild = AddBuildings(building.Name);

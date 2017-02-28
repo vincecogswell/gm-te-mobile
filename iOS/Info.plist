@@ -7,7 +7,7 @@
 	<key>CFBundleName</key>
 	<string>GM Park</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.general_motors.gm-park</string>
+	<string>com.general-motors.gm-park</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>

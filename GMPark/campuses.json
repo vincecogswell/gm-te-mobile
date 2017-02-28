@@ -1,4 +1,4 @@
-﻿[
+[
     { "Name" : "Michigan State University",
         "Roles" : ["Student","Faculty"],
 
@@ -176,7 +176,7 @@
 
                       {
                         "Lat" : 42.523689,
-                        "Long" : -83.029120 } ],
+                        "Long" : -83.029120 } ], 
 
           "Buildings" : [
 
@@ -205,30 +205,34 @@
                         "Position" : { "Lat" : 42.523085, 
                                        "Long" : -83.042270 }
                     },
-                    {
+
+        			{
 					    "Name" : "Man A",
 				        "Address" : "42.513509, -83.039821",
 						"Position" : { "Lat" : 42.513509, 
                                        "Long" : -83.039821 }
-					} ,
+					},
+            
         			{
 					    "Name" : "Man B",
 				        "Address" : "42.515842, -83.039596",
 						"Position" : { "Lat" : 42.515842, 
                                        "Long" : -83.039596 }
-					} ,
+					},
+
         			{
 					    "Name" : "Reserch & Development",
 				        "Address" : "42.515818, -83.042557",
 						"Position" : { "Lat" : 42.515818, 
                                        "Long" : -83.042557 }
-					} ,
+					},
+
         			{
 					    "Name" : "Vehicle Engineering Center",
 				        "Address" : "42.511286, -83.031710",
 						"Position" : { "Lat" : 42.511286, 
                                        "Long" : -83.031710 }
-					}],
+					} ], 
 
         "Lots"         : [ {    "ID" : "1",
                         "Employee" : true,

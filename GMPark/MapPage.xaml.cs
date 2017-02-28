@@ -110,16 +110,17 @@ namespace GMPark
 
 			UpdateLotInStack(lot, stack);
 
-			//var locator = CrossGeolocator.Current;
-			/*locator.PositionChanged += (sender, e) =>
+			var locator = Plugin.Geolocator.CrossGeolocator.Current;
+			locator.PositionChanged += (sender, e) =>
 			{
 				var position = e.Position;
 				Device.BeginInvokeOnMainThread(() =>
 				{
-					stack.BindingContext = new { LotID = e.Position.Latitude };
+					DisplayAlert("You Changed Positions!", "Lat: " + e.Position.Latitude.ToString() + 
+					             "Long: " + e.Position.Longitude.ToString(), "Okay");
 				});
 				
-			};*/
+			};
 		}
 
 		async void OnClicked(object sender, EventArgs args)
@@ -173,7 +174,7 @@ namespace GMPark
 
 				if (current)
 				{
-					map.MoveToRegion(MapSpan.FromCenterAndRadius(pin.Position, Distance.FromMeters(150)));
+					map.MoveToRegion(MapSpan.FromCenterAndRadius(pin.Position, Distance.FromMeters(200)));
 				}
 
 				map.Pins.Add(pin);

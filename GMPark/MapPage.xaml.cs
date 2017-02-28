@@ -26,6 +26,8 @@ namespace GMPark
 		};
 
 		Campus campus;
+		double avgLat = 0, avgLong = 0;
+		List<GeoLine> boundaries;
 
 		public MapPage(string role, Building building, string name)
 		{
@@ -108,10 +110,15 @@ namespace GMPark
 
 			UpdateLotInStack(lot, stack);
 
-			/*var locator = CrossGeolocator.Current;
-			locator.PositionChanged += (sender, e) =>
+			//var locator = CrossGeolocator.Current;
+			/*locator.PositionChanged += (sender, e) =>
 			{
 				var position = e.Position;
+				Device.BeginInvokeOnMainThread(() =>
+				{
+					stack.BindingContext = new { LotID = e.Position.Latitude };
+				});
+				
 			};*/
 		}
 
@@ -205,28 +212,15 @@ namespace GMPark
 					{
 						polygon.Positions.Add(new Position(location.Lat, location.Long));
 
-						/*if (location.Lat > maxLat)
-						{
-							maxLat = location.Lat;
-						}
-						if (location.Long > maxLong)
-						{
-							maxLong = location.Long;
-						}
-						if (location.Lat < minLat)
-						{
-							minLat = location.Lat;
-						}
-						if (location.Long < minLong)
-						{
-							minLong = location.Long;
-						}*/
-
+						avgLat += location.Lat;
+						avgLong += location.Long;
 					}
+					avgLat = avgLat / campus.Locations.Count();
+					avgLong = avgLong / campus.Locations.Count();
 
 					map.Polygons.Add(polygon);
+					break;
 				}
-				break;
 			}
 
 			/*var mapView = new List<Position>();

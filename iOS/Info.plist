@@ -43,7 +43,7 @@
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcon.appiconset</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Can we use your location</string>
+	<string>We need your location to tell if you are on campus or not</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We are using your location</string>
 </dict>

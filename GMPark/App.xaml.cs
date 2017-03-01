@@ -10,7 +10,6 @@ namespace GMPark
 
 			MainPage = new NavigationPage(new SplashScreen());
 
-
 		}
 
 		protected override void OnStart()

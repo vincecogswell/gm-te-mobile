@@ -110,17 +110,7 @@ namespace GMPark
 
 			UpdateLotInStack(lot, stack);
 
-			var locator = Plugin.Geolocator.CrossGeolocator.Current;
-			locator.PositionChanged += (sender, e) =>
-			{
-				var position = e.Position;
-				Device.BeginInvokeOnMainThread(() =>
-				{
-					DisplayAlert("You Changed Positions!", "Lat: " + e.Position.Latitude.ToString() + 
-					             "Long: " + e.Position.Longitude.ToString(), "Okay");
-				});
-				
-			};
+			StartGeoLocation();
 		}
 
 		async void OnClicked(object sender, EventArgs args)
@@ -147,6 +137,30 @@ namespace GMPark
 			}
 		}
 
+		public void StartGeoLocation()
+		{
+			if (CrossGeolocator.Current.IsGeolocationEnabled)
+			{
+				if (!CrossGeolocator.Current.IsListening)
+				{
+					CrossGeolocator.Current.StartListeningAsync(1, 5, false);
+				}
+				                               
+				CrossGeolocator.Current.PositionChanged += (o, args) =>
+				{
+					Device.BeginInvokeOnMainThread(() =>
+					{
+						DisplayAlert("New Location", "Lat: " + args.Position.Latitude.ToString() +
+									 "Long: " + args.Position.Longitude.ToString(), "Okay");
+					});
+				};
+			}
+
+			else
+			{
+				DisplayAlert("Geolocation", "Is NOT enabled", "Okay");
+			}
+		}
 
 		public async Task PlaceBuildingPin(Building building, Map map, bool current)
 		{

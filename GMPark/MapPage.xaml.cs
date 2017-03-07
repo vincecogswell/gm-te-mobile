@@ -28,6 +28,7 @@ namespace GMPark
 		Campus campus;
 		double avgLat = 0, avgLong = 0;
 		List<GeoLine> boundaries;
+		bool onCampus = false;
 
 		public MapPage(string role, Building building, string name)
 		{
@@ -47,8 +48,7 @@ namespace GMPark
 								// Display another action sheet
 							};
 						});
-			=======
-			>>>>>>> e9984b5... Added json parsing for full campuses*/
+			=======*/
 
 			// Creates campuses objects and draws them
 			AddCampus(name);
@@ -56,18 +56,8 @@ namespace GMPark
 			// Assigns title of page to building that is to be going to
 			this.Title = building.Name;
 
-			Device.BeginInvokeOnMainThread(() =>
-				{
-					DisplayAlert("Welcome", "To "+ name + "!", "Okay");
-				});
-
 			Task addBuild = AddBuildings(building.Name);
 			AddLots();
-
-			/*lot.ContinueWith((Task<Lot> obj) => Device.BeginInvokeOnMainThread(() =>
-			{
-				DisplayAlert("Closest Lot Is", obj.Result.ID, "Okay");
-			}));*/
 
 			Task<Lot> lot = FindClosestLot(addBuild, building);
 
@@ -111,6 +101,29 @@ namespace GMPark
 			UpdateLotInStack(lot, stack);
 
 			StartGeoLocation();
+
+			CrossGeolocator.Current.PositionChanged += (o, args) =>
+			{
+				if (campus.InBoundBox(new Position(args.Position.Latitude, args.Position.Longitude))
+					&& (onCampus == false))
+				{
+					Device.BeginInvokeOnMainThread(() =>
+					{
+						DisplayAlert("Welcome to " + campus.Name + "!", "We hope you find your way around!", "Okay");
+						onCampus = true;
+					});
+				}
+
+				else if ((campus.InBoundBox(new Position(args.Position.Latitude, args.Position.Longitude)) == false)
+					&& (onCampus == true))
+				{
+					Device.BeginInvokeOnMainThread(() =>
+					{
+						DisplayAlert("Now leaving " + campus.Name, "Did you mean to do that?", "Maybe?");
+						onCampus = false;
+					});
+				}
+			};
 		}
 
 		async void OnClicked(object sender, EventArgs args)
@@ -145,15 +158,6 @@ namespace GMPark
 				{
 					CrossGeolocator.Current.StartListeningAsync(1, 5, false);
 				}
-				                               
-				CrossGeolocator.Current.PositionChanged += (o, args) =>
-				{
-					Device.BeginInvokeOnMainThread(() =>
-					{
-						DisplayAlert("New Location", "Lat: " + args.Position.Latitude.ToString() +
-									 "Long: " + args.Position.Longitude.ToString(), "Okay");
-					});
-				};
 			}
 
 			else
@@ -210,7 +214,6 @@ namespace GMPark
 			}
 
 			List<Campus> campuses = JsonConvert.DeserializeObject<List<Campus>>(text);
-			///double maxLat = -91, maxLong = -181, minLat = 91, minLong = 181;
 
 			foreach (Campus campusIs in campuses)
 			{

@@ -104,6 +104,7 @@
       <DependentUpon>ChooseCampus.xaml</DependentUpon>
     </Compile>
     <Compile Include="GeoLine.cs" />
+    <Compile Include="GeoPoly.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.ComponentModel.DataAnnotations" />

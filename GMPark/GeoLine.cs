@@ -1,69 +1,54 @@
 ﻿using System;
-using Xamarin.Forms.GoogleMaps;
+using Plugin.Geolocator.Abstractions;
 
 namespace GMPark
 {
 	public class GeoLine
 	{
-		enum orientation { Bottom, Top, Left, Right };
-
-		private orientation boundary;
+		private double startLong, endLong;
 		private double m, b;
 
 		public GeoLine()
 		{
-			// Default case is bottom
-			boundary = orientation.Bottom;
+			
 		}
 
-		public GeoLine(double slope, double intercept)
+		public GeoLine(Location pos1, Location pos2)
 		{
-			m = slope;
-			b = intercept;
-			boundary = orientation.Bottom;
-		}
-
-		public void SetBottom(bool tf)
-		{
-			boundary = orientation.Bottom;
-		}
-
-		public void SetLeft(bool tf)
-		{
-			boundary = orientation.Left;
-		}
-
-		public void SetRight(bool tf)
-		{
-			boundary = orientation.Right;
-		}
-
-		public void SetTop(bool tf)
-		{
-			boundary = orientation.Top;
-		}
-
-		public bool InBoundary(Position pos)
-		{
-			switch (boundary)
+			if (pos1.Long > pos2.Long)
 			{
-				case orientation.Bottom:
-					break;
-
-				case orientation.Left:
-					break;
-
-				case orientation.Right:
-					break;
-
-				case orientation.Top:
-					break;
-
-				default:
-					break;
+				startLong = pos2.Long;
+				endLong = pos1.Long;
+				m = (pos1.Lat - pos2.Lat) / (pos1.Long - pos2.Long);
 			}
-					
-			return true;
+
+			else
+			{
+				startLong = pos1.Long;
+				endLong = pos2.Long;
+				m = (pos2.Lat - pos1.Lat) / (pos2.Long - pos1.Long);
+			}
+
+			b = pos1.Lat - (m * pos1.Long);
+
+		}
+
+		public bool InBounds(Position pos)
+		{
+			if ((pos.Longitude > startLong) && (pos.Longitude < endLong))
+			{
+				return true;
+			}
+
+			else
+			{
+				return false;
+			}
+		}
+
+		public double GetLat(double lon)
+		{
+			return (m * lon + b);
 		}
 	}
 }

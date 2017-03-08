@@ -26,9 +26,8 @@ namespace GMPark
 		};
 
 		Campus campus;
-		double avgLat = 0, avgLong = 0;
-		List<GeoLine> boundaries;
 		bool onCampus = false;
+		GeoPoly campusGeofence = new GeoPoly();
 
 		public MapPage(string role, Building building, string name)
 		{
@@ -102,10 +101,20 @@ namespace GMPark
 
 			StartGeoLocation();
 
+			if ((campusGeofence.InFence(args.Position))
+					&& (onCampus == false))
+			{
+				Device.BeginInvokeOnMainThread(() =>
+				{
+					DisplayAlert("Welcome to " + campus.Name + "!", "We hope you find your way around!", "Okay");
+					onCampus = true;
+				});
+			}
+
 			CrossGeolocator.Current.PositionChanged += (o, args) =>
 			{
-				if (campus.InBoundBox(new Position(args.Position.Latitude, args.Position.Longitude))
-					&& (onCampus == false))
+				if ((campusGeofence.InFence(args.Position))
+				    && (onCampus == false))
 				{
 					Device.BeginInvokeOnMainThread(() =>
 					{
@@ -114,7 +123,7 @@ namespace GMPark
 					});
 				}
 
-				else if ((campus.InBoundBox(new Position(args.Position.Latitude, args.Position.Longitude)) == false)
+				else if ((campusGeofence.InFence(args.Position) == false)
 					&& (onCampus == true))
 				{
 					Device.BeginInvokeOnMainThread(() =>
@@ -156,7 +165,7 @@ namespace GMPark
 			{
 				if (!CrossGeolocator.Current.IsListening)
 				{
-					CrossGeolocator.Current.StartListeningAsync(1, 5, false);
+					CrossGeolocator.Current.StartListeningAsync(1, 1, false);
 				}
 			}
 
@@ -226,25 +235,18 @@ namespace GMPark
 					polygon.StrokeWidth = 1f;
 					polygon.FillColor = Color.FromRgba(0, 0, 255, 64);
 
-					foreach (Location location in campus.Locations)
+					for (int i = 0; i < campus.Locations.Count(); i++)
 					{
-						polygon.Positions.Add(new Position(location.Lat, location.Long));
+						polygon.Positions.Add(new Position(campus.Locations[i].Lat, campus.Locations[i].Long));
 
-						avgLat += location.Lat;
-						avgLong += location.Long;
+						int i2 = (i + 1) % campus.Locations.Count();
+						campusGeofence.AddGeoLine(campus.Locations.ElementAt(i), campus.Locations.ElementAt(i2));
 					}
-					avgLat = avgLat / campus.Locations.Count();
-					avgLong = avgLong / campus.Locations.Count();
 
 					map.Polygons.Add(polygon);
 					break;
 				}
 			}
-
-			/*var mapView = new List<Position>();
-			mapView.Add(new Position(maxLat, maxLong));
-			mapView.Add(new Position(minLat, minLong));
-			//map.MoveToRegion(MapSpan.FromPositions(mapView));*/
 
 			return campuses;
 		}

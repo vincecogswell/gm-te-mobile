@@ -7,26 +7,14 @@ namespace GMPark
 {
 	public partial class EnterUserInfoPage : ContentPage
 	{
-		public EnterUserInfoPage(string role)
+		public EnterUserInfoPage()
 		{
-			InitializeComponent();
-
 			NavigationPage.SetBackButtonTitle(this, "");
 
-			Title = "User Info";
-
-			var next = new ToolbarItem
-			{
-				Text = "Next",
-				Command = new Command(GoToNextPage)
-			};
-
-			ToolbarItems.Add(next);
+			Title = "Preference";
+			this.BackgroundColor = Color.FromRgb(104, 151, 243);
 		}
 
-		public void GoToNextPage()
-		{
-			//Navigation.PushAsync(new WhereAreYouGoingPage());
-		}
+
 	}
 }

@@ -101,7 +101,7 @@ namespace GMPark
 
 			StartGeoLocation();
 
-			if ((campusGeofence.InFence(args.Position))
+			/*if ((campusGeofence.InFence(CrossGeolocator.Current.))
 					&& (onCampus == false))
 			{
 				Device.BeginInvokeOnMainThread(() =>
@@ -109,7 +109,7 @@ namespace GMPark
 					DisplayAlert("Welcome to " + campus.Name + "!", "We hope you find your way around!", "Okay");
 					onCampus = true;
 				});
-			}
+			}*/
 
 			CrossGeolocator.Current.PositionChanged += (o, args) =>
 			{

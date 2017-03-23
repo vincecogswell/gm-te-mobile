@@ -16,6 +16,8 @@ namespace GMPark
 	{
 		public MenuPage()
 		{
+			InitializeComponent();
+
 			var scroll = new ScrollView();
 			var stack = new StackLayout { 
 				VerticalOptions = LayoutOptions.Center,

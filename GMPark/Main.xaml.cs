@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Net;
+using System.Net.Http;
 using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
@@ -14,13 +14,21 @@ namespace GMPark
 {
 	public partial class Main : ContentPage
 	{
+		HttpClient client;
+
 		private string name;
 		private List<Campus> campuses;
 		//Campus campus;
-		//bool onCampus = false;
-		//GeoPoly campusGeofence = new GeoPoly();
+		bool onCampus = false;
+		string mCurrentCampus = "";
 		public Main(string name, Position pos)
 		{
+			InitializeComponent();
+
+			client = new HttpClient();
+			client.MaxResponseContentBufferSize = 256000;
+			Task<List<Campus>> campuses = GetCampuses();
+
 			this.name = name;
 			var assembly = typeof(Main).GetTypeInfo().Assembly;
 			Stream stream = assembly.GetManifestResourceStream("GMPark.campuses.json");
@@ -31,7 +39,7 @@ namespace GMPark
 			}
 
 			this.campuses = JsonConvert.DeserializeObject<List<Campus>>(text);
-			Map map = new Map(
+			GMTEMap map = new GMTEMap(
 				MapSpan.FromCenterAndRadius(
 						pos, Distance.FromMiles(0.7)))
 			{
@@ -41,6 +49,8 @@ namespace GMPark
 				VerticalOptions = LayoutOptions.FillAndExpand,
 				HasZoomEnabled = true
 			};
+
+			map.AddCampuses();
 
 			// Assigns title of page to building that is to be going to
 			this.Title = "Select a Campus";
@@ -84,12 +94,42 @@ namespace GMPark
 			this.Content = stack;
 
 			NavigationPage.SetBackButtonTitle(this, "");
+
+			StartGeoLocation();
+
+			CrossGeolocator.Current.PositionChanged += (o, args) =>
+			{
+				if ((map.CheckInGeofences(args.Position))
+					&& (onCampus == false))
+				{
+					Device.BeginInvokeOnMainThread(() =>
+					{
+						mCurrentCampus = map.InWhichGeofences(args.Position);
+						DisplayAlert("Welcome to " + mCurrentCampus + "!", "We hope you find your way around!", "Okay");
+						onCampus = true;
+					});
+				}
+
+				else if ((map.CheckInGeofences(args.Position) == false)
+					&& (onCampus == true))
+				{
+					Device.BeginInvokeOnMainThread(() =>
+					{
+						DisplayAlert("Now leaving " + mCurrentCampus, "Did you mean to do that?", "Maybe?");
+						onCampus = false;
+						mCurrentCampus = "";
+					});
+				}
+			};
 		}
+
+
 		async void newdes(object sender, EventArgs args)
 		{
 			int i = 0;
-			foreach (Campus c in this.campuses){
-				if (c.Name == this.name)
+			foreach (Campus c in this.campuses)
+			{
+				if (c.GetName() == this.name)
 				{
 					break;
 				}
@@ -103,5 +143,37 @@ namespace GMPark
 		{
 			await Navigation.PushAsync(new EnterUserInfoPage());
 		}
+
+		public void StartGeoLocation()
+		{
+			if (CrossGeolocator.Current.IsGeolocationEnabled)
+			{
+				if (!CrossGeolocator.Current.IsListening)
+				{
+					CrossGeolocator.Current.StartListeningAsync(1, 1, false);
+				}
+			}
+
+			else
+			{
+				DisplayAlert("Geolocation", "Is NOT enabled", "Okay");
+			}
+		}
+
+		public async Task<List<Campus>> GetCampuses()
+		{
+			var uri = new Uri("http://35.9.22.105/campuses");
+			var response = await client.GetAsync(uri);
+			if (response.IsSuccessStatusCode)
+			{
+				var content = await response.Content.ReadAsStringAsync();
+				return JsonConvert.DeserializeObject<List<Campus>>(content);
+			}
+			else
+			{
+				return null;
+			}
+		}
+
 	}
 }

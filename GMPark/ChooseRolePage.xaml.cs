@@ -10,14 +10,14 @@ namespace GMPark
 		private string name;
 		public ChooseRolePage(Campus campus)
 		{
-			//InitializeComponent();
+			InitializeComponent();
 
 			this.BackgroundColor = Color.FromRgb(104, 151, 243);
 
 			NavigationPage.SetBackButtonTitle(this, "");
 
 			List<string> roles = campus.Roles;
-			this.name = campus.Name;
+			this.name = campus.GetName();
 			var grid = new Grid();
 			int i = 0;
 			foreach (string role in roles)

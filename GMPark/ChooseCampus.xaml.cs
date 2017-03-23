@@ -34,7 +34,7 @@ namespace GMPark
 				grid.RowDefinitions.Add(new RowDefinition { Height = 100 });
 				var click = new Button()
 				{
-					Text = campus.Name,
+					Text = campus.GetName(),
 					Font = Font.SystemFontOfSize(NamedSize.Large),
 					TextColor = Color.White,
 					FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),

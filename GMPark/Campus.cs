@@ -19,5 +19,21 @@ namespace GMPark
 		public List<Building> Buildings;
 		public List<Lot> Lots;
 		public List<string> Roles;
+
+		public Campus()
+		{
+
+		}
+
+		public string GetName()
+		{
+			return Name;
+		}
+
+		public void SetName(string name)
+		{
+			Name = name;
+		}
 	}
+
 }

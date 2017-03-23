@@ -9,6 +9,8 @@ namespace GMPark
 	{
 		public EnterUserInfoPage()
 		{
+			InitializeComponent();
+
 			NavigationPage.SetBackButtonTitle(this, "");
 
 			Title = "Preference";

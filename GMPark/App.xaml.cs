@@ -5,7 +5,6 @@ using System.Reflection;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Plugin.Geolocator;
 using Xamarin.Forms;
 using Xamarin.Forms.GoogleMaps;
@@ -16,7 +15,7 @@ namespace GMPark
 		public static MasterDetailPage MasterDetailPage;
 		public App()
 		{
-			//InitializeComponent();
+			InitializeComponent();
 
 			//MainPage = new NavigationPage(new SplashScreen());
 			MasterDetailPage = new MasterDetailPage

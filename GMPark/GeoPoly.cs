@@ -6,23 +6,25 @@ namespace GMPark
 {
 	public class GeoPoly
 	{
-		List<GeoLine> boundaries;
+		private List<GeoLine> mBoundaries;
+		private string mName;
 
-		public GeoPoly()
+		public GeoPoly(string name)
 		{
-			boundaries = new List<GeoLine>();
+			mBoundaries = new List<GeoLine>();
+			mName = name;
 		}
 
 		public void AddGeoLine(Location loc1, Location loc2)
 		{
-			boundaries.Add(new GeoLine(loc1, loc2));
+			mBoundaries.Add(new GeoLine(loc1, loc2));
 		}
 
 		public bool InFence(Position pos)
 		{
 			var lats = new List<double>();
 
-			foreach (GeoLine line in boundaries)
+			foreach (GeoLine line in mBoundaries)
 			{
 				if (line.InBounds(pos))
 				{
@@ -49,6 +51,10 @@ namespace GMPark
 				
 			return false;
 		}
-			
+
+		public string getName()
+		{
+			return mName;
+		}
 	}
 }

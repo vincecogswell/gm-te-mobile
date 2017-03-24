@@ -25,11 +25,8 @@ namespace GMPark
 		string mCurrentCampus = "";
 		public Main(string name, Position pos)
 		{
-			InitializeComponent();
-
 			client = new HttpClient();
 			client.MaxResponseContentBufferSize = 256000;
-			Task<ServerJSON> thing = GetCampuses();
 
 			this.name = name;
 			this.pos = pos;
@@ -43,9 +40,6 @@ namespace GMPark
 			var scroll = new ScrollView();
 
 			this.campuses = JsonConvert.DeserializeObject<List<Campus>>(text);
-<<<<<<< HEAD
-			GMTEMap map = new GMTEMap(
-=======
 			int i = 0;
 			foreach (Campus c in this.campuses)
 			{
@@ -57,7 +51,6 @@ namespace GMPark
 			}
 			this.campus = this.campuses[i];
 			Map map = new Map(
->>>>>>> 6e40afb... Preference Page Done
 				MapSpan.FromCenterAndRadius(
 						pos, Distance.FromMiles(0.7)))
 			{
@@ -67,8 +60,6 @@ namespace GMPark
 				VerticalOptions = LayoutOptions.FillAndExpand,
 				HasZoomEnabled = true
 			};
-
-			map.AddCampuses();
 
 			// Assigns title of page to building that is to be going to
 			this.Title = name;
@@ -137,101 +128,16 @@ namespace GMPark
 			Content = scroll;
 
 			NavigationPage.SetBackButtonTitle(this, "");
-<<<<<<< HEAD
-
-			StartGeoLocation();
-
-			CrossGeolocator.Current.PositionChanged += (o, args) =>
-			{
-				if ((map.CheckInGeofences(args.Position))
-					&& (onCampus == false))
-				{
-					Device.BeginInvokeOnMainThread(() =>
-					{
-						mCurrentCampus = map.InWhichGeofences(args.Position);
-						DisplayAlert("Welcome to " + mCurrentCampus + "!", "We hope you find your way around!", "Okay");
-						onCampus = true;
-						var newthing = thing.Result;
-					});
-				}
-
-				else if ((map.CheckInGeofences(args.Position) == false)
-					&& (onCampus == true))
-				{
-					Device.BeginInvokeOnMainThread(() =>
-					{
-						DisplayAlert("Now leaving " + mCurrentCampus, "Did you mean to do that?", "Maybe?");
-						onCampus = false;
-						mCurrentCampus = "";
-					});
-				}
-			};
-=======
 			ToolbarItems.Add(new ToolbarItem("Preference", "preference.png", () =>
 			{
 				Navigation.PushAsync(new EnterUserInfoPage(this.campus, this.pos));
 			}));
 
->>>>>>> 6e40afb... Preference Page Done
 		}
-
-
 		async void newdes(object sender, EventArgs args)
 		{
-<<<<<<< HEAD
-			int i = 0;
-			foreach (Campus c in this.campuses)
-			{
-				if (c.GetName() == this.name)
-				{
-					break;
-				}
-				i += 1;
-			}
-			var campus = this.campuses[i];
-			await Navigation.PushAsync(new ChooseRolePage(campus));
-		}
-
-		async void prf(object sender, EventArgs args)
-		{
-			await Navigation.PushAsync(new EnterUserInfoPage());
-		}
-
-		public void StartGeoLocation()
-		{
-			if (CrossGeolocator.Current.IsGeolocationEnabled)
-			{
-				if (!CrossGeolocator.Current.IsListening)
-				{
-					CrossGeolocator.Current.StartListeningAsync(1, 1, false);
-				}
-			}
-
-			else
-			{
-				DisplayAlert("Geolocation", "Is NOT enabled", "Okay");
-			}
-		}
-
-		public async Task<ServerJSON> GetCampuses()
-		{
-			var uri = new Uri("http://35.9.22.105/campuses");
-			var response = await client.GetAsync(uri);
-			if (response.IsSuccessStatusCode)
-			{
-				var content = await response.Content.ReadAsStringAsync();
-				return JsonConvert.DeserializeObject<ServerJSON>(content);
-			}
-			else
-			{
-				return null;
-			}
-		}
-
-=======
 			await Navigation.PushAsync(new ChooseRolePage(this.campus));
 		}
 
->>>>>>> 6e40afb... Preference Page Done
 	}
 }

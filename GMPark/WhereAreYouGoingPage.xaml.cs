@@ -57,6 +57,13 @@ namespace GMPark
 		{
 			var button = (Button)sender;
 			var building = (Building)button.CommandParameter;
+			var ans = await DisplayAlert("Update Preference?", "Would you like to update your preference?", "Yes", "No");
+			if (ans == true)
+			{
+				Application.Current.Properties["campus"] = this.name;
+				Application.Current.Properties["role"] = this.role;
+				Application.Current.Properties["building"] = building.Name;
+			}
 			await Navigation.PushAsync(new MapPage(this.role, building, this.name));
 		}
 	}

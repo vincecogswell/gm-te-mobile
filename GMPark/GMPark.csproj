@@ -119,6 +119,7 @@
     </Compile>
     <Compile Include="MenuButtons.cs" />
     <Compile Include="GMTEMap.cs" />
+    <Compile Include="ServerJSON.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.ComponentModel.DataAnnotations" />

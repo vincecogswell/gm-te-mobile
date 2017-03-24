@@ -27,7 +27,7 @@ namespace GMPark
 
 			client = new HttpClient();
 			client.MaxResponseContentBufferSize = 256000;
-			Task<List<Campus>> campuses = GetCampuses();
+			Task<ServerJSON> thing = GetCampuses();
 
 			this.name = name;
 			var assembly = typeof(Main).GetTypeInfo().Assembly;
@@ -107,6 +107,7 @@ namespace GMPark
 						mCurrentCampus = map.InWhichGeofences(args.Position);
 						DisplayAlert("Welcome to " + mCurrentCampus + "!", "We hope you find your way around!", "Okay");
 						onCampus = true;
+						var newthing = thing.Result;
 					});
 				}
 
@@ -160,14 +161,14 @@ namespace GMPark
 			}
 		}
 
-		public async Task<List<Campus>> GetCampuses()
+		public async Task<ServerJSON> GetCampuses()
 		{
 			var uri = new Uri("http://35.9.22.105/campuses");
 			var response = await client.GetAsync(uri);
 			if (response.IsSuccessStatusCode)
 			{
 				var content = await response.Content.ReadAsStringAsync();
-				return JsonConvert.DeserializeObject<List<Campus>>(content);
+				return JsonConvert.DeserializeObject<ServerJSON>(content);
 			}
 			else
 			{

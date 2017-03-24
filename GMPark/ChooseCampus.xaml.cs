@@ -12,7 +12,6 @@ namespace GMPark
 	{
 		public ChooseCampus()
 		{
-			InitializeComponent();
 			this.BackgroundColor = Color.FromRgb(104, 151, 243);
 			var scroll = new ScrollView();
 

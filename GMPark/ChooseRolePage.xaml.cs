@@ -10,8 +10,7 @@ namespace GMPark
 		private string name;
 		public ChooseRolePage(Campus campus)
 		{
-			InitializeComponent();
-
+			// some
 			this.BackgroundColor = Color.FromRgb(104, 151, 243);
 
 			NavigationPage.SetBackButtonTitle(this, "");

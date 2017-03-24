@@ -21,8 +21,6 @@ namespace GMPark
 		private Position pos;
 		public EnterUserInfoPage(Campus campus, Position pos)
 		{
-			InitializeComponent();
-
 			NavigationPage.SetBackButtonTitle(this, "");
 			this.campusName = campus.Name;
 			this.pos = pos;
@@ -106,6 +104,30 @@ namespace GMPark
 			foreach (Building b in campus.Buildings)
 			{
 				buildingPicker.Items.Add(b.Name);
+			}
+			if (Application.Current.Properties.ContainsKey("role"))
+			{
+				int i = 0;
+				foreach (string item in rolePicker.Items)
+				{
+					if (item == (string)Application.Current.Properties["role"])
+					{
+						rolePicker.SelectedIndex = i;
+					}
+					i += 1;
+				}
+			}
+			if (Application.Current.Properties.ContainsKey("building"))
+			{
+				int i = 0;
+				foreach (string item in buildingPicker.Items)
+				{
+					if (item == (string)Application.Current.Properties["building"])
+					{
+						buildingPicker.SelectedIndex = i;
+					}
+					i += 1;
+				}
 			}
 			buildingPicker.SelectedIndexChanged += (sender, args) =>
 				{

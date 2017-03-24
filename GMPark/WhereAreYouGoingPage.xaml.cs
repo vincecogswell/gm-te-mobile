@@ -14,7 +14,6 @@ namespace GMPark
 		private string name;
 		public WhereAreYouGoingPage(string role, List<Building> buildings, string name)
 		{
-			InitializeComponent();
 			this.BackgroundColor = Color.FromRgb(104, 151, 243);
 			var scroll = new ScrollView();
 

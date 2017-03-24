@@ -17,6 +17,7 @@ namespace GMPark
 		private string campusName = "False";
 		private string role = "False";
 		private string building = "False";
+		// changes commit
 		private Position pos;
 		public EnterUserInfoPage(Campus campus, Position pos)
 		{

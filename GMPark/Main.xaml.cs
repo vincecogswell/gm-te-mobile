@@ -42,6 +42,7 @@ namespace GMPark
 			Task<ServerJSON> thing = GetCampuses();
 			var campuses = ConvertCampuses(thing);*/
 
+
 			this.name = name;
 			this.pos = pos;
 			var assembly = typeof(Main).GetTypeInfo().Assembly;

@@ -108,6 +108,41 @@ namespace GMPark
 			return campuses;
 		}
 
+		public void AddCampuses(List<Campus> campuses)
+		{
+			/*var assembly = typeof(MapPage).GetTypeInfo().Assembly;
+			Stream stream = assembly.GetManifestResourceStream("GMPark.campuses.json");
+			string text = "";
+			using (var reader = new System.IO.StreamReader(stream))
+			{
+				text = reader.ReadToEnd();
+			}
+
+			List<Campus> campuses = JsonConvert.DeserializeObject<List<Campus>>(text);*/
+
+			foreach (Campus campus in campuses)
+			{
+				var polygon = new Polygon();
+				polygon.IsClickable = true;
+				polygon.StrokeColor = Color.Blue;
+				polygon.StrokeWidth = 1f;
+				polygon.FillColor = Color.FromRgba(0, 0, 255, 64);
+				var campusGeofence = new GeoPoly(campus.GetName());
+
+				for (int i = 0; i < campus.Locations.Count(); i++)
+				{
+					polygon.Positions.Add(new Position(campus.Locations[i].Lat, campus.Locations[i].Long));
+
+					int i2 = (i + 1) % campus.Locations.Count();
+					campusGeofence.AddGeoLine(campus.Locations.ElementAt(i), campus.Locations.ElementAt(i2));
+				}
+
+				Polygons.Add(polygon);
+				mCampusGeofences.Add(campusGeofence);
+				mCampuses.Add(campus);
+			}
+		}
+
 		public async Task AddBuildings(string name, Campus campus)
 		{
 			foreach (Building building in campus.Buildings)
@@ -262,6 +297,45 @@ namespace GMPark
 
 			return false;
 		}
+
+		public async void SpanToCampus(string name)
+		{
+			foreach (Campus campus in mCampuses)
+			{
+				if (name == campus.GetName())
+				{
+					double avgLat = 0, avgLong = 0, minLat = 90, minLong = 180, maxLat = -180, maxLong = -90, count = campus.Locations.Count();
+					foreach (Location loc in campus.Locations)
+					{
+						avgLat += loc.Lat;
+						avgLong += loc.Long;
+
+						if (loc.Lat < minLat)
+						{
+							minLat = loc.Lat;
+						}
+
+						if (loc.Lat > maxLat)
+						{
+							maxLat = loc.Lat;
+						}
+
+						if (loc.Long < minLong)
+						{
+							minLong = loc.Long;
+						}
+
+						if (loc.Long > maxLong)
+						{
+							maxLong = loc.Long;
+						}
+					}
+
+					MoveToRegion(new MapSpan(new Position(avgLat / count, avgLong / count), maxLat - minLat, maxLong - minLong));
+				}
+			}
+		}
+
 
 
 

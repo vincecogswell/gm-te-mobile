@@ -23,13 +23,25 @@ namespace GMPark
 		//Campus campus;
 		bool onCampus = false;
 		string mCurrentCampus = "";
+
+		GMTEMap map = new GMTEMap()
+		{
+			IsShowingUser = true,
+			HeightRequest = 100,
+			WidthRequest = 960,
+			VerticalOptions = LayoutOptions.FillAndExpand,
+			HasZoomEnabled = true
+		};
+
 		public Main(string name, Position pos)
 		{
 			InitializeComponent();
 
-			client = new HttpClient();
+			/*client = new HttpClient();
 			client.MaxResponseContentBufferSize = 256000;
 			Task<ServerJSON> thing = GetCampuses();
+			var campuses = ConvertCampuses(thing);*/
+
 
 			this.name = name;
 			this.pos = pos;
@@ -41,8 +53,8 @@ namespace GMPark
 				text = reader.ReadToEnd();
 			}
 			var scroll = new ScrollView();
-
 			this.campuses = JsonConvert.DeserializeObject<List<Campus>>(text);
+
 			int i = 0;
 			foreach (Campus c in this.campuses)
 			{
@@ -53,17 +65,7 @@ namespace GMPark
 				i += 1;
 			}
 			this.campus = this.campuses[i];
-			GMTEMap map = new GMTEMap(
-				MapSpan.FromCenterAndRadius(
-						pos, Distance.FromMiles(0.7)))
-			{
-				IsShowingUser = true,
-				HeightRequest = 100,
-				WidthRequest = 960,
-				VerticalOptions = LayoutOptions.FillAndExpand,
-				HasZoomEnabled = true
-			};
-
+			map.MoveToRegion(MapSpan.FromCenterAndRadius(pos, Distance.FromMiles(0.7)));
 			map.AddCampuses();
 
 			// Assigns title of page to building that is to be going to
@@ -147,7 +149,6 @@ namespace GMPark
 						mCurrentCampus = map.InWhichGeofences(args.Position);
 						DisplayAlert("Welcome to " + mCurrentCampus + "!", "We hope you find your way around!", "Okay");
 						onCampus = true;
-						var newthing = thing.Result;
 					});
 				}
 
@@ -215,5 +216,26 @@ namespace GMPark
 				return null;
 			}
 		}
+
+		public async Task<List<Campus>> ConvertCampuses(Task<ServerJSON> json)
+		{
+			await json;
+			var res = json.Result;
+			List<Campus> campuses = new List<Campus>();
+
+			foreach (KeyValuePair<string, SCampus> entry in res.campuses)
+			{
+				var campus = new Campus();
+				campus.ConvertToCampus(entry.Value);
+				campuses.Add(campus);
+			}
+
+			map.AddCampuses(campuses);
+			map.SpanToCampus(json.Result.campuses["1"].name);
+
+			return campuses;
+
+		}
+
 	}
 }

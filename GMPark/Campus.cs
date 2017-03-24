@@ -10,6 +10,16 @@ namespace GMPark
 	public class Location
 	{
 		public double Lat, Long;
+
+		public Location(double nLat, double nLong)
+		{
+			Lat = nLat;
+			Long = nLong;
+		}
+
+		public Location()
+		{
+		}
 	}
 
 	public class Campus
@@ -22,7 +32,12 @@ namespace GMPark
 
 		public Campus()
 		{
+			Locations = new List<Location>();
+		}
 
+		public Campus(string name)
+		{
+			Name = name;
 		}
 
 		public string GetName()
@@ -34,6 +49,20 @@ namespace GMPark
 		{
 			Name = name;
 		}
+
+		public void ConvertToCampus(SCampus server)
+		{
+			foreach (List<string> ls in server.perimeter)
+			{
+				double lat = Convert.ToDouble(ls[0]), lon = Convert.ToDouble(ls[1]);
+				var loc = new Location(lat, lon);
+				Locations.Add(loc);
+			}
+
+			SetName(server.name);
+				
+		}
+			
 	}
 
 }

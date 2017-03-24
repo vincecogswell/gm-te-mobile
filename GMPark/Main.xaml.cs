@@ -25,8 +25,11 @@ namespace GMPark
 		string mCurrentCampus = "";
 		public Main(string name, Position pos)
 		{
+			InitializeComponent();
+
 			client = new HttpClient();
 			client.MaxResponseContentBufferSize = 256000;
+			Task<ServerJSON> thing = GetCampuses();
 
 			this.name = name;
 			this.pos = pos;
@@ -50,7 +53,7 @@ namespace GMPark
 				i += 1;
 			}
 			this.campus = this.campuses[i];
-			Map map = new Map(
+			GMTEMap map = new GMTEMap(
 				MapSpan.FromCenterAndRadius(
 						pos, Distance.FromMiles(0.7)))
 			{
@@ -61,6 +64,8 @@ namespace GMPark
 				HasZoomEnabled = true
 			};
 
+			map.AddCampuses();
+
 			// Assigns title of page to building that is to be going to
 			this.Title = name;
 			Label cName = new Label
@@ -70,7 +75,8 @@ namespace GMPark
 				BackgroundColor = Color.FromRgb(104, 151, 243),
 				FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
 			};
-			Label r = new Label { 
+			Label r = new Label
+			{
 				Text = "Role: N/A",
 				TextColor = Color.White,
 				BackgroundColor = Color.FromRgb(104, 151, 243),
@@ -128,16 +134,86 @@ namespace GMPark
 			Content = scroll;
 
 			NavigationPage.SetBackButtonTitle(this, "");
+
+			StartGeoLocation();
+
+			CrossGeolocator.Current.PositionChanged += (o, args) =>
+			{
+				if ((map.CheckInGeofences(args.Position))
+					&& (onCampus == false))
+				{
+					Device.BeginInvokeOnMainThread(() =>
+					{
+						mCurrentCampus = map.InWhichGeofences(args.Position);
+						DisplayAlert("Welcome to " + mCurrentCampus + "!", "We hope you find your way around!", "Okay");
+						onCampus = true;
+						var newthing = thing.Result;
+					});
+				}
+
+				else if ((map.CheckInGeofences(args.Position) == false)
+					&& (onCampus == true))
+				{
+					Device.BeginInvokeOnMainThread(() =>
+					{
+						DisplayAlert("Now leaving " + mCurrentCampus, "Did you mean to do that?", "Maybe?");
+						onCampus = false;
+						mCurrentCampus = "";
+					});
+				}
+			};
 			ToolbarItems.Add(new ToolbarItem("Preference", "preference.png", () =>
 			{
 				Navigation.PushAsync(new EnterUserInfoPage(this.campus, this.pos));
 			}));
 
 		}
+
+
 		async void newdes(object sender, EventArgs args)
 		{
-			await Navigation.PushAsync(new ChooseRolePage(this.campus));
+			int i = 0;
+			foreach (Campus c in this.campuses)
+			{
+				if (c.GetName() == this.name)
+				{
+					break;
+				}
+				i += 1;
+			}
+			await Navigation.PushAsync(new ChooseRolePage(this.campuses[i]));
 		}
 
+
+		public void StartGeoLocation()
+		{
+			if (CrossGeolocator.Current.IsGeolocationEnabled)
+			{
+				if (!CrossGeolocator.Current.IsListening)
+				{
+					CrossGeolocator.Current.StartListeningAsync(1, 1, false);
+				}
+			}
+
+			else
+			{
+				DisplayAlert("Geolocation", "Is NOT enabled", "Okay");
+			}
+		}
+
+		public async Task<ServerJSON> GetCampuses()
+		{
+			var uri = new Uri("http://35.9.22.105/campuses");
+			var response = await client.GetAsync(uri);
+			if (response.IsSuccessStatusCode)
+			{
+				var content = await response.Content.ReadAsStringAsync();
+				return JsonConvert.DeserializeObject<ServerJSON>(content);
+			}
+			else
+			{
+				return null;
+			}
+		}
 	}
 }

@@ -116,7 +116,6 @@ namespace GMPark
 					}
 					i += 1;
 				}
-				//rolePicker.Title = (string)Application.Current.Properties["role"];
 			}
 			if (Application.Current.Properties.ContainsKey("building"))
 			{
@@ -129,7 +128,6 @@ namespace GMPark
 					}
 					i += 1;
 				}
-				//buildingPicker.Title = (string)Application.Current.Properties["building"];
 			}
 			buildingPicker.SelectedIndexChanged += (sender, args) =>
 				{

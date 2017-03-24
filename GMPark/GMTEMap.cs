@@ -143,65 +143,72 @@ namespace GMPark
 			}
 		}
 
-		public async Task AddBuildings(string name, Campus campus)
+		public async Task AddBuildings(string campusName)
 		{
-			foreach (Building building in campus.Buildings)
+			foreach (Campus campus in mCampuses)
 			{
-				var curr = false;
-
-				if (name == building.Name)
+				if (campusName == campus.GetName())
 				{
-					curr = true;
+					foreach (Building building in campus.Buildings)
+					{
+						await PlaceBuildingPin(building);
+					}
 				}
-				await PlaceBuildingPin(building, this, curr);
 
 			}
 		}
 
-		public void AddLots(Campus campus)
+		public void AddLots(string campusName)
 		{
-			foreach (Lot lot in campus.Lots)
+			foreach (Campus campus in mCampuses)
 			{
-				var polygon = new Polygon();
-				polygon.IsClickable = true;
-				polygon.StrokeWidth = 3f;
-
-				foreach (Location pos in lot.Locations)
+				if (campus.GetName() == campusName)
 				{
-					polygon.Positions.Add(new Position(pos.Lat, pos.Long));
+					foreach (Lot lot in campus.Lots)
+					{
+						var polygon = new Polygon();
+						polygon.IsClickable = true;
+						polygon.StrokeWidth = 3f;
+
+						foreach (Location pos in lot.Locations)
+						{
+							polygon.Positions.Add(new Position(pos.Lat, pos.Long));
+						}
+
+						if (lot.Percentage < 26)
+						{
+							polygon.FillColor = Color.FromRgba(0, 255, 0, 64);
+							polygon.StrokeColor = Color.FromRgba(0, 255, 0, 128);
+
+						}
+
+						else if (lot.Percentage < 51)
+						{
+							polygon.FillColor = Color.FromRgba(0, 128, 0, 64);
+							polygon.StrokeColor = Color.FromRgba(0, 128, 0, 128);
+						}
+
+						else if (lot.Percentage < 76)
+						{
+							polygon.FillColor = Color.FromRgba(128, 128, 0, 64);
+							polygon.StrokeColor = Color.FromRgba(128, 128, 0, 128);
+
+						}
+
+						else
+						{
+							polygon.FillColor = Color.FromRgba(128, 0, 0, 64);
+							polygon.StrokeColor = Color.FromRgba(128, 0, 0, 128);
+						}
+
+						Polygons.Add(polygon);
+					}
+					break;
 				}
-
-				if (lot.Percentage < 26)
-				{
-					polygon.FillColor = Color.FromRgba(0, 255, 0, 64);
-					polygon.StrokeColor = Color.FromRgba(0, 255, 0, 128);
-
-				}
-
-				else if (lot.Percentage < 51)
-				{
-					polygon.FillColor = Color.FromRgba(0, 128, 0, 64);
-					polygon.StrokeColor = Color.FromRgba(0, 128, 0, 128);
-				}
-
-				else if (lot.Percentage < 76)
-				{
-					polygon.FillColor = Color.FromRgba(128, 128, 0, 64);
-					polygon.StrokeColor = Color.FromRgba(128, 128, 0, 128);
-
-				}
-
-				else
-				{
-					polygon.FillColor = Color.FromRgba(128, 0, 0, 64);
-					polygon.StrokeColor = Color.FromRgba(128, 0, 0, 128);
-				}
-
-				Polygons.Add(polygon);
 			}
 		}
 
-		public async Task PlaceBuildingPin(Building building, Map map, bool current)
+		public async Task PlaceBuildingPin(Building building)
 		{
 			var geocoder = new Xamarin.Forms.GoogleMaps.Geocoder();
 			var positions = await geocoder.GetPositionsForAddressAsync(building.Address);
@@ -225,43 +232,45 @@ namespace GMPark
 					Position = new Position(building.Position.Lat, building.Position.Long)
 				};
 
-				if (current)
-				{
-					map.MoveToRegion(MapSpan.FromCenterAndRadius(pin.Position, Distance.FromMeters(200)));
-				}
-
-				map.Pins.Add(pin);
+				Pins.Add(pin);
 			}
 		}
 
-		public async Task<Lot> FindClosestLot(Task addBuild, Building building, Campus campus)
+		public async Task<Lot> FindClosestLot(Task addBuild, string building, string campus)
 		{
 			await addBuild;
 			Lot closest = null;
 			double dist = -1.0;
 
-			foreach (Building build in campus.Buildings)
+			foreach (Campus campusIs in mCampuses)
 			{
-				if (building.Name == build.Name)
+				if (campusIs.GetName() == campus)
 				{
-					foreach (Lot lot in campus.Lots)
+					foreach (Building build in campusIs.Buildings)
 					{
-						foreach (Location location in lot.Locations)
+						if (building == build.Name)
 						{
-							double currDist =
-								distance(build.Position.Lat, build.Position.Long, location.Lat, location.Long, 'M');
-
-							if (dist < 0)
+							foreach (Lot lot in campusIs.Lots)
 							{
-								dist = currDist;
-								closest = lot;
-							}
+								foreach (Location location in lot.Locations)
+								{
+									double currDist =
+										distance(build.Position.Lat, build.Position.Long, location.Lat, location.Long, 'M');
 
-							else if (currDist < dist)
-							{
-								dist = currDist;
-								closest = lot;
+									if (dist < 0)
+									{
+										dist = currDist;
+										closest = lot;
+									}
+
+									else if (currDist < dist)
+									{
+										dist = currDist;
+										closest = lot;
+									}
+								}
 							}
+							break;
 						}
 					}
 					break;
@@ -336,7 +345,26 @@ namespace GMPark
 			}
 		}
 
-
+		public async void SpanToBuilding(string buildingName, string campusName)
+		{
+			foreach (Campus campus in mCampuses)
+			{
+				if (campus.GetName() == campusName)
+				{
+					foreach (Building building in campus.Buildings)
+					{
+						if (buildingName == building.Name)
+						{
+							MoveToRegion(MapSpan.FromCenterAndRadius(new Position(building.Position.Lat,
+																				  building.Position.Long),
+																				  Distance.FromMeters(200)));
+							break;
+						}
+					}
+					break;
+				}
+			}
+		}
 
 
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

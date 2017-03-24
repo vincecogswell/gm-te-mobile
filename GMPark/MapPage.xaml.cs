@@ -31,15 +31,15 @@ namespace GMPark
 			InitializeComponent();
 
 			// Creates campuses objects and draws them
-			campus = map.AddCampus(name);
+			map.AddCampus(name);
 
 			// Assigns title of page to building that is to be going to
 			this.Title = building.Name;
 
-			Task addBuild = map.AddBuildings(building.Name, campus);
-			map.AddLots(campus);
+			Task addBuild = map.AddBuildings(name);
+			map.AddLots(name);
 
-			Task<Lot> lot = map.FindClosestLot(addBuild, building, campus);
+			Task<Lot> lot = map.FindClosestLot(addBuild, building.Name, name);
 
 			var lotLabel = new Label
 			{
@@ -80,29 +80,33 @@ namespace GMPark
 
 			UpdateLotInStack(lot, stack);
 
+			map.SpanToBuilding(building.Name, name);
+
 			StartGeoLocation();
 
 			CrossGeolocator.Current.PositionChanged += (o, args) =>
 			{
 				if ((map.CheckInGeofences(args.Position))
-				    && (onCampus == false))
+				    && (onCampus == false) && ((int)Application.Current.Properties["notification"] == 0))
 				{
 					Device.BeginInvokeOnMainThread(() =>
 					{
 						mCurrentCampus = map.InWhichGeofences(args.Position);
 						DisplayAlert("Welcome to " + mCurrentCampus + "!", "We hope you find your way around!", "Okay");
 						onCampus = true;
+						Application.Current.Properties["notification"] = 1;
 					});
 				}
 
 				else if ((map.CheckInGeofences(args.Position) == false)
-					&& (onCampus == true))
+					&& (onCampus == true) && ((int)Application.Current.Properties["notification"] == 1))
 				{
 					Device.BeginInvokeOnMainThread(() =>
 					{
 						DisplayAlert("Now leaving " + mCurrentCampus, "Did you mean to do that?", "Maybe?");
 						onCampus = false;
 						mCurrentCampus = "";
+						Application.Current.Properties["notification"] = 0;
 					});
 				}
 			};
@@ -113,24 +117,19 @@ namespace GMPark
 			var button = (Button)sender;
 			var pos = (Position)button.CommandParameter;
 
-			var geocoder = new Xamarin.Forms.GoogleMaps.Geocoder();
-			var addresses = await geocoder.GetAddressesForPositionAsync(pos);
-
-			if (addresses.Count() > 0)
+			switch (Device.OS)
 			{
-				switch (Device.OS)
-				{
-					case TargetPlatform.iOS:
-						Device.OpenUri(
-							new Uri(string.Format("http://maps.apple.com/?q={0}",
-							                      WebUtility.UrlEncode(pos.Latitude.ToString() + ", " + pos.Longitude.ToString()))));
-						break;
-					case TargetPlatform.Android:
-						Device.OpenUri(
-							new Uri(string.Format("geo:0,0?q={0}", WebUtility.UrlEncode(addresses.First()))));
-						break;
-				};
-			}
+				case TargetPlatform.iOS:
+					Device.OpenUri(
+						new Uri(string.Format("http://maps.apple.com/?q={0}",
+						                      WebUtility.UrlEncode(pos.Latitude.ToString() + " " + pos.Longitude.ToString()))));
+					break;
+					
+				case TargetPlatform.Android:
+					Device.OpenUri(
+						new Uri(string.Format("geo:0,0?q={0}", WebUtility.UrlEncode(pos.Latitude.ToString() + ", " + pos.Longitude.ToString()))));
+					break;
+			};
 		}
 
 		public void StartGeoLocation()

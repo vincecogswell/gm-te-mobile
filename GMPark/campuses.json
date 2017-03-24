@@ -25,27 +25,45 @@
           "Buildings" : [
 
                     {    "Name" : "College of Engineering", 
-                        "Address" : "428 S Shaw Ln, East Lansing, MI" },
+                        "Address" : "428 S Shaw Ln, East Lansing, MI",
+                		"Position" : {  "Lat" : 42.724325,
+                    					"Long" : -84.481360 }
+            		},
 
                     {
                         "Name" : "International Center",
-                        "Address" : "427 N Shaw Ln, East Lansing, MI" },
+                        "Address" : "427 N Shaw Ln, East Lansing, MI",
+                		"Position" : {  "Lat" : 42.726046,
+                    					"Long" :  -84.480646 }
+                	},
                     
                     {
                         "Name" : "Michigan State University Library",
-                        "Address" : "366 W Circle Dr, East Lansing, MI" },
+                        "Address" : "366 W Circle Dr, East Lansing, MI",
+                    	"Position" : {  "Lat" : 42.730865, 
+                    					"Long" : -84.483198 }
+                    },
 
                     {
                         "Name" : "MSU Union",
-                        "Address" : "49 Abbot Rd, East Lansing, MI" },
+                        "Address" : "49 Abbot Rd, East Lansing, MI",
+            			"Position" : {  "Lat" : 42.734110,
+                    					"Long" :  -84.482872 }
+            		},
             
                     {
                         "Name" : "Shaw Hall",
-                        "Address" : "591 N Shaw Ln, East Lansing, MI" },
+                        "Address" : "591 N Shaw Ln, East Lansing, MI",
+                		"Position" : {  "Lat" : 42.724325,
+                    					"Long" : -84.481360 }
+                	},
 
                     {
                         "Name" : "Wells Hall",
-                        "Address" : "619 Red Cedar Rd, East Lansing, MI" }, ],
+                        "Address" : "619 Red Cedar Rd, East Lansing, MI",
+            			"Position" : {  "Lat" : 42.727620,
+                    					"Long" :  -84.482142 }
+            		} ],
 
         "Lots"         : [
 

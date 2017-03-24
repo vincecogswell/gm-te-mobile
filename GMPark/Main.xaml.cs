@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Plugin.Geolocator;
+using System.Net;
 using Xamarin.Forms;
 using Xamarin.Forms.GoogleMaps;
 
@@ -42,7 +43,6 @@ namespace GMPark
 			Task<ServerJSON> thing = GetCampuses();
 			var campuses = ConvertCampuses(thing);*/
 
-
 			this.name = name;
 			this.pos = pos;
 			var assembly = typeof(Main).GetTypeInfo().Assembly;
@@ -67,6 +67,8 @@ namespace GMPark
 			this.campus = this.campuses[i];
 			map.MoveToRegion(MapSpan.FromCenterAndRadius(pos, Distance.FromMiles(0.7)));
 			map.AddCampuses();
+			var addBuild = map.AddBuildings(name);
+			map.AddLots(name);
 
 			// Assigns title of page to building that is to be going to
 			this.Title = name;
@@ -121,6 +123,18 @@ namespace GMPark
 				Font = Font.SystemFontOfSize(NamedSize.Large),
 				FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS")
 			};
+			go.IsEnabled = false;
+
+			if ((Application.Current.Properties.ContainsKey("building")) && (Application.Current.Properties.ContainsKey("role"))
+				&& (Application.Current.Properties.ContainsKey("campus")) && (name == (string)Application.Current.Properties["campus"]))
+			{
+				go.IsEnabled = true;
+			}
+
+			else
+			{
+				go.IsEnabled = false;
+			}
 
 			var stack = new StackLayout { Spacing = 0, VerticalOptions = LayoutOptions.FillAndExpand };
 
@@ -141,25 +155,32 @@ namespace GMPark
 
 			CrossGeolocator.Current.PositionChanged += (o, args) =>
 			{
+				if (!Application.Current.Properties.ContainsKey("notification"))
+				{
+					Application.Current.Properties["notification"] = 0;
+				}
+
 				if ((map.CheckInGeofences(args.Position))
-					&& (onCampus == false))
+				    && (onCampus == false) && ((int)Application.Current.Properties["notification"] == 0))
 				{
 					Device.BeginInvokeOnMainThread(() =>
 					{
 						mCurrentCampus = map.InWhichGeofences(args.Position);
 						DisplayAlert("Welcome to " + mCurrentCampus + "!", "We hope you find your way around!", "Okay");
 						onCampus = true;
+						Application.Current.Properties["notification"] = 1;
 					});
 				}
 
 				else if ((map.CheckInGeofences(args.Position) == false)
-					&& (onCampus == true))
+				         && (onCampus == true) && ((int)Application.Current.Properties["notification"] == 1))
 				{
 					Device.BeginInvokeOnMainThread(() =>
 					{
 						DisplayAlert("Now leaving " + mCurrentCampus, "Did you mean to do that?", "Maybe?");
 						onCampus = false;
 						mCurrentCampus = "";
+						Application.Current.Properties["notification"] = 0;
 					});
 				}
 			};
@@ -168,6 +189,44 @@ namespace GMPark
 				Navigation.PushAsync(new EnterUserInfoPage(this.campus, this.pos));
 			}));
 
+			go.Clicked += async (sender, e) =>
+			{
+				var lotTask = await map.FindClosestLot(addBuild, (string)(Application.Current.Properties["building"]),
+										 (string)(Application.Current.Properties["campus"]));
+
+				if (lotTask == null)
+				{
+					//do nothing
+				}
+
+				else
+				{
+					var lot = lotTask;
+
+					double avgLat = 0, avgLon = 0, count = lot.Locations.Count();
+					foreach (Location loc in lot.Locations)
+					{
+						avgLat += loc.Lat;
+						avgLon += loc.Long;
+					}
+
+					var lotPos = new Position(avgLat / count, avgLon / count);
+
+					switch (Device.OS)
+					{
+						case TargetPlatform.iOS:
+							Device.OpenUri(
+								new Uri(string.Format("http://maps.apple.com/?q={0}",
+													  WebUtility.UrlEncode(lotPos.Latitude.ToString() + " " + lotPos.Longitude.ToString()))));
+							break;
+
+						case TargetPlatform.Android:
+							Device.OpenUri(
+								new Uri(string.Format("geo:0,0?q={0}", WebUtility.UrlEncode(lotPos.Latitude.ToString() + ", " + lotPos.Longitude.ToString()))));
+							break;
+					};
+				}
+			};
 		}
 
 

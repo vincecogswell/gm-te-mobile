@@ -182,6 +182,7 @@
   <ItemGroup>
     <BundleResource Include="splash_logo.jpg" />
     <BundleResource Include="Resources\menu.png" />
+    <BundleResource Include="Resources\preference.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Google.iOS.Maps.2.1.0\build\Xamarin.Google.iOS.Maps.targets" Condition="Exists('..\packages\Xamarin.Google.iOS.Maps.2.1.0\build\Xamarin.Google.iOS.Maps.targets')" />

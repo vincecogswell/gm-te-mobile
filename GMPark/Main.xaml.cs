@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using System.Collections.Generic;
 using System.Reflection;
@@ -17,6 +17,8 @@ namespace GMPark
 		HttpClient client;
 
 		private string name;
+		private Campus campus;
+		private Position pos;
 		private List<Campus> campuses;
 		//Campus campus;
 		bool onCampus = false;
@@ -30,6 +32,7 @@ namespace GMPark
 			Task<ServerJSON> thing = GetCampuses();
 
 			this.name = name;
+			this.pos = pos;
 			var assembly = typeof(Main).GetTypeInfo().Assembly;
 			Stream stream = assembly.GetManifestResourceStream("GMPark.campuses.json");
 			string text = "";
@@ -37,9 +40,24 @@ namespace GMPark
 			{
 				text = reader.ReadToEnd();
 			}
+			var scroll = new ScrollView();
 
 			this.campuses = JsonConvert.DeserializeObject<List<Campus>>(text);
+<<<<<<< HEAD
 			GMTEMap map = new GMTEMap(
+=======
+			int i = 0;
+			foreach (Campus c in this.campuses)
+			{
+				if (c.Name == this.name)
+				{
+					break;
+				}
+				i += 1;
+			}
+			this.campus = this.campuses[i];
+			Map map = new Map(
+>>>>>>> 6e40afb... Preference Page Done
 				MapSpan.FromCenterAndRadius(
 						pos, Distance.FromMiles(0.7)))
 			{
@@ -53,7 +71,39 @@ namespace GMPark
 			map.AddCampuses();
 
 			// Assigns title of page to building that is to be going to
-			this.Title = "Select a Campus";
+			this.Title = name;
+			Label cName = new Label
+			{
+				Text = "Campus: N/A",
+				TextColor = Color.White,
+				BackgroundColor = Color.FromRgb(104, 151, 243),
+				FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
+			};
+			Label r = new Label { 
+				Text = "Role: N/A",
+				TextColor = Color.White,
+				BackgroundColor = Color.FromRgb(104, 151, 243),
+				FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
+			};
+			Label b = new Label
+			{
+				Text = "Building: N/A",
+				TextColor = Color.White,
+				BackgroundColor = Color.FromRgb(104, 151, 243),
+				FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
+			};
+			if (Application.Current.Properties.ContainsKey("campus"))
+			{
+				cName.Text = "Campus: " + Application.Current.Properties["campus"];
+			}
+			if (Application.Current.Properties.ContainsKey("role"))
+			{
+				r.Text = "Role: " + Application.Current.Properties["role"];
+			}
+			if (Application.Current.Properties.ContainsKey("building"))
+			{
+				b.Text = "Building: " + Application.Current.Properties["building"];
+			}
 
 
 			var nd = new Button()
@@ -65,15 +115,6 @@ namespace GMPark
 			};
 			nd.Clicked += newdes;
 
-			var pref = new Button()
-			{
-				Text = "Preference",
-				Font = Font.SystemFontOfSize(NamedSize.Large),
-				FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS")
-			};
-
-			pref.Clicked += prf;
-
 			var go = new Button()
 			{
 				Text = "Go!",
@@ -84,16 +125,19 @@ namespace GMPark
 
 			var stack = new StackLayout { Spacing = 0, VerticalOptions = LayoutOptions.FillAndExpand };
 
-
+			stack.Children.Add(cName);
+			stack.Children.Add(r);
+			stack.Children.Add(b);
 			stack.Children.Add(map);
 			stack.Children.Add(nd);
-			stack.Children.Add(pref);
 			stack.Children.Add(go);
 
 
-			this.Content = stack;
+			scroll.Content = stack;
+			Content = scroll;
 
 			NavigationPage.SetBackButtonTitle(this, "");
+<<<<<<< HEAD
 
 			StartGeoLocation();
 
@@ -122,11 +166,19 @@ namespace GMPark
 					});
 				}
 			};
+=======
+			ToolbarItems.Add(new ToolbarItem("Preference", "preference.png", () =>
+			{
+				Navigation.PushAsync(new EnterUserInfoPage(this.campus, this.pos));
+			}));
+
+>>>>>>> 6e40afb... Preference Page Done
 		}
 
 
 		async void newdes(object sender, EventArgs args)
 		{
+<<<<<<< HEAD
 			int i = 0;
 			foreach (Campus c in this.campuses)
 			{
@@ -176,5 +228,10 @@ namespace GMPark
 			}
 		}
 
+=======
+			await Navigation.PushAsync(new ChooseRolePage(this.campus));
+		}
+
+>>>>>>> 6e40afb... Preference Page Done
 	}
 }

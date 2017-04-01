@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Net;
+using System.Net.Http;
 using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
@@ -14,12 +14,31 @@ namespace GMPark
 {
 	public partial class MenuPage : ContentPage
 	{
+		HttpClient client;
+		StackLayout stack;
+		ScrollView scroll;
+		GMTEMap map;
+
 		public MenuPage()
 		{
+			
 			InitializeComponent();
 
-			var scroll = new ScrollView();
-			var stack = new StackLayout { 
+			client = new HttpClient();
+			client.MaxResponseContentBufferSize = 256000;
+
+			if (Application.Current.Properties.ContainsKey("map"))
+			{
+				map = (GMTEMap)Application.Current.Properties["map"];
+			}
+
+			else
+			{
+				map = new GMTEMap();
+			}
+
+			scroll = new ScrollView();
+			stack = new StackLayout { 
 				VerticalOptions = LayoutOptions.Center,
 				Children =
 				{
@@ -47,25 +66,48 @@ namespace GMPark
 					},
 				}
 			};
-			var campuses = new List<Tuple<string, Position>>()
-			{
-				Tuple.Create( "Warren Tech Center", new Position(42.515062, -83.038084) ),
-				Tuple.Create( "Michigan State University", new Position(42.723363, -84.477996) ),
-			};
 
-			foreach (Tuple<string, Position> campus in campuses)
-			{
-				var click = new MenuButtons(campus.Item1,campus.Item2);
-				stack.Children.Add(click);
-
-
-			}
 			scroll.Content = stack;
 			Content = scroll;
-
 			Title = "None";
 			BackgroundColor = Color.FromRgb(104, 151, 243);
 			Icon = Device.OS == TargetPlatform.iOS ? "menu.png" : null;
+		}
+
+		public async Task<ServerJSON> GetCampuses()
+		{
+			var uri = new Uri("http://35.9.22.105/campuses");
+			var response = await client.GetAsync(uri);
+			if (response.IsSuccessStatusCode)
+			{
+				var content = await response.Content.ReadAsStringAsync();
+				return JsonConvert.DeserializeObject<ServerJSON>(content);
+			}
+			else
+			{
+				return null;
+			}
+		}
+
+		public void AddButtons()
+		{
+			if (Application.Current.Properties.ContainsKey("map"))
+			{
+				map = (GMTEMap)Application.Current.Properties["map"];
+			}
+
+			for (int i = stack.Children.Count - 1; i >= 2; i--)
+			{
+				stack.Children.RemoveAt(i);
+			}
+
+			var campusList = map.GetCampusList();
+
+			foreach (string name in campusList)
+			{
+				var click = new MenuButtons(name);
+				stack.Children.Add(click);
+			}
 		}
 
 	}

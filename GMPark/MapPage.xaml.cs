@@ -26,20 +26,29 @@ namespace GMPark
 		Campus campus;
 		bool onCampus = false;
 		string mCurrentCampus = "";
-		public MapPage(string role, Building building, string name)
+
+		public MapPage(string selectedRole, string buildingName, string campusName)
 		{
 			InitializeComponent();
 
-			// Creates campuses objects and draws them
-			map.AddCampus(name);
+			if (Application.Current.Properties.ContainsKey("map"))
+			{
+				map = (GMTEMap)Application.Current.Properties["map"];
+			}
 
-			// Assigns title of page to building that is to be going to
-			this.Title = building.Name;
+			else
+			{
+				// Creates campuses objects and draws them
+				map.AddCampus(campusName);
 
-			Task addBuild = map.AddBuildings(name);
-			map.AddLots(name);
+				// Assigns title of page to building that is to be going to
+				this.Title = buildingName;
 
-			Task<Lot> lot = map.FindClosestLot(addBuild, building.Name, name);
+				Task addBuild = map.DrawBuildings(campusName);
+				map.DrawLots(campusName);
+			}
+
+			//Task<Lot> lot = map.FindClosestLot(addBuild, building.GetName(), name);
 
 			var lotLabel = new Label
 			{
@@ -63,6 +72,7 @@ namespace GMPark
 				FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
 				CommandParameter = new double()
 			};
+
 			button.Clicked += OnClicked;
 			button.SetBinding(Button.CommandParameterProperty, new Binding("Pos"));
 
@@ -78,9 +88,9 @@ namespace GMPark
 
 			this.Content = stack;
 
-			UpdateLotInStack(lot, stack);
+			//UpdateLotInStack(lot, stack);
 
-			map.SpanToBuilding(building.Name, name);
+			map.SpanToBuilding(buildingName, campusName);
 
 			StartGeoLocation();
 
@@ -154,7 +164,7 @@ namespace GMPark
 			int i = 0;
 			double lat = 0;
 			double lon = 0;
-			stack.Children[0].BindingContext = new { LotID = lot.Result.ID };
+			stack.Children[0].BindingContext = new { LotID = lot.Result.GetName() };
 			stack.Children[1].BindingContext = new { Percent = lot.Result.Percentage };
 			foreach (Location loc in lot.Result.Locations)
 			{

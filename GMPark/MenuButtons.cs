@@ -13,7 +13,7 @@ namespace GMPark
 {
 	public class MenuButtons: Button
 	{
-		public MenuButtons(string name, Position pos)
+		public MenuButtons(string name)
 		{
 			Text = name;
 			Font = Font.SystemFontOfSize(NamedSize.Large);
@@ -25,7 +25,7 @@ namespace GMPark
 			FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS");
 			Command = new Command(o =>
 			{
-				App.MasterDetailPage.Detail = new NavigationPage(new Main(name,pos));
+				App.MasterDetailPage.Detail = new NavigationPage(new Main(name));
 				App.MasterDetailPage.IsPresented = false;
 			});
 		}

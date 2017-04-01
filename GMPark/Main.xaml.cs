@@ -18,10 +18,9 @@ namespace GMPark
 		HttpClient client;
 
 		private string name;
-		private Campus campus;
 		private Position pos;
 		private List<Campus> campuses;
-		//Campus campus;
+		public Campus campus;
 		bool onCampus = false;
 		string mCurrentCampus = "";
 
@@ -34,44 +33,25 @@ namespace GMPark
 			HasZoomEnabled = true
 		};
 
-		public Main(string name, Position pos)
+		public Main(string campusName)
 		{
 			InitializeComponent();
 
-			/*client = new HttpClient();
+			mCurrentCampus = campusName;
+
+			Application.Current.Properties["map"] = map;
+
+			client = new HttpClient();
 			client.MaxResponseContentBufferSize = 256000;
 			Task<ServerJSON> thing = GetCampuses();
-			var campuses = ConvertCampuses(thing);*/
+			var campusTask = ConvertCampuses(thing);
+			var buildingTask = GetBuildings(campusTask);
+			var lotTask = GetLots(campusTask);
+			var roleTask = GetRoles(campusTask);
 
-			this.name = name;
-			this.pos = pos;
-			var assembly = typeof(Main).GetTypeInfo().Assembly;
-			Stream stream = assembly.GetManifestResourceStream("GMPark.campuses.json");
-			string text = "";
-			using (var reader = new System.IO.StreamReader(stream))
-			{
-				text = reader.ReadToEnd();
-			}
 			var scroll = new ScrollView();
-			this.campuses = JsonConvert.DeserializeObject<List<Campus>>(text);
-
-			int i = 0;
-			foreach (Campus c in this.campuses)
-			{
-				if (c.Name == this.name)
-				{
-					break;
-				}
-				i += 1;
-			}
-			this.campus = this.campuses[i];
-			map.MoveToRegion(MapSpan.FromCenterAndRadius(pos, Distance.FromMiles(0.7)));
-			map.AddCampuses();
-			var addBuild = map.AddBuildings(name);
-			map.AddLots(name);
 
 			// Assigns title of page to building that is to be going to
-			this.Title = name;
 			Label cName = new Label
 			{
 				Text = "Campus: N/A",
@@ -189,7 +169,7 @@ namespace GMPark
 				Navigation.PushAsync(new EnterUserInfoPage(this.campus, this.pos));
 			}));
 
-			go.Clicked += async (sender, e) =>
+			/*go.Clicked += async (sender, e) =>
 			{
 				var lotTask = await map.FindClosestLot(addBuild, (string)(Application.Current.Properties["building"]),
 										 (string)(Application.Current.Properties["campus"]));
@@ -226,22 +206,13 @@ namespace GMPark
 							break;
 					};
 				}
-			};
+			};*/
 		}
 
 
 		async void newdes(object sender, EventArgs args)
 		{
-			int i = 0;
-			foreach (Campus c in this.campuses)
-			{
-				if (c.GetName() == this.name)
-				{
-					break;
-				}
-				i += 1;
-			}
-			await Navigation.PushAsync(new ChooseRolePage(this.campuses[i]));
+			await Navigation.PushAsync(new ChooseRolePage(this.Title));
 		}
 
 
@@ -276,24 +247,93 @@ namespace GMPark
 			}
 		}
 
+		public async Task GetBuildings(Task<List<Campus>> converted)
+		{
+			List<Campus> campuses = await converted;
+
+			foreach (Campus campus in campuses)
+			{
+				string text = "http://35.9.22.105/campuses/" + campus.GetId() + "/buildings";
+				var uri = new Uri(text);
+				var response = await client.GetAsync(uri);
+				if (response.IsSuccessStatusCode)
+				{
+					var content = await response.Content.ReadAsStringAsync();
+					campus.ConvertBuildings(JsonConvert.DeserializeObject<ServerJSONBuildings>(content));
+					await map.DrawBuildings(campus.GetName());
+				}
+			}
+		}
+
+		public async Task GetLots(Task<List<Campus>> converted)
+		{
+			List<Campus> campuses = await converted;
+
+			foreach (Campus campus in campuses)
+			{
+				string text = "http://35.9.22.105/campuses/" + campus.GetId() + "/lots";
+				var uri = new Uri(text);
+				var response = await client.GetAsync(uri);
+				if (response.IsSuccessStatusCode)
+				{
+					var content = await response.Content.ReadAsStringAsync();
+					campus.ConvertLots(JsonConvert.DeserializeObject<ServerJSONLots>(content));
+					map.DrawLots(campus.GetName());
+				}
+			}
+		}
+
+		public async Task GetRoles(Task<List<Campus>> converted)
+		{
+			List<Campus> campuses = await converted;
+
+			foreach (Campus campus in campuses)
+			{
+				string text = "http://35.9.22.105/campuses/" + campus.GetId() + "/roles";
+				var uri = new Uri(text);
+				var response = await client.GetAsync(uri);
+				if (response.IsSuccessStatusCode)
+				{
+					var content = await response.Content.ReadAsStringAsync();
+					campus.AddRoles(JsonConvert.DeserializeObject<ServerJSONRoles>(content));
+					map.DrawLots(campus.GetName());
+				}
+			}
+		}
+
 		public async Task<List<Campus>> ConvertCampuses(Task<ServerJSON> json)
 		{
 			await json;
 			var res = json.Result;
-			List<Campus> campuses = new List<Campus>();
+			campuses = new List<Campus>();
+			string first = mCurrentCampus, firstKey = "";
 
 			foreach (KeyValuePair<string, SCampus> entry in res.campuses)
 			{
 				var campus = new Campus();
 				campus.ConvertToCampus(entry.Value);
+				campus.SetId(entry.Key);
 				campuses.Add(campus);
+
+				if (first == "")
+				{
+					first = entry.Value.name;
+					firstKey = entry.Key;
+				}
+
+				else if (first == campus.Name)
+				{
+					firstKey = entry.Key;
+				}
 			}
 
 			map.AddCampuses(campuses);
-			map.SpanToCampus(json.Result.campuses["1"].name);
+			map.SpanToCampus(json.Result.campuses[firstKey].name);
+			this.Title = first;
+
+			App.Menu.AddButtons();
 
 			return campuses;
-
 		}
 
 	}

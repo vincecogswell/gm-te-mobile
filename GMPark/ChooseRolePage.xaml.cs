@@ -8,28 +8,28 @@ namespace GMPark
 	public partial class ChooseRolePage : ContentPage
 	{
 		private string name;
-		public ChooseRolePage(Campus campus)
+		public ChooseRolePage(string campusName)
 		{
-			// some
+			var map = (GMTEMap)Application.Current.Properties["map"];
 			this.BackgroundColor = Color.FromRgb(104, 151, 243);
 
 			NavigationPage.SetBackButtonTitle(this, "");
 
-			List<string> roles = campus.Roles;
-			this.name = campus.GetName();
+			List<Role> roles = map.GetRoles(campusName);
+
+			this.name = campusName;
 			var grid = new Grid();
 			int i = 0;
-			foreach (string role in roles)
+			foreach (Role role in roles)
 			{
 				grid.RowDefinitions.Add(new RowDefinition { Height = 100 });
 				var click = new Button()
 				{
-					Text = role,
+					Text = role.GetName(),
 					Font = Font.SystemFontOfSize(NamedSize.Large),
 					TextColor = Color.White,
 					BackgroundColor=Color.Transparent,
 					FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
-					CommandParameter = campus.Buildings,
 					BorderWidth = 1,
 					BorderColor = Color.White,
 					Margin = new Thickness(8,8,8,8)
@@ -47,7 +47,7 @@ namespace GMPark
 		{
 			Button button = (Button)sender;
 			var buildings = (List<Building>)button.CommandParameter;
-			await Navigation.PushAsync(new WhereAreYouGoingPage(button.Text,buildings,this.name));
+			await Navigation.PushAsync(new WhereAreYouGoingPage(button.Text,this.name));
 		}
 	}
 }

@@ -26,6 +26,42 @@ namespace GMPark
 			MoveToRegion(span);
 		}
 
+		public List<Role> GetRoles(string campusName)
+		{
+			foreach (Campus campus in mCampuses)
+			{
+				if (campus.GetName() == campusName)
+				{
+					return campus.GetRoles();
+				}
+			}
+			return null;
+		}
+
+		public List<string> GetCampusList()
+		{
+			var ls = new List<string>();
+
+			foreach (Campus campus in mCampuses)
+			{
+				ls.Add(campus.GetName());
+			}
+
+			return ls;
+		}
+
+		public List<string> GetBuildingList(string campusName)
+		{
+			foreach (Campus campus in mCampuses)
+			{
+				if (campus.GetName() == campusName)
+				{
+					return campus.GetBuildingList();
+				}
+			}
+			return null;
+		}
+
 		/** Gets the campuses from the campuses.json file, converts them to a campus object, then creates
 		 * a polygon object to visually represent it and adds it to the map.
 		 * Map map map that campuses are to be added to.
@@ -143,7 +179,7 @@ namespace GMPark
 			}
 		}
 
-		public async Task AddBuildings(string campusName)
+		public async Task DrawBuildings(string campusName)
 		{
 			foreach (Campus campus in mCampuses)
 			{
@@ -151,14 +187,14 @@ namespace GMPark
 				{
 					foreach (Building building in campus.Buildings)
 					{
-						await PlaceBuildingPin(building);
+						await PlaceBuildingPins(building);
 					}
 				}
 
 			}
 		}
 
-		public void AddLots(string campusName)
+		public void DrawLots(string campusName)
 		{
 			foreach (Campus campus in mCampuses)
 			{
@@ -175,6 +211,18 @@ namespace GMPark
 							polygon.Positions.Add(new Position(pos.Lat, pos.Long));
 						}
 
+						foreach (Location ent in lot.Entrances)
+						{
+							Pin pin = new Pin
+							{
+								Type = PinType.Place,
+								Label = lot.GetName(),
+								Position = new Position(ent.Lat, ent.Long)
+							};
+
+							Pins.Add(pin);
+						}
+							
 						if (lot.Percentage < 26)
 						{
 							polygon.FillColor = Color.FromRgba(0, 255, 0, 64);
@@ -208,28 +256,15 @@ namespace GMPark
 			}
 		}
 
-		public async Task PlaceBuildingPin(Building building)
+		public async Task PlaceBuildingPins(Building building)
 		{
-			var geocoder = new Xamarin.Forms.GoogleMaps.Geocoder();
-			var positions = await geocoder.GetPositionsForAddressAsync(building.Address);
-
-			if (positions.Count() > 0)
+			foreach (Location loc in building.Entrances)
 			{
-				if (building.Position == null)
-				{
-					building.Position = new Location()
-					{
-						Lat = positions.First().Latitude,
-						Long = positions.First().Longitude
-					};
-				}
-
 				Pin pin = new Pin
 				{
 					Type = PinType.Place,
-					Label = building.Name,
-					Address = building.Address,
-					Position = new Position(building.Position.Lat, building.Position.Long)
+					Label = building.GetName(),
+					Position = new Position(loc.Lat, loc.Long)
 				};
 
 				Pins.Add(pin);
@@ -246,7 +281,7 @@ namespace GMPark
 			{
 				if (campusIs.GetName() == campus)
 				{
-					foreach (Building build in campusIs.Buildings)
+					/*foreach (Building build in campusIs.Buildings)
 					{
 						if (building == build.Name)
 						{
@@ -272,7 +307,7 @@ namespace GMPark
 							}
 							break;
 						}
-					}
+					}*/
 					break;
 				}
 			}
@@ -307,7 +342,7 @@ namespace GMPark
 			return false;
 		}
 
-		public async void SpanToCampus(string name)
+		public void SpanToCampus(string name)
 		{
 			foreach (Campus campus in mCampuses)
 			{
@@ -353,11 +388,16 @@ namespace GMPark
 				{
 					foreach (Building building in campus.Buildings)
 					{
-						if (buildingName == building.Name)
+						if (buildingName == building.GetName())
 						{
-							MoveToRegion(MapSpan.FromCenterAndRadius(new Position(building.Position.Lat,
-																				  building.Position.Long),
-																				  Distance.FromMeters(200)));
+							List<Position> ls = new List<Position>();
+
+							foreach (Location loc in building.Entrances)
+							{
+								ls.Add(new Position(loc.Lat, loc.Long));
+							}
+								       
+							MoveToRegion(MapSpan.FromPositions(ls));
 							break;
 						}
 					}

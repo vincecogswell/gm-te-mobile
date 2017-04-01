@@ -12,32 +12,24 @@ namespace GMPark
 	{
 		public ChooseCampus()
 		{
+			var map = (GMTEMap)Application.Current.Properties["map"];
 			this.BackgroundColor = Color.FromRgb(104, 151, 243);
 			var scroll = new ScrollView();
-
-			var assembly = typeof(ChooseCampus).GetTypeInfo().Assembly;
-			Stream stream = assembly.GetManifestResourceStream("GMPark.campuses.json");
-			string text = "";
-			using (var reader = new System.IO.StreamReader(stream))
-			{
-				text = reader.ReadToEnd();
-			}
-
-			List<Campus> campuses = JsonConvert.DeserializeObject<List<Campus>>(text);
 
 			var grid = new Grid();
 			int i = 0;
 
-			foreach (Campus campus in campuses)
+			List<string> campuses = map.GetCampusList();
+
+			foreach (string campusName in campuses)
 			{
 				grid.RowDefinitions.Add(new RowDefinition { Height = 100 });
 				var click = new Button()
 				{
-					Text = campus.GetName(),
+					Text = campusName,
 					Font = Font.SystemFontOfSize(NamedSize.Large),
 					TextColor = Color.White,
 					FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
-					CommandParameter = campus,
 					BorderWidth = 1,
 					BorderColor = Color.White,
 					Margin = new Thickness(8, 8, 8, 8),
@@ -61,7 +53,7 @@ namespace GMPark
 		{
 			var button = (Button)sender;
 			var campus = (Campus)button.CommandParameter;
-			await Navigation.PushAsync(new ChooseRolePage(campus));
+			await Navigation.PushAsync(new ChooseRolePage("GM Tech Center"));
 		}
 	}
 }

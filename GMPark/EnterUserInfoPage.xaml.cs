@@ -70,9 +70,9 @@ namespace GMPark
 				Title = "Select Your Role",
 				VerticalOptions = LayoutOptions.CenterAndExpand
 			};
-			foreach (string r in campus.Roles)
+			foreach (Role r in campus.Roles)
 			{
-				rolePicker.Items.Add(r);
+				rolePicker.Items.Add(r.GetName());
 			}
 			rolePicker.SelectedIndexChanged += (sender, args) =>
 				{
@@ -103,7 +103,7 @@ namespace GMPark
 			};
 			foreach (Building b in campus.Buildings)
 			{
-				buildingPicker.Items.Add(b.Name);
+				buildingPicker.Items.Add(b.GetName());
 			}
 			if (Application.Current.Properties.ContainsKey("role"))
 			{
@@ -175,7 +175,7 @@ namespace GMPark
 				Application.Current.Properties["campus"] = this.campusName;
 				Application.Current.Properties["role"] = this.role;
 				Application.Current.Properties["building"] = this.building;
-				App.MasterDetailPage.Detail = new NavigationPage(new Main(this.campusName, this.pos));
+				App.MasterDetailPage.Detail = new NavigationPage(new Main(campusName));
 				App.MasterDetailPage.IsPresented = false;
 			}
 			else

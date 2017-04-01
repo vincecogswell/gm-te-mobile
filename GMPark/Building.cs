@@ -1,9 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
+
 namespace GMPark
 {
 	public class Building : Struct
 	{
-		public string Name, Address;
-		public Location Position;
+
+		public Building()
+		{
+		}
+
+		public Building(string name)
+		{
+			SetName(name);
+		}
+
 	}
 }

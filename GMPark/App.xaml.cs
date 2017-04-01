@@ -13,16 +13,21 @@ namespace GMPark
 	public partial class App : Application
 	{
 		public static MasterDetailPage MasterDetailPage;
+		public static MenuPage Menu;
+		public GMTEMap map;
+
 		public App()
 		{
 			InitializeComponent();
 
-			//MainPage = new NavigationPage(new SplashScreen());
+			Menu = new MenuPage();
+
 			MasterDetailPage = new MasterDetailPage
 			{
-				Master = new MenuPage(),
-				Detail = new NavigationPage(new Main("Warren Tech Center",new Position(42.515062, -83.038084))),
+				Master = Menu,
+				Detail = new NavigationPage(new Main("")),
 			};
+
 			MainPage = MasterDetailPage;
 
 		}
@@ -34,7 +39,42 @@ namespace GMPark
 
 		protected override void OnSleep()
 		{
-			// Handle when your app sleeps
+			/*if (Application.Current.Properties.ContainsKey("map"))
+			{
+				map = (GMTEMap)Application.Current.Properties["map"];
+			}
+			    
+			CrossGeolocator.Current.PositionChanged += (o, args) =>
+			{
+				if (!Application.Current.Properties.ContainsKey("notification"))
+				{
+					Application.Current.Properties["notification"] = 0;
+				}
+
+				if ((map.CheckInGeofences(args.Position))
+					&& (onCampus == false) && ((int)Application.Current.Properties["notification"] == 0))
+				{
+					Device.BeginInvokeOnMainThread(() =>
+					{
+						mCurrentCampus = map.InWhichGeofences(args.Position);
+						DisplayAlert("Welcome to " + mCurrentCampus + "!", "We hope you find your way around!", "Okay");
+						onCampus = true;
+						Application.Current.Properties["notification"] = 1;
+					});
+				}
+
+				else if ((map.CheckInGeofences(args.Position) == false)
+						 && (onCampus == true) && ((int)Application.Current.Properties["notification"] == 1))
+				{
+					Device.BeginInvokeOnMainThread(() =>
+					{
+						DisplayAlert("Now leaving " + mCurrentCampus, "Did you mean to do that?", "Maybe?");
+						onCampus = false;
+						mCurrentCampus = "";
+						Application.Current.Properties["notification"] = 0;
+					});
+				}
+			};*/
 		}
 
 		protected override void OnResume()

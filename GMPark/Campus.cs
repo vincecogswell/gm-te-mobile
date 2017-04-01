@@ -22,22 +22,53 @@ namespace GMPark
 		}
 	}
 
+	public class Role
+	{
+		private string name;
+		private int id;
+
+		public string GetName()
+		{
+			return name;
+		}
+
+		public void SetName(string Name)
+		{
+			name = Name;
+		}
+
+		public int GetId()
+		{
+			return id;
+		}
+
+		public void SetId(int Id)
+		{
+			id = Id;
+		}
+	}
+
 	public class Campus
 	{
 		public string Name;
-		public List<Location> Locations;
-		public List<Building> Buildings;
-		public List<Lot> Lots;
-		public List<string> Roles;
+		public List<Location> Locations = new List<Location>();
+		public List<Building> Buildings = new List<Building>();
+		public List<Lot> Lots = new List<Lot>();
+		public List<Role> Roles = new List<Role>();
+		private string Id;
 
 		public Campus()
 		{
-			Locations = new List<Location>();
 		}
 
 		public Campus(string name)
 		{
 			Name = name;
+		}
+
+		public List<Role> GetRoles()
+		{
+			return Roles;
 		}
 
 		public string GetName()
@@ -48,6 +79,16 @@ namespace GMPark
 		public void SetName(string name)
 		{
 			Name = name;
+		}
+
+		public string GetId()
+		{
+			return Id;
+		}
+
+		public void SetId(string id)
+		{
+			Id = id;
 		}
 
 		public void ConvertToCampus(SCampus server)
@@ -62,7 +103,94 @@ namespace GMPark
 			SetName(server.name);
 				
 		}
+
+		public void ConvertBuildings(ServerJSONBuildings server)
+		{
+			foreach (KeyValuePair<string, SBuilding> entry in server.buildings)
+			{
+				var build = new Building(entry.Value.name);
+				build.SetActive(entry.Value.active);
+
+				foreach (List<string> ls in entry.Value.entrances)
+				{
+					double lat = Convert.ToDouble(ls[0]), lon = Convert.ToDouble(ls[1]);
+					var loc = new Location(lat, lon);
+					build.AddEntrance(loc);
+				}
+
+				Buildings.Add(build);
+			}
+
+		}
+
+		public void ConvertLots(ServerJSONLots server)
+		{
+			foreach (KeyValuePair<string, SLot> entry in server.lots)
+			{
+				var lot = new Lot(entry.Value.name);
+				lot.SetActive(entry.Value.active);
+
+				foreach (List<string> ls in entry.Value.entrances)
+				{
+					double lat = Convert.ToDouble(ls[0]), lon = Convert.ToDouble(ls[1]);
+					var loc = new Location(lat, lon);
+					lot.AddEntrance(loc);
+				}
+
+				if (entry.Value.perimeter.Count == 2)
+				{
+					double lat1 = Convert.ToDouble(entry.Value.perimeter[0][0]),
+					lon1 = Convert.ToDouble(entry.Value.perimeter[0][1]),
+					lat2 = Convert.ToDouble(entry.Value.perimeter[1][0]),
+					lon2 = Convert.ToDouble(entry.Value.perimeter[1][1]);
+
+					var loc1 = new Location(lat1, lon1);
+					var loc2 = new Location(lat2, lon1);
+					var loc3 = new Location(lat2, lon2);
+					var loc4 = new Location(lat1, lon2);
+
+					lot.AddBorder(loc1);
+					lot.AddBorder(loc2);
+					lot.AddBorder(loc3);
+					lot.AddBorder(loc4);                                             
+				}
+
+				else
+				{
+					foreach (List<string> ls in entry.Value.perimeter)
+					{
+						double lat = Convert.ToDouble(ls[0]), lon = Convert.ToDouble(ls[1]);
+						var loc = new Location(lat, lon);
+						lot.AddBorder(loc);
+					}
+				}
+				Lots.Add(lot);
+			}
+		}
+
+		public List<string> GetBuildingList()
+		{
+			var ls = new List<string>();
+
+			foreach (Building build in Buildings)
+			{
+				ls.Add(build.GetName());
+			}
+
+			return ls;
+		}
+				
+		public void AddRoles(ServerJSONRoles server)
+		{
 			
+			foreach (SRole role in server.Roles)
+			{
+				var r = new Role();
+				r.SetId(role.id);
+				r.SetName(role.name);
+				Roles.Add(r);
+			}
+		}
 	}
 
 }

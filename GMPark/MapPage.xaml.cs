@@ -1,5 +1,6 @@
 using System;
 using System.Net;
+using System.Net.Http;
 using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
@@ -14,6 +15,7 @@ namespace GMPark
 {
 	public partial class MapPage : ContentPage
 	{
+		HttpClient client;
 		GMTEMap map = new GMTEMap()
 		{
 			IsShowingUser = true,
@@ -26,10 +28,15 @@ namespace GMPark
 		Campus campus;
 		bool onCampus = false;
 		string mCurrentCampus = "";
+		string cName, bName;
+		string mCurrentLot = "";
 
 		public MapPage(string selectedRole, string buildingName, string campusName)
 		{
 			InitializeComponent();
+
+			cName = campusName;
+			bName = buildingName;
 
 			if (Application.Current.Properties.ContainsKey("map"))
 			{
@@ -47,6 +54,10 @@ namespace GMPark
 				Task addBuild = map.DrawBuildings(campusName);
 				map.DrawLots(campusName);
 			}
+
+			client = new HttpClient();
+			client.MaxResponseContentBufferSize = 256000;
+			//var lotOrderTask = GetLotOrder(buildingName, campusName);
 
 			//Task<Lot> lot = map.FindClosestLot(addBuild, building.GetName(), name);
 
@@ -97,26 +108,42 @@ namespace GMPark
 			CrossGeolocator.Current.PositionChanged += (o, args) =>
 			{
 				if ((map.CheckInGeofences(args.Position))
-				    && (onCampus == false) && ((int)Application.Current.Properties["notification"] == 0))
+				    && (onCampus == false))
 				{
 					Device.BeginInvokeOnMainThread(() =>
 					{
 						mCurrentCampus = map.InWhichGeofences(args.Position);
 						DisplayAlert("Welcome to " + mCurrentCampus + "!", "We hope you find your way around!", "Okay");
 						onCampus = true;
-						Application.Current.Properties["notification"] = 1;
 					});
 				}
 
 				else if ((map.CheckInGeofences(args.Position) == false)
-					&& (onCampus == true) && ((int)Application.Current.Properties["notification"] == 1))
+				         && (onCampus == true))
 				{
 					Device.BeginInvokeOnMainThread(() =>
 					{
 						DisplayAlert("Now leaving " + mCurrentCampus, "Did you mean to do that?", "Maybe?");
 						onCampus = false;
 						mCurrentCampus = "";
-						Application.Current.Properties["notification"] = 0;
+					});
+				}
+
+				if ((map.CheckInLotGeofences(args.Position, mCurrentCampus)!= null))
+				{
+					Device.BeginInvokeOnMainThread(() =>
+					{
+						mCurrentLot = map.CheckInLotGeofences(args.Position,mCurrentCampus);
+						DisplayAlert("You are in lot " + mCurrentLot + "!", "We hope you find a spot!", "Okay");
+					});
+				}
+
+				else if ((map.CheckInLotGeofences(args.Position, mCurrentCampus) == null))
+				{
+					Device.BeginInvokeOnMainThread(() =>
+					{
+						DisplayAlert("Now leaving " + mCurrentLot, "You didn't find a spot?", "Yup");
+						mCurrentLot = "";
 					});
 				}
 			};
@@ -158,21 +185,42 @@ namespace GMPark
 			}
 		}
 
-		public async Task UpdateLotInStack(Task<Lot> lot, StackLayout stack)
+		public async Task UpdateLotInStack(Task<List<int>> lots, StackLayout stack)
 		{
-			await lot;
+			await lots;
 			int i = 0;
 			double lat = 0;
 			double lon = 0;
-			stack.Children[0].BindingContext = new { LotID = lot.Result.GetName() };
-			stack.Children[1].BindingContext = new { Percent = lot.Result.Percentage };
-			foreach (Location loc in lot.Result.Locations)
+
+			var lot = map.GetLotById(cName, lots.Result.First());
+			stack.Children[0].BindingContext = new { LotID = lot.GetName() };
+			//stack.Children[1].BindingContext = new { Percent = lot.Result.Percentage };
+
+			/*foreach (Location loc in lot.Result.Locations)
 			{
 				lat +=loc.Lat;
 				lon += loc.Long;
 				i += 1;
 			}
-			stack.Children[3].BindingContext = new { Pos = new Position(lat / i, lon / i) };
+			stack.Children[3].BindingContext = new { Pos = new Position(lat / i, lon / i) };*/
+		}
+
+		public async Task<List<int>> GetLotOrder()
+		{
+			var text = "http://35.9.22.105/predictive-parking/" + map.GetCampusId(cName) + "/" +
+																	 map.GetBuildingId(cName, bName);
+			var uri = new Uri(text);
+			var response = await client.GetAsync(uri);
+			if (response.IsSuccessStatusCode)
+			{
+				var content = await response.Content.ReadAsStringAsync();
+				var server = JsonConvert.DeserializeObject<ServerJSONLotOrder>(content);
+				return server.lot_order;
+			}
+			else
+			{
+				return null;
+			}
 		}
 	}
 }

@@ -50,6 +50,44 @@ namespace GMPark
 			return ls;
 		}
 
+		public string GetCampusId(string campusName)
+		{
+			foreach (Campus campus in mCampuses)
+			{
+				if (campus.GetName() == campusName)
+				{
+					return campus.GetId();
+				}
+			}
+			return null;
+		}
+
+		public Lot GetLotById(string campusName, int lot)
+		{
+			var str = Convert.ToString(lot);
+
+			foreach (Campus campus in mCampuses)
+			{
+				if (campus.GetName() == campusName)
+				{
+					return campus.GetLotById(str);
+				}
+			}
+			return null;
+		}
+
+		public string GetBuildingId(string campusName, string buildingName)
+		{
+			foreach (Campus campus in mCampuses)
+			{
+				if (campus.GetName() == campusName)
+				{
+					campus.GetBuildingId(buildingName);
+				}
+			}
+			return null;
+		}
+
 		public List<string> GetBuildingList(string campusName)
 		{
 			foreach (Campus campus in mCampuses)
@@ -340,6 +378,26 @@ namespace GMPark
 			}
 
 			return false;
+		}
+
+		public string CheckInLotGeofences(Plugin.Geolocator.Abstractions.Position pos, string campusName)
+		{
+			string lotName = null;
+
+			if (campusName == "")
+			{
+				return null;
+			}
+
+			foreach (Campus campus in mCampuses)
+			{
+				if (campus.GetName() == campusName)
+				{
+					lotName = campus.CheckInLotGeoFences(pos);
+				}
+			}
+
+			return lotName;
 		}
 
 		public void SpanToCampus(string name)

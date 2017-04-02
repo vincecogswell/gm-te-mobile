@@ -27,7 +27,6 @@ namespace GMPark
 
 		public Lot(string id)
 		{
-			mGeoFence = new GeoPoly(id);
 			SetName(id);
 		}
 
@@ -39,6 +38,17 @@ namespace GMPark
 		public void AddBorder(Location loc)
 		{
 			Locations.Add(loc);
+		}
+
+		public void CreateGeoFence()
+		{
+			mGeoFence = new GeoPoly(GetName());
+
+			for (int i = 0; i < Locations.Count(); i++)
+			{
+				int i2 = (i + 1) % Locations.Count();
+				mGeoFence.AddGeoLine(Locations.ElementAt(i), Locations.ElementAt(i2));
+			}
 		}
 	}
 }

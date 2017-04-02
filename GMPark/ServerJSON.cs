@@ -103,4 +103,11 @@ namespace GMPark
 		public bool active;
 	}
 
+	public class ServerJSONLotOrder
+	{
+		public string status;
+		public string message;
+		public List<int> lot_order;
+	}
+
 }

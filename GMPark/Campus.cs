@@ -110,6 +110,7 @@ namespace GMPark
 			{
 				var build = new Building(entry.Value.name);
 				build.SetActive(entry.Value.active);
+				build.SetId(entry.Key);
 
 				foreach (List<string> ls in entry.Value.entrances)
 				{
@@ -129,6 +130,7 @@ namespace GMPark
 			{
 				var lot = new Lot(entry.Value.name);
 				lot.SetActive(entry.Value.active);
+				lot.SetId(entry.Key);
 
 				foreach (List<string> ls in entry.Value.entrances)
 				{
@@ -152,7 +154,8 @@ namespace GMPark
 					lot.AddBorder(loc1);
 					lot.AddBorder(loc2);
 					lot.AddBorder(loc3);
-					lot.AddBorder(loc4);                                             
+					lot.AddBorder(loc4);
+					lot.CreateGeoFence();
 				}
 
 				else
@@ -179,6 +182,32 @@ namespace GMPark
 
 			return ls;
 		}
+
+		public string GetBuildingId(string buildingName)
+		{
+			foreach (Building build in Buildings)
+			{
+				if (build.GetName() == buildingName)
+				{
+					return build.GetId();
+				}
+			}
+
+			return null;
+		}
+
+		public Lot GetLotById(string lotId)
+		{
+			foreach (Lot lot in Lots)
+			{
+				if (lot.GetId() == lotId)
+				{
+					return lot;
+				}
+			}
+
+			return null;
+		}
 				
 		public void AddRoles(ServerJSONRoles server)
 		{
@@ -190,6 +219,19 @@ namespace GMPark
 				r.SetName(role.name);
 				Roles.Add(r);
 			}
+		}
+
+		public string CheckInLotGeoFences(Plugin.Geolocator.Abstractions.Position pos)
+		{
+			foreach (Lot lot in Lots)
+			{
+				if (lot.InFence(pos))
+				{
+					return lot.GetName();
+				}
+			}
+
+			return null;
 		}
 	}
 

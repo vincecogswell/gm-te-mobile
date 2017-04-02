@@ -43,6 +43,7 @@ namespace GMPark
 
 			client = new HttpClient();
 			client.MaxResponseContentBufferSize = 256000;
+
 			Task<ServerJSON> thing = GetCampuses();
 			var campusTask = ConvertCampuses(thing);
 			var buildingTask = GetBuildings(campusTask);

@@ -15,6 +15,8 @@ namespace GMPark
 {
 	public partial class MapPage : ContentPage
 	{
+		public static double MPH = 2.2352;
+		public static double TimerMax = 300;
 		HttpClient client;
 		GMTEMap map = new GMTEMap()
 		{
@@ -30,6 +32,10 @@ namespace GMPark
 		string mCurrentCampus = "";
 		string cName, bName;
 		string mCurrentLot = "";
+		string mLotParked = "";
+		bool mTimerStarted = false;
+		double mTimerLength = 0;
+		bool mParked = false;
 
 		public MapPage(string selectedRole, string buildingName, string campusName)
 		{
@@ -55,11 +61,10 @@ namespace GMPark
 				map.DrawLots(campusName);
 			}
 
+			var lotTask = GetLotOrder();
+
 			client = new HttpClient();
 			client.MaxResponseContentBufferSize = 256000;
-			//var lotOrderTask = GetLotOrder(buildingName, campusName);
-
-			//Task<Lot> lot = map.FindClosestLot(addBuild, building.GetName(), name);
 
 			var lotLabel = new Label
 			{
@@ -99,7 +104,7 @@ namespace GMPark
 
 			this.Content = stack;
 
-			//UpdateLotInStack(lot, stack);
+			UpdateLotInStack(lotTask, stack);
 
 			map.SpanToBuilding(buildingName, campusName);
 
@@ -129,22 +134,39 @@ namespace GMPark
 					});
 				}
 
-				if ((map.CheckInLotGeofences(args.Position, mCurrentCampus)!= null))
+				if ((map.CheckInLotGeofences(args.Position, mCurrentCampus) != null) && (mParked == false))
 				{
 					Device.BeginInvokeOnMainThread(() =>
 					{
-						mCurrentLot = map.CheckInLotGeofences(args.Position,mCurrentCampus);
+						mCurrentLot = map.CheckInLotGeofences(args.Position, mCurrentCampus);
 						DisplayAlert("You are in lot " + mCurrentLot + "!", "We hope you find a spot!", "Okay");
 					});
 				}
 
-				else if ((map.CheckInLotGeofences(args.Position, mCurrentCampus) == null))
+				else if ((map.CheckInLotGeofences(args.Position, mCurrentCampus) == null) && (mParked == false))
+				{
+					mCurrentLot = "";
+				}
+
+				else if (mParked)
 				{
 					Device.BeginInvokeOnMainThread(() =>
 					{
-						DisplayAlert("Now leaving " + mCurrentLot, "You didn't find a spot?", "Yup");
-						mCurrentLot = "";
+						DisplayAlert("You Parked!", "We detected that you parked in " + mLotParked, "Okay");
 					});
+				}
+
+				else if ((map.CheckInLotGeofences(args.Position, mCurrentCampus) == null) && (mCurrentLot != "") 
+				         && (mTimerStarted == false) && (mParked == false))
+				{
+					Device.BeginInvokeOnMainThread(() =>
+					{
+						DisplayAlert("Now leaving " + mCurrentLot, "Start parking-detection algorithm", "Start");
+					});
+					mLotParked = mCurrentLot;
+					mCurrentLot = "";
+					mTimerStarted = true;
+					Device.StartTimer(TimeSpan.FromSeconds(.5), new Func<bool>(() => CheckSpeed(args.Position)));
 				}
 			};
 		}
@@ -215,11 +237,36 @@ namespace GMPark
 			{
 				var content = await response.Content.ReadAsStringAsync();
 				var server = JsonConvert.DeserializeObject<ServerJSONLotOrder>(content);
+
 				return server.lot_order;
 			}
 			else
 			{
 				return null;
+			}
+		}
+
+		public bool CheckSpeed(Plugin.Geolocator.Abstractions.Position pos)
+		{
+			if (pos.Speed > MPH)
+			{
+				mTimerStarted = false;
+				mTimerLength = 0;
+				mLotParked = "";
+				return false;
+			}
+
+			else
+			{
+				mTimerLength += .5;
+
+				if (mTimerLength > TimerMax)
+				{
+					mParked = true;
+					return false;
+				}
+					
+				return true;
 			}
 		}
 	}

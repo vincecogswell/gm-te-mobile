@@ -55,6 +55,7 @@ namespace GMPark
 		public List<Building> Buildings = new List<Building>();
 		public List<Lot> Lots = new List<Lot>();
 		public List<Role> Roles = new List<Role>();
+		public List<Gate> Gates = new List<Gate>();
 		private string Id;
 
 		public Campus()
@@ -218,6 +219,27 @@ namespace GMPark
 				r.SetId(role.id);
 				r.SetName(role.name);
 				Roles.Add(r);
+			}
+		}
+
+		public void AddGates(ServerJSONGates server)
+		{
+			foreach (KeyValuePair<string, SGate> entry in server.gates)
+			{
+				var gate = new Gate();
+				gate.SetId(entry.Key);
+				gate.SetName(entry.Value.name);
+				gate.SetActive(entry.Value.active);
+				gate.SetTime(entry.Value.start, entry.Value.end);
+				gate.AddEntrance(new Location(Convert.ToDouble(entry.Value.location[0][0]),
+											  Convert.ToDouble(entry.Value.location[0][1])));
+
+				foreach (List<string> instructionSet in entry.Value.tempAccess)
+				{
+					gate.AddInstruction(instructionSet[0], instructionSet[1]);
+				}
+
+				Gates.Add(gate);
 			}
 		}
 

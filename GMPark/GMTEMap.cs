@@ -294,6 +294,27 @@ namespace GMPark
 			}
 		}
 
+		public void DrawGates(string campusName)
+		{
+			foreach (Campus campus in mCampuses)
+			{
+				if (campus.GetName() == campusName)
+				{
+					foreach (Gate gate in campus.Gates)
+					{
+						Pin pin = new Pin
+						{
+							Type = PinType.Place,
+							Label = gate.GetName(),
+							Position = new Position(gate.GetEntrance(0).Lat, gate.GetEntrance(0).Long)
+						};
+
+						Pins.Add(pin);
+					}
+				}
+			}
+		}
+
 		public async Task PlaceBuildingPins(Building building)
 		{
 			foreach (Location loc in building.Entrances)

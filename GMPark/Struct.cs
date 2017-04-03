@@ -34,7 +34,7 @@ namespace GMPark
 		{
 			return mId;
 		}
-
+			
 		public void SetId(string id)
 		{
 			mId = id;
@@ -43,6 +43,24 @@ namespace GMPark
 		public void AddEntrance(Location loc)
 		{
 			Entrances.Add(loc);
+		}
+
+		public Location GetEntrance(int index)
+		{
+			if (Entrances.Count > index)
+			{
+				return Entrances[index];
+			}
+
+			else
+			{
+				return null;
+			}
+		}
+
+		public int GetEntranceCount()
+		{
+			return Entrances.Count;
 		}
 	}
 }

@@ -17,13 +17,16 @@ namespace GMPark
 		private string campusName = "False";
 		private string role = "False";
 		private string building = "False";
+		GMTEMap map;
 		// changes commit
 		private Position pos;
-		public EnterUserInfoPage(Campus campus, Position pos)
+		public EnterUserInfoPage(string campus)
 		{
 			NavigationPage.SetBackButtonTitle(this, "");
-			this.campusName = campus.Name;
-			this.pos = pos;
+			this.campusName = campus;
+
+			map = (GMTEMap)Application.Current.Properties["map"];
+
 			Title = "Preference";
 			this.BackgroundColor = Color.FromRgb(104, 151, 243);
 			var scroll = new ScrollView();
@@ -70,7 +73,10 @@ namespace GMPark
 				Title = "Select Your Role",
 				VerticalOptions = LayoutOptions.CenterAndExpand
 			};
-			foreach (Role r in campus.Roles)
+
+			var roles = map.GetRoles(campusName);
+
+			foreach (Role r in roles)
 			{
 				rolePicker.Items.Add(r.GetName());
 			}
@@ -101,10 +107,14 @@ namespace GMPark
 				Title = "Select Your Building",
 				VerticalOptions = LayoutOptions.CenterAndExpand
 			};
-			foreach (Building b in campus.Buildings)
+
+			var buildings = map.GetBuildingList(campusName);
+
+			foreach (string b in buildings)
 			{
-				buildingPicker.Items.Add(b.GetName());
+				buildingPicker.Items.Add(b);
 			}
+
 			if (Application.Current.Properties.ContainsKey("role"))
 			{
 				int i = 0;

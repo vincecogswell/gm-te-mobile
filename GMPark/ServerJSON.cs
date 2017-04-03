@@ -96,7 +96,7 @@ namespace GMPark
 	public class SGate
 	{
 		public string name;
-		public List<int> tempAccess;
+		public List<List<string>> tempAccess;
 		public List<List<string>> location;
 		public string start;
 		public string end;

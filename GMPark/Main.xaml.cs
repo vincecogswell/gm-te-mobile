@@ -23,6 +23,7 @@ namespace GMPark
 		public Campus campus;
 		bool onCampus = false;
 		string mCurrentCampus = "";
+		bool refresh = false;
 
 		GMTEMap map = new GMTEMap()
 		{
@@ -37,18 +38,31 @@ namespace GMPark
 		{
 			InitializeComponent();
 
-			mCurrentCampus = campusName;
-
-			Application.Current.Properties["map"] = map;
-
 			client = new HttpClient();
 			client.MaxResponseContentBufferSize = 256000;
 
-			Task<ServerJSON> thing = GetCampuses();
-			var campusTask = ConvertCampuses(thing);
-			var buildingTask = GetBuildings(campusTask);
-			var lotTask = GetLots(campusTask);
-			var roleTask = GetRoles(campusTask);
+			Task buildTask, lotTask, roleTask, gateTask;
+
+			mCurrentCampus = campusName;
+			Title = campusName;
+
+			if (Application.Current.Properties.ContainsKey("map"))
+			{
+				map = (GMTEMap)Application.Current.Properties["map"];
+			}
+
+			else
+			{
+				
+				Task<ServerJSON> thing = GetCampuses();
+				var campusTask = ConvertCampuses(thing);
+				buildTask = GetBuildings(campusTask);
+				lotTask = GetLots(campusTask);
+				roleTask = GetRoles(campusTask);
+				gateTask = GetGates(campusTask);
+				refresh = true;
+				Application.Current.Properties["map"] = map;
+			}
 
 			var scroll = new ScrollView();
 
@@ -167,7 +181,7 @@ namespace GMPark
 			};
 			ToolbarItems.Add(new ToolbarItem("Preference", "preference.png", () =>
 			{
-				Navigation.PushAsync(new EnterUserInfoPage(this.campus, this.pos));
+				Navigation.PushAsync(new EnterUserInfoPage(this.Title));
 			}));
 
 			/*go.Clicked += async (sender, e) =>
@@ -208,6 +222,8 @@ namespace GMPark
 					};
 				}
 			};*/
+
+			map.SpanToCampus(campusName);
 		}
 
 
@@ -297,7 +313,24 @@ namespace GMPark
 				{
 					var content = await response.Content.ReadAsStringAsync();
 					campus.AddRoles(JsonConvert.DeserializeObject<ServerJSONRoles>(content));
-					map.DrawLots(campus.GetName());
+				}
+			}
+		}
+
+		public async Task GetGates(Task<List<Campus>> converted)
+		{
+			List<Campus> campuses = await converted;
+
+			foreach (Campus campus in campuses)
+			{
+				string text = "http://35.9.22.105/campuses/" + campus.GetId() + "/gates";
+				var uri = new Uri(text);
+				var response = await client.GetAsync(uri);
+				if (response.IsSuccessStatusCode)
+				{
+					var content = await response.Content.ReadAsStringAsync();
+					campus.AddGates(JsonConvert.DeserializeObject<ServerJSONGates>(content));
+					map.DrawGates(campus.GetName());
 				}
 			}
 		}

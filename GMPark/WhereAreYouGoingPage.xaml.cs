@@ -22,6 +22,8 @@ namespace GMPark
 			var grid = new Grid();
 			int i = 0;
 
+			campus = campusName;
+
 			var buildings = map.GetBuildingList(campusName);
 
 			foreach (string building in buildings)
@@ -62,9 +64,9 @@ namespace GMPark
 			var ans = await DisplayAlert("Update Preference?", "Would you like to update your preference?", "Yes", "No");
 			if (ans == true)
 			{
-				Application.Current.Properties["campus"] = this.campus;
-				Application.Current.Properties["role"] = this.role;
-				Application.Current.Properties["building"] = button.Text;
+				Application.Current.Properties[campus + "campus"] = this.campus;
+				Application.Current.Properties[campus + "role"] = this.role;
+				Application.Current.Properties[campus + "building"] = button.Text;
 			}
 			await Navigation.PushAsync(new MapPage(this.role, button.Text, this.campus));
 		}

@@ -115,24 +115,24 @@ namespace GMPark
 				buildingPicker.Items.Add(b);
 			}
 
-			if (Application.Current.Properties.ContainsKey("role"))
+			if (Application.Current.Properties.ContainsKey(campus + "role"))
 			{
 				int i = 0;
 				foreach (string item in rolePicker.Items)
 				{
-					if (item == (string)Application.Current.Properties["role"])
+					if (item == (string)Application.Current.Properties[campus + "role"])
 					{
 						rolePicker.SelectedIndex = i;
 					}
 					i += 1;
 				}
 			}
-			if (Application.Current.Properties.ContainsKey("building"))
+			if (Application.Current.Properties.ContainsKey(campus + "building"))
 			{
 				int i = 0;
 				foreach (string item in buildingPicker.Items)
 				{
-					if (item == (string)Application.Current.Properties["building"])
+					if (item == (string)Application.Current.Properties[campus + "building"])
 					{
 						buildingPicker.SelectedIndex = i;
 					}
@@ -182,9 +182,9 @@ namespace GMPark
 		{
 			if (this.campusName != "False" && this.role != "False" && this.building != "False")
 			{
-				Application.Current.Properties["campus"] = this.campusName;
-				Application.Current.Properties["role"] = this.role;
-				Application.Current.Properties["building"] = this.building;
+				Application.Current.Properties[campusName + "campus"] = this.campusName;
+				Application.Current.Properties[campusName + "role"] = this.role;
+				Application.Current.Properties[campusName + "building"] = this.building;
 				App.MasterDetailPage.Detail = new NavigationPage(new Main(campusName));
 				App.MasterDetailPage.IsPresented = false;
 			}

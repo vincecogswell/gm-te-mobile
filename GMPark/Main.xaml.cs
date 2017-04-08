@@ -41,8 +41,6 @@ namespace GMPark
 			client = new HttpClient();
 			client.MaxResponseContentBufferSize = 256000;
 
-			Task buildTask, lotTask, roleTask, gateTask;
-
 			mCurrentCampus = campusName;
 			Title = campusName;
 
@@ -53,15 +51,9 @@ namespace GMPark
 
 			else
 			{
-				
-				Task<ServerJSON> thing = GetCampuses();
-				var campusTask = ConvertCampuses(thing);
-				buildTask = GetBuildings(campusTask);
-				lotTask = GetLots(campusTask);
-				roleTask = GetRoles(campusTask);
-				gateTask = GetGates(campusTask);
-				refresh = true;
 				Application.Current.Properties["map"] = map;
+
+				Refresh();
 			}
 
 			var scroll = new ScrollView();
@@ -88,19 +80,18 @@ namespace GMPark
 				BackgroundColor = Color.FromRgb(104, 151, 243),
 				FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
 			};
-			if (Application.Current.Properties.ContainsKey("campus"))
+			if (Application.Current.Properties.ContainsKey(campusName + "campus"))
 			{
-				cName.Text = "Campus: " + Application.Current.Properties["campus"];
+				cName.Text = "Campus: " + Application.Current.Properties[campusName + "campus"];
 			}
-			if (Application.Current.Properties.ContainsKey("role"))
+			if (Application.Current.Properties.ContainsKey(campusName + "role"))
 			{
-				r.Text = "Role: " + Application.Current.Properties["role"];
+				r.Text = "Role: " + Application.Current.Properties[campusName + "role"];
 			}
-			if (Application.Current.Properties.ContainsKey("building"))
+			if (Application.Current.Properties.ContainsKey(campusName + "building"))
 			{
-				b.Text = "Building: " + Application.Current.Properties["building"];
+				b.Text = "Building: " + Application.Current.Properties[campusName + "building"];
 			}
-
 
 			var nd = new Button()
 			{
@@ -222,7 +213,6 @@ namespace GMPark
 					};
 				}
 			};*/
-
 			map.SpanToCampus(campusName);
 		}
 
@@ -335,10 +325,18 @@ namespace GMPark
 			}
 		}
 
+		public async Task AwaitAll(Task thing, Task thing2, Task thing3, Task thing4)
+		{
+			await thing;
+			await thing2;
+			await thing3;
+			await thing4;
+			refresh = false;
+		}
+
 		public async Task<List<Campus>> ConvertCampuses(Task<ServerJSON> json)
 		{
-			await json;
-			var res = json.Result;
+			var res = await json;
 			campuses = new List<Campus>();
 			string first = mCurrentCampus, firstKey = "";
 
@@ -368,6 +366,21 @@ namespace GMPark
 			App.Menu.AddButtons();
 
 			return campuses;
+		}
+
+		public async void Refresh()
+		{
+			refresh = true;
+			Task buildTask, lotTask, roleTask, gateTask;
+
+			Task<ServerJSON> thing = GetCampuses();
+			var campusTask = ConvertCampuses(thing);
+			buildTask = GetBuildings(campusTask);
+			lotTask = GetLots(campusTask);
+			roleTask = GetRoles(campusTask);
+			gateTask = GetGates(campusTask);
+
+			await AwaitAll(buildTask, lotTask, roleTask, gateTask);
 		}
 
 	}

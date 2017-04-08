@@ -94,15 +94,35 @@ namespace GMPark
 
 		public void ConvertToCampus(SCampus server)
 		{
-			foreach (List<string> ls in server.perimeter)
+			if (server.perimeter.Count == 2)
 			{
-				double lat = Convert.ToDouble(ls[0]), lon = Convert.ToDouble(ls[1]);
-				var loc = new Location(lat, lon);
-				Locations.Add(loc);
+				double lat1 = Convert.ToDouble(server.perimeter[0][0]),
+				lon1 = Convert.ToDouble(server.perimeter[0][1]),
+				lat2 = Convert.ToDouble(server.perimeter[1][0]),
+				lon2 = Convert.ToDouble(server.perimeter[1][1]);
+
+				var loc1 = new Location(lat1, lon1);
+				var loc2 = new Location(lat2, lon1);
+				var loc3 = new Location(lat2, lon2);
+				var loc4 = new Location(lat1, lon2);
+
+				Locations.Add(loc1);
+				Locations.Add(loc2);
+				Locations.Add(loc3);
+				Locations.Add(loc4);
+			}
+
+			else
+			{
+				foreach (List<string> ls in server.perimeter)
+				{
+					double lat = Convert.ToDouble(ls[0]), lon = Convert.ToDouble(ls[1]);
+					var loc = new Location(lat, lon);
+					Locations.Add(loc);
+				}
 			}
 
 			SetName(server.name);
-				
 		}
 
 		public void ConvertBuildings(ServerJSONBuildings server)

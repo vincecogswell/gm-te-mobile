@@ -36,6 +36,7 @@ namespace GMPark
 		bool mTimerStarted = false;
 		double mTimerLength = 0;
 		bool mParked = false;
+		bool inLot = false;
 
 		public MapPage(string selectedRole, string buildingName, string campusName)
 		{
@@ -134,21 +135,18 @@ namespace GMPark
 					});
 				}
 
-				if ((map.CheckInLotGeofences(args.Position, mCurrentCampus) != null) && (mParked == false))
+				if ((map.CheckInLotGeofences(args.Position, mCurrentCampus) != null) && (mParked == false) && (inLot == false))
 				{
 					Device.BeginInvokeOnMainThread(() =>
 					{
 						mCurrentLot = map.CheckInLotGeofences(args.Position, mCurrentCampus);
 						DisplayAlert("You are in lot " + mCurrentLot + "!", "We hope you find a spot!", "Okay");
 					});
+
+					inLot = true;
 				}
 
-				else if ((map.CheckInLotGeofences(args.Position, mCurrentCampus) == null) && (mParked == false))
-				{
-					mCurrentLot = "";
-				}
-
-				else if (mParked)
+				if (mParked)
 				{
 					Device.BeginInvokeOnMainThread(() =>
 					{
@@ -156,7 +154,7 @@ namespace GMPark
 					});
 				}
 
-				else if ((map.CheckInLotGeofences(args.Position, mCurrentCampus) == null) && (mCurrentLot != "") 
+				if ((map.CheckInLotGeofences(args.Position, mCurrentCampus) == mCurrentLot) && (mCurrentLot != "") 
 				         && (mTimerStarted == false) && (mParked == false))
 				{
 					Device.BeginInvokeOnMainThread(() =>
@@ -166,7 +164,14 @@ namespace GMPark
 					mLotParked = mCurrentLot;
 					mCurrentLot = "";
 					mTimerStarted = true;
+					inLot = false;
 					Device.StartTimer(TimeSpan.FromSeconds(.5), new Func<bool>(() => CheckSpeed(args.Position)));
+				}
+
+				if ((map.CheckInLotGeofences(args.Position, mCurrentCampus) == null) && (mParked == false))
+				{
+					mCurrentLot = "";
+					inLot = false;
 				}
 			};
 		}

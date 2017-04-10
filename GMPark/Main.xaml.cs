@@ -17,13 +17,14 @@ namespace GMPark
 	{
 		HttpClient client;
 
-		private string name;
-		private Position pos;
 		private List<Campus> campuses;
+		private List<int> mLotOrder;
+		private int mLotToGo;
 		public Campus campus;
 		bool onCampus = false;
 		string mCurrentCampus = "";
 		bool refresh = false;
+		private Label l;
 
 		GMTEMap map = new GMTEMap()
 		{
@@ -44,19 +45,34 @@ namespace GMPark
 			mCurrentCampus = campusName;
 			Title = campusName;
 
-			if (Application.Current.Properties.ContainsKey("map"))
+			/*if (Application.Current.Properties.ContainsKey("map"))
 			{
 				map = (GMTEMap)Application.Current.Properties["map"];
+
 			}
 
 			else
-			{
+			{*/
 				Application.Current.Properties["map"] = map;
 
 				Refresh();
-			}
+			//}
 
 			var scroll = new ScrollView();
+			string font;
+
+			switch (Device.RuntimePlatform)
+			{
+				case "iOS":
+					font = "AppleSDGothicNeo-UltraLight";
+					break;
+				case "Android": 
+					font = "Droid Sans Mono";
+					break;
+				default:
+					font = "Comic Sans MS";
+					break;
+			}
 
 			// Assigns title of page to building that is to be going to
 			Label cName = new Label
@@ -64,22 +80,48 @@ namespace GMPark
 				Text = "Campus: N/A",
 				TextColor = Color.White,
 				BackgroundColor = Color.FromRgb(104, 151, 243),
-				FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
+				FontFamily = font
 			};
 			Label r = new Label
 			{
 				Text = "Role: N/A",
 				TextColor = Color.White,
 				BackgroundColor = Color.FromRgb(104, 151, 243),
-				FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
+				FontFamily = font
 			};
 			Label b = new Label
 			{
 				Text = "Building: N/A",
 				TextColor = Color.White,
 				BackgroundColor = Color.FromRgb(104, 151, 243),
-				FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
+				FontFamily = font
 			};
+			l = new Label
+			{
+				Text = "Lot: N/A",
+				TextColor = Color.White,
+				BackgroundColor = Color.FromRgb(104, 151, 243),
+				FontFamily = font
+			};
+
+			var nd = new Button()
+			{
+				Text = "New Destination",
+				//TextColor = Color.Red,
+				Font = Font.SystemFontOfSize(NamedSize.Large),
+				FontFamily = font
+			};
+			nd.Clicked += newdes;
+
+			var go = new Button()
+			{
+				Text = "Go!",
+				TextColor = Color.Red,
+				Font = Font.SystemFontOfSize(NamedSize.Large),
+				FontFamily = font
+			};
+			go.IsEnabled = false;
+
 			if (Application.Current.Properties.ContainsKey(campusName + "campus"))
 			{
 				cName.Text = "Campus: " + Application.Current.Properties[campusName + "campus"];
@@ -93,26 +135,10 @@ namespace GMPark
 				b.Text = "Building: " + Application.Current.Properties[campusName + "building"];
 			}
 
-			var nd = new Button()
-			{
-				Text = "New Destination",
-				//TextColor = Color.Red,
-				Font = Font.SystemFontOfSize(NamedSize.Large),
-				FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS")
-			};
-			nd.Clicked += newdes;
-
-			var go = new Button()
-			{
-				Text = "Go!",
-				TextColor = Color.Red,
-				Font = Font.SystemFontOfSize(NamedSize.Large),
-				FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS")
-			};
-			go.IsEnabled = false;
-
-			if ((Application.Current.Properties.ContainsKey("building")) && (Application.Current.Properties.ContainsKey("role"))
-				&& (Application.Current.Properties.ContainsKey("campus")) && (name == (string)Application.Current.Properties["campus"]))
+			if ((Application.Current.Properties.ContainsKey(campusName + "building")) && 
+			    (Application.Current.Properties.ContainsKey(campusName + "role"))
+			    && (Application.Current.Properties.ContainsKey(campusName + "campus")) && 
+			    (campusName == (string)Application.Current.Properties[campusName + "campus"]))
 			{
 				go.IsEnabled = true;
 			}
@@ -127,6 +153,7 @@ namespace GMPark
 			stack.Children.Add(cName);
 			stack.Children.Add(r);
 			stack.Children.Add(b);
+			stack.Children.Add(l);
 			stack.Children.Add(map);
 			stack.Children.Add(nd);
 			stack.Children.Add(go);
@@ -141,13 +168,8 @@ namespace GMPark
 
 			CrossGeolocator.Current.PositionChanged += (o, args) =>
 			{
-				if (!Application.Current.Properties.ContainsKey("notification"))
-				{
-					Application.Current.Properties["notification"] = 0;
-				}
-
 				if ((map.CheckInGeofences(args.Position))
-				    && (onCampus == false) && ((int)Application.Current.Properties["notification"] == 0))
+				    && (onCampus == false))
 				{
 					Device.BeginInvokeOnMainThread(() =>
 					{
@@ -159,7 +181,7 @@ namespace GMPark
 				}
 
 				else if ((map.CheckInGeofences(args.Position) == false)
-				         && (onCampus == true) && ((int)Application.Current.Properties["notification"] == 1))
+				         && (onCampus == true))
 				{
 					Device.BeginInvokeOnMainThread(() =>
 					{
@@ -175,45 +197,13 @@ namespace GMPark
 				Navigation.PushAsync(new EnterUserInfoPage(this.Title));
 			}));
 
-			/*go.Clicked += async (sender, e) =>
-			{
-				var lotTask = await map.FindClosestLot(addBuild, (string)(Application.Current.Properties["building"]),
-										 (string)(Application.Current.Properties["campus"]));
-
-				if (lotTask == null)
-				{
-					//do nothing
-				}
-
-				else
-				{
-					var lot = lotTask;
-
-					double avgLat = 0, avgLon = 0, count = lot.Locations.Count();
-					foreach (Location loc in lot.Locations)
-					{
-						avgLat += loc.Lat;
-						avgLon += loc.Long;
-					}
-
-					var lotPos = new Position(avgLat / count, avgLon / count);
-
-					switch (Device.OS)
-					{
-						case TargetPlatform.iOS:
-							Device.OpenUri(
-								new Uri(string.Format("http://maps.apple.com/?q={0}",
-													  WebUtility.UrlEncode(lotPos.Latitude.ToString() + " " + lotPos.Longitude.ToString()))));
-							break;
-
-						case TargetPlatform.Android:
-							Device.OpenUri(
-								new Uri(string.Format("geo:0,0?q={0}", WebUtility.UrlEncode(lotPos.Latitude.ToString() + ", " + lotPos.Longitude.ToString()))));
-							break;
-					};
-				}
-			};*/
 			map.SpanToCampus(campusName);
+
+
+			go.Clicked += async (sender, e) =>
+			{
+				map.NavigateToLot(this.Title, mLotOrder[mLotToGo]);
+			};
 		}
 
 
@@ -325,6 +315,31 @@ namespace GMPark
 			}
 		}
 
+		public async Task GetLotOrder(string buildName, Task<List<Campus>> converted)
+		{
+			List<Campus> campuses = await converted;
+
+			foreach (Campus campus in campuses)
+			{
+				if (campus.GetName() == this.Title)
+				{
+					string text = "http://35.9.22.105/predictive-parking/" + campus.GetId() + "/" 
+					                                                               + campus.GetBuildingId(buildName);
+					var uri = new Uri(text);
+					var response = await client.GetAsync(uri);
+					if (response.IsSuccessStatusCode)
+					{
+						var content = await response.Content.ReadAsStringAsync();
+						mLotOrder = JsonConvert.DeserializeObject<ServerJSONLotOrder>(content).lot_order;
+						mLotToGo = 0;
+						l.Text = "Lot: " + campus.GetLotName(mLotOrder[mLotToGo].ToString());
+					}
+
+				}
+			}
+		}
+				
+
 		public async Task AwaitAll(Task thing, Task thing2, Task thing3, Task thing4)
 		{
 			await thing;
@@ -381,6 +396,14 @@ namespace GMPark
 			gateTask = GetGates(campusTask);
 
 			await AwaitAll(buildTask, lotTask, roleTask, gateTask);
+
+			if ((Application.Current.Properties.ContainsKey(this.Title + "building")) &&
+			(Application.Current.Properties.ContainsKey(this.Title + "role"))
+			&& (Application.Current.Properties.ContainsKey(this.Title + "campus")))
+			{
+				await GetLotOrder((string)Application.Current.Properties[this.Title + "building"], campusTask);
+			}
+
 		}
 
 	}

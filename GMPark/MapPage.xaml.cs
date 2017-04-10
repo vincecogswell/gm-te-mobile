@@ -26,11 +26,17 @@ namespace GMPark
 			VerticalOptions = LayoutOptions.FillAndExpand,
 			HasZoomEnabled = true
 		};
+		StackLayout stack = new StackLayout() 
+		{ 
+			Spacing = 0, 
+			VerticalOptions = LayoutOptions.FillAndExpand 
+		};
 
-		Campus campus;
+		List<int> mLotOrder;
+		int mGoingTo;
 		bool onCampus = false;
 		string mCurrentCampus = "";
-		string cName, bName;
+		string mCampusName, mBuildingName;
 		string mCurrentLot = "";
 		string mLotParked = "";
 		bool mTimerStarted = false;
@@ -42,8 +48,9 @@ namespace GMPark
 		{
 			InitializeComponent();
 
-			cName = campusName;
-			bName = buildingName;
+			mCampusName = campusName;
+			mBuildingName = buildingName;
+			this.Title = mBuildingName;
 
 			if (Application.Current.Properties.ContainsKey("map"))
 			{
@@ -62,50 +69,64 @@ namespace GMPark
 				map.DrawLots(campusName);
 			}
 
-			var lotTask = GetLotOrder();
+			string font;
+
+			switch (Device.RuntimePlatform)
+			{
+				case "iOS":
+					font = "AppleSDGothicNeo-UltraLight";
+					break;
+				case "Android":
+					font = "Droid Sans Mono";
+					break;
+				default:
+					font = "Comic Sans MS";
+					break;
+			}
 
 			client = new HttpClient();
 			client.MaxResponseContentBufferSize = 256000;
 
+			var lotTask = GetLotOrder();
+
 			var lotLabel = new Label
 			{
-				FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
+				FontFamily = font,
 				TextColor = Color.Blue
 			};
 
-			var percentLabel = new Label
+			var goingToLabel = new Label
 			{
-				FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
-				TextColor = Color.Blue,
+				FontFamily = font,
+				TextColor = Color.Green,
 			};
 
-			lotLabel.SetBinding(Label.TextProperty, new Binding("LotID", stringFormat: "The closest parking lot is Lot {0}"));
-			percentLabel.SetBinding(Label.TextProperty, new Binding("Percent", stringFormat: "The lot is {0}% full"));
+			lotLabel.SetBinding(Label.TextProperty, new Binding("Lots", stringFormat:"{0}"));
+			goingToLabel.SetBinding(Label.TextProperty, new Binding("GoingTo", stringFormat: "Going to: {0}"));
 
 			var button = new Button()
 			{
 				Text = "Start Directions!",
 				Font = Font.SystemFontOfSize(NamedSize.Large),
-				FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
+				FontFamily = font,
 				CommandParameter = new double()
 			};
 
 			button.Clicked += OnClicked;
 			button.SetBinding(Button.CommandParameterProperty, new Binding("Pos"));
 
-			var stack = new StackLayout { Spacing = 0, VerticalOptions = LayoutOptions.FillAndExpand };
-
 			stack.Children.Add(lotLabel);
-			stack.Children.Add(percentLabel);
+			stack.Children.Add(goingToLabel);
 			stack.Children.Add(map);
 			stack.Children.Add(button);
-			stack.BindingContext = new { LotID = "36" };
+			stack.BindingContext = new { Lots = "Retrieving closest lots..." };
 
 			stack.BindingContext = stack.Children[0].BindingContext;
 
 			this.Content = stack;
 
-			UpdateLotInStack(lotTask, stack);
+			Task stackTask = ConvertLots(lotTask);
+			AwaitTask(stackTask);
 
 			map.SpanToBuilding(buildingName, campusName);
 
@@ -178,22 +199,7 @@ namespace GMPark
 
 		async void OnClicked(object sender, EventArgs args)
 		{
-			var button = (Button)sender;
-			var pos = (Position)button.CommandParameter;
-
-			switch (Device.OS)
-			{
-				case TargetPlatform.iOS:
-					Device.OpenUri(
-						new Uri(string.Format("http://maps.apple.com/?q={0}",
-						                      WebUtility.UrlEncode(pos.Latitude.ToString() + " " + pos.Longitude.ToString()))));
-					break;
-					
-				case TargetPlatform.Android:
-					Device.OpenUri(
-						new Uri(string.Format("geo:0,0?q={0}", WebUtility.UrlEncode(pos.Latitude.ToString() + ", " + pos.Longitude.ToString()))));
-					break;
-			};
+			map.NavigateToLot(mCampusName, mLotOrder[0]);
 		}
 
 		public void StartGeoLocation()
@@ -219,7 +225,7 @@ namespace GMPark
 			double lat = 0;
 			double lon = 0;
 
-			var lot = map.GetLotById(cName, lots.Result.First());
+			var lot = map.GetLotById(mCampusName, lots.Result.First());
 			stack.Children[0].BindingContext = new { LotID = lot.GetName() };
 			//stack.Children[1].BindingContext = new { Percent = lot.Result.Percentage };
 
@@ -234,8 +240,9 @@ namespace GMPark
 
 		public async Task<List<int>> GetLotOrder()
 		{
-			var text = "http://35.9.22.105/predictive-parking/" + map.GetCampusId(cName) + "/" +
-																	 map.GetBuildingId(cName, bName);
+			string campId = map.GetCampusId(mCampusName);
+			string buildId = map.GetBuildingId(mCampusName, mBuildingName);
+			var text = "http://35.9.22.105/predictive-parking/" + campId + "/" + buildId;
 			var uri = new Uri(text);
 			var response = await client.GetAsync(uri);
 			if (response.IsSuccessStatusCode)
@@ -249,6 +256,45 @@ namespace GMPark
 			{
 				return null;
 			}
+		}
+
+		public async Task ConvertLots(Task<List<int>> server)
+		{
+			mLotOrder = await server;
+			var lots = new List<Lot>();
+			int lotCount = mLotOrder.Count;
+			string lotOrderString = "";
+			mGoingTo = 0;
+
+			map.SpanToLotsAndBuildings(mCampusName, mBuildingName, mLotOrder);
+
+			if (lotCount > 3)
+			{
+				lotCount = 3;
+			}
+
+			for (int i = 0; i < lotCount; i++)
+			{
+				//.Add(map.GetLotById(mCampusName, lotId));
+
+				if (i == 0)
+				{
+					lotOrderString += "The best lot is " + map.GetLotName(mCampusName, mLotOrder[i].ToString());
+				}
+
+				else if (i == 1)
+				{
+					lotOrderString += ", then " + map.GetLotName(mCampusName, mLotOrder[i].ToString());
+				}
+
+				else
+				{
+					lotOrderString += ", then " + map.GetLotName(mCampusName, mLotOrder[i].ToString());
+				}
+
+			}
+			stack.Children[0].BindingContext = new { Lots = lotOrderString };
+			stack.Children[1].BindingContext = new { GoingTo = map.GetLotName(mCampusName, mLotOrder[mGoingTo].ToString()) };
 		}
 
 		public bool CheckSpeed(Plugin.Geolocator.Abstractions.Position pos)
@@ -273,6 +319,11 @@ namespace GMPark
 					
 				return true;
 			}
+		}
+
+		public async void AwaitTask(Task task)
+		{
+			await task;
 		}
 	}
 }

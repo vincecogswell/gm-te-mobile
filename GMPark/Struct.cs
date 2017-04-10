@@ -1,4 +1,5 @@
 ﻿using System;
+using Xamarin.Forms.GoogleMaps;
 using System.Collections.Generic;
 
 namespace GMPark
@@ -56,6 +57,17 @@ namespace GMPark
 			{
 				return null;
 			}
+		}
+
+		public List<Position> GetEntrances()
+		{
+			var ls = new List<Position>();
+			foreach(Location loc in Entrances)
+			{
+				ls.Add(new Position(loc.Lat, loc.Long));
+			}
+
+			return ls;
 		}
 
 		public int GetEntranceCount()

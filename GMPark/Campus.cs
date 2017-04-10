@@ -217,6 +217,19 @@ namespace GMPark
 			return null;
 		}
 
+		public string GetLotName(string lotId)
+		{
+			foreach (Lot lot in Lots)
+			{
+				if (lotId == lot.GetId())
+				{
+					return lot.GetName();
+				}
+			}
+
+			return null;
+		}
+
 		public Lot GetLotById(string lotId)
 		{
 			foreach (Lot lot in Lots)
@@ -229,10 +242,10 @@ namespace GMPark
 
 			return null;
 		}
-				
+
 		public void AddRoles(ServerJSONRoles server)
 		{
-			
+
 			foreach (SRole role in server.Roles)
 			{
 				var r = new Role();
@@ -275,6 +288,33 @@ namespace GMPark
 
 			return null;
 		}
+
+		public List<Position> GetLotPoints(string lotId)
+		{
+			foreach (Lot lot in Lots)
+			{
+				if (lot.GetId() == lotId)
+				{
+					return lot.GetPoints();
+				}
+			}
+
+			return null;
+		}
+
+		public List<Position> GetBuildingEntrances(string buildingName)
+		{
+			foreach (Building build in Buildings)
+			{
+				if (build.GetName() == buildingName)
+				{
+					return build.GetEntrances();
+				}
+			}
+
+			return null;
+		}
+					
 	}
 
 }

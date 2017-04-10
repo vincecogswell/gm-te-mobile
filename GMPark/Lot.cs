@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Net;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Reflection;
 using System.IO;
 using Newtonsoft.Json;
+using Xamarin.Forms;
 using Xamarin.Forms.GoogleMaps;
 
 namespace GMPark
@@ -49,6 +52,37 @@ namespace GMPark
 				int i2 = (i + 1) % Locations.Count();
 				mGeoFence.AddGeoLine(Locations.ElementAt(i), Locations.ElementAt(i2));
 			}
+		}
+
+		public List<Position> GetPoints()
+		{
+			var ls = new List<Position>();
+
+			foreach (Location loc in Locations)
+			{
+				ls.Add(new Position(loc.Lat, loc.Long));
+			}
+			       
+			return ls;
+		}
+
+		public void NavigateTo()
+		{
+			switch (Device.RuntimePlatform)
+			{
+				case "iOS":
+					Device.OpenUri(
+						new Uri(string.Format("http://maps.apple.com/?q={0}",
+						                      WebUtility.UrlEncode(GetEntrance(0).Lat.ToString() + " " + 
+						                                           GetEntrance(0).Long.ToString()))));
+					break;
+
+				case "Android":
+					Device.OpenUri(
+						new Uri(string.Format("geo:0,0?q={0}", WebUtility.UrlEncode(GetEntrance(0).Lat.ToString() +
+						                                                            ", " + GetEntrance(0).Long.ToString()))));
+					break;
+			};
 		}
 	}
 }

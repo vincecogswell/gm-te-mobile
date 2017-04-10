@@ -82,7 +82,19 @@ namespace GMPark
 			{
 				if (campus.GetName() == campusName)
 				{
-					campus.GetBuildingId(buildingName);
+					return campus.GetBuildingId(buildingName);
+				}
+			}
+			return null;
+		}
+
+		public string GetLotName(string campusName, string lotId)
+		{
+			foreach (Campus campus in mCampuses)
+			{
+				if (campus.GetName() == campusName)
+				{
+					return campus.GetLotName(lotId);
 				}
 			}
 			return null;
@@ -263,9 +275,14 @@ namespace GMPark
 							
 						if (lot.Percentage < 26)
 						{
+							// Light green for selected
+							/*
 							polygon.FillColor = Color.FromRgba(0, 255, 0, 64);
-							polygon.StrokeColor = Color.FromRgba(0, 255, 0, 128);
+							polygon.StrokeColor = Color.FromRgba(0, 255, 0, 128);*/
 
+							// Darker Green
+							polygon.FillColor = Color.FromRgba(0, 128, 0, 64);
+							polygon.StrokeColor = Color.FromRgba(0, 128, 0, 128);
 						}
 
 						else if (lot.Percentage < 51)
@@ -483,6 +500,37 @@ namespace GMPark
 					break;
 				}
 			}
+		}
+
+		public void SpanToLotsAndBuildings(string campusName, string buildingName, List<int> lotOrder)
+		{
+			var ls = new List<Position>();
+
+			foreach (Campus campus in mCampuses)
+			{
+				if (campus.GetName() == campusName)
+				{
+					foreach (int i in lotOrder)
+					{
+						foreach (Position pos in campus.GetLotPoints(i.ToString()))
+						{
+							ls.Add(pos);
+						}
+					}
+
+					foreach (Position pos in campus.GetBuildingEntrances(buildingName))
+					{
+						ls.Add(pos);
+					}
+				}
+			}
+
+			MoveToRegion(MapSpan.FromPositions(ls));		
+		}
+
+		public void NavigateToLot(string campusName, int lotId)
+		{
+			GetLotById(campusName, lotId).NavigateTo();
 		}
 
 

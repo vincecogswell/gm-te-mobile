@@ -10,6 +10,7 @@ using Plugin.Geolocator;
 using System.Net;
 using Xamarin.Forms;
 using Xamarin.Forms.GoogleMaps;
+using Plugin.Messaging;
 
 namespace GMPark
 {
@@ -122,6 +123,14 @@ namespace GMPark
 			};
 			go.IsEnabled = false;
 
+			var call = new Button()
+			{
+				Text = "Call",
+				Font = Font.SystemFontOfSize(NamedSize.Large),
+				FontFamily = font
+			};
+			call.Clicked += callnum;
+
 			if (Application.Current.Properties.ContainsKey(campusName + "campus"))
 			{
 				cName.Text = "Campus: " + Application.Current.Properties[campusName + "campus"];
@@ -157,7 +166,7 @@ namespace GMPark
 			stack.Children.Add(map);
 			stack.Children.Add(nd);
 			stack.Children.Add(go);
-
+			stack.Children.Add(call);
 
 			scroll.Content = stack;
 			Content = scroll;
@@ -197,6 +206,8 @@ namespace GMPark
 				Navigation.PushAsync(new EnterUserInfoPage(this.Title));
 			}));
 
+
+
 			map.SpanToCampus(campusName);
 
 
@@ -221,7 +232,14 @@ namespace GMPark
 
 		}
 
-
+		async void callnum(object sender, EventArgs args)
+		{
+			var ans = await DisplayAlert("Call", "123-123-1234", "Yes", "No");
+			if (ans == true)
+			{
+				Device.OpenUri(new Uri(String.Format("tel:{0}", "+1231231234")));
+			}
+		}
 		public void StartGeoLocation()
 		{
 			if (CrossGeolocator.Current.IsGeolocationEnabled)

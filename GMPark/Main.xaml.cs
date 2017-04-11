@@ -209,7 +209,16 @@ namespace GMPark
 
 		async void newdes(object sender, EventArgs args)
 		{
-			await Navigation.PushAsync(new ChooseRolePage(this.Title));
+			
+			if (Application.Current.Properties.ContainsKey(this.Title + "role"))
+			{
+				await Navigation.PushAsync(new WhereAreYouGoingPage((string)Application.Current.Properties[this.Title + "role"], this.Title));
+			}
+			else
+			{
+				await Navigation.PushAsync(new ChooseRolePage(this.Title));
+			}
+
 		}
 
 

@@ -269,20 +269,19 @@ namespace GMPark
 								Label = lot.GetName(),
 								Position = new Position(ent.Lat, ent.Long)
 							};
-
+							pin.Icon = BitmapDescriptorFactory.FromBundle("parkingpin.png");
 							Pins.Add(pin);
 						}
 							
 						if (lot.Percentage < 26)
 						{
 							// Light green for selected
-							/*
 							polygon.FillColor = Color.FromRgba(0, 255, 0, 64);
-							polygon.StrokeColor = Color.FromRgba(0, 255, 0, 128);*/
+							polygon.StrokeColor = Color.FromRgba(0, 255, 0, 128);
 
 							// Darker Green
-							polygon.FillColor = Color.FromRgba(0, 128, 0, 64);
-							polygon.StrokeColor = Color.FromRgba(0, 128, 0, 128);
+							//polygon.FillColor = Color.FromRgba(0, 128, 0, 64);
+							//polygon.StrokeColor = Color.FromRgba(0, 128, 0, 128);
 						}
 
 						else if (lot.Percentage < 51)
@@ -325,7 +324,7 @@ namespace GMPark
 							Label = gate.GetName(),
 							Position = new Position(gate.GetEntrance(0).Lat, gate.GetEntrance(0).Long)
 						};
-
+						pin.Icon = BitmapDescriptorFactory.FromBundle("gatepin.png");
 						Pins.Add(pin);
 					}
 				}
@@ -342,7 +341,7 @@ namespace GMPark
 					Label = building.GetName(),
 					Position = new Position(loc.Lat, loc.Long)
 				};
-
+				pin.Icon = BitmapDescriptorFactory.FromBundle("buildingpin.png");
 				Pins.Add(pin);
 			}
 		}

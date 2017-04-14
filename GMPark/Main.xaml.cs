@@ -10,7 +10,6 @@ using Plugin.Geolocator;
 using System.Net;
 using Xamarin.Forms;
 using Xamarin.Forms.GoogleMaps;
-using Plugin.Messaging;
 
 namespace GMPark
 {

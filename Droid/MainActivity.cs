@@ -11,7 +11,7 @@ using Plugin.Permissions;
 
 namespace GMPark.Droid
 {
-	[Activity(Label = "GMPark.Droid", Icon = "@drawable/icon", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+	[Activity(Label = "GMTE", Icon = "@drawable/gmlogote.png", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
 	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
 	{
 		protected override void OnCreate(Bundle bundle)

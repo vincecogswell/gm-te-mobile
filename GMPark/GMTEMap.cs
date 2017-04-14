@@ -504,14 +504,20 @@ namespace GMPark
 		public void SpanToLotsAndBuildings(string campusName, string buildingName, List<int> lotOrder)
 		{
 			var ls = new List<Position>();
+			int lotOrderCount = lotOrder.Count;
+
+			if (lotOrderCount > 3)
+			{
+				lotOrderCount = 3;
+			}
 
 			foreach (Campus campus in mCampuses)
 			{
 				if (campus.GetName() == campusName)
 				{
-					foreach (int i in lotOrder)
+					for (int i = 0; i < lotOrderCount; i++)
 					{
-						foreach (Position pos in campus.GetLotPoints(i.ToString()))
+						foreach (Position pos in campus.GetLotPoints(lotOrder[i].ToString()))
 						{
 							ls.Add(pos);
 						}

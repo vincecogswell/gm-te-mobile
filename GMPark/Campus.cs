@@ -160,6 +160,8 @@ namespace GMPark
 					lot.AddEntrance(loc);
 				}
 
+				lot.SetAccesses(entry.Value.access);
+
 				if (entry.Value.perimeter.Count == 2)
 				{
 					double lat1 = Convert.ToDouble(entry.Value.perimeter[0][0]),
@@ -313,6 +315,37 @@ namespace GMPark
 			}
 
 			return null;
+		}
+
+		public int GetRoleId(string roleName)
+		{
+			foreach (Role role in Roles)
+			{
+				if (role.GetName() == roleName)
+				{
+					return role.GetId();
+				}
+			}
+			return -1;
+		}
+
+		public List<int> PurgeLotOrder(int roleId, List<int> lotOrder)
+		{
+			List<int> lots = new List<int>();
+
+			foreach (Lot lot in Lots)
+			{
+				if (lot.InAccesses(roleId))
+				{
+					lots.Add(Convert.ToInt32(lot.GetId()));
+				}
+
+				else
+				{
+				}
+			}
+
+			return lots;
 		}
 					
 	}

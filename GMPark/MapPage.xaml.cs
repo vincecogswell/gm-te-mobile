@@ -39,6 +39,7 @@ namespace GMPark
 		string mCampusName, mBuildingName;
 		string mCurrentLot = "";
 		string mLotParked = "";
+		string mRole = "";
 		bool mTimerStarted = false;
 		double mTimerLength = 0;
 		bool mParked = false;
@@ -50,6 +51,7 @@ namespace GMPark
 
 			mCampusName = campusName;
 			mBuildingName = buildingName;
+			mRole = selectedRole;
 			this.Title = mBuildingName;
 
 			if (Application.Current.Properties.ContainsKey("map"))
@@ -260,8 +262,8 @@ namespace GMPark
 
 		public async Task ConvertLots(Task<List<int>> server)
 		{
-			mLotOrder = await server;
-			var lots = new List<Lot>();
+			var lots = await server;
+			mLotOrder = map.PurgeLotList(mCampusName,mRole,lots);
 			int lotCount = mLotOrder.Count;
 			string lotOrderString = "";
 			mGoingTo = 0;

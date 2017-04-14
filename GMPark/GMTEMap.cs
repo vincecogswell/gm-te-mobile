@@ -538,6 +538,19 @@ namespace GMPark
 			GetLotById(campusName, lotId).NavigateTo();
 		}
 
+		public List<int> PurgeLotList(string campusName, string roleName, List<int> lotList)
+		{
+			foreach (Campus campus in mCampuses)
+			{
+				if (campus.GetName() == campusName)
+				{
+					var newList = campus.PurgeLotOrder(Convert.ToInt32(campus.GetRoleId(roleName)), lotList);
+					return newList;
+				}
+			}
+			return null;
+		}
+
 
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 		//:::                                                                         :::

@@ -13,7 +13,7 @@ namespace GMPark
 {
 	public class Lot : Struct
 	{
-		public bool Employee, Executive, Visitor;
+		private List<int> Accesses = new List<int>();
 		public List<Location> Locations = new List<Location>();
 		public float Percentage;
 		private GeoPoly mGeoFence;
@@ -64,6 +64,26 @@ namespace GMPark
 			}
 			       
 			return ls;
+		}
+
+		public void SetAccesses(List<int> accesses)
+		{
+			foreach (int i in accesses)
+			{
+				Accesses.Add(i);
+			}
+		}
+
+		public bool InAccesses(int roleId)
+		{
+			foreach (int i in Accesses)
+			{
+				if (i == roleId)
+				{
+					return true;
+				}
+			}
+			return false;
 		}
 
 		public void NavigateTo()

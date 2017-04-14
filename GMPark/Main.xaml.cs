@@ -172,7 +172,7 @@ namespace GMPark
 
 			NavigationPage.SetBackButtonTitle(this, "");
 
-			StartGeoLocation();
+			AwaitSingle(StartGeoLocation());
 
 			CrossGeolocator.Current.PositionChanged += (o, args) =>
 			{
@@ -205,10 +205,7 @@ namespace GMPark
 				Navigation.PushAsync(new EnterUserInfoPage(this.Title));
 			}));
 
-
-
 			map.SpanToCampus(campusName);
-
 
 			go.Clicked += async (sender, e) =>
 			{
@@ -239,13 +236,20 @@ namespace GMPark
 				Device.OpenUri(new Uri(String.Format("tel:{0}", "+1231231234")));
 			}
 		}
-		public void StartGeoLocation()
+		public async Task StartGeoLocation()
 		{
 			if (CrossGeolocator.Current.IsGeolocationEnabled)
 			{
 				if (!CrossGeolocator.Current.IsListening)
 				{
-					CrossGeolocator.Current.StartListeningAsync(1, 1, false);
+					var listen = await CrossGeolocator.Current.StartListeningAsync(1, 1, false);
+					if (!listen)
+					{
+						Device.BeginInvokeOnMainThread(() =>
+						{
+							DisplayAlert("Geolocation", "Is NOT listening", "Okay");
+						});
+					}
 				}
 			}
 
@@ -356,7 +360,9 @@ namespace GMPark
 					if (response.IsSuccessStatusCode)
 					{
 						var content = await response.Content.ReadAsStringAsync();
-						mLotOrder = JsonConvert.DeserializeObject<ServerJSONLotOrder>(content).lot_order;
+						mLotOrder = map.PurgeLotList(campus.GetName(),
+						                             (string)Application.Current.Properties[campus.GetName() + "role"],
+						                             JsonConvert.DeserializeObject<ServerJSONLotOrder>(content).lot_order);
 						mLotToGo = 0;
 						l.Text = "Lot: " + campus.GetLotName(mLotOrder[mLotToGo].ToString());
 					}
@@ -373,6 +379,11 @@ namespace GMPark
 			await thing3;
 			await thing4;
 			refresh = false;
+		}
+
+		public async Task AwaitSingle(Task thing1)
+		{
+			await thing1;
 		}
 
 		public async Task<List<Campus>> ConvertCampuses(Task<ServerJSON> json)
@@ -424,7 +435,7 @@ namespace GMPark
 			await AwaitAll(buildTask, lotTask, roleTask, gateTask);
 
 			if ((Application.Current.Properties.ContainsKey(this.Title + "building")) &&
-			(Application.Current.Properties.ContainsKey(this.Title + "role"))
+			    Application.Current.Properties.ContainsKey(this.Title + "role")
 			&& (Application.Current.Properties.ContainsKey(this.Title + "campus")))
 			{
 				await GetLotOrder((string)Application.Current.Properties[this.Title + "building"], campusTask);

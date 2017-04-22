@@ -417,9 +417,27 @@ namespace GMPark
 			return false;
 		}
 
-		public string CheckInLotGeofences(Plugin.Geolocator.Abstractions.Position pos, string campusName)
+		public bool CheckInLotGeofences(Plugin.Geolocator.Abstractions.Position pos, string campusName)
 		{
-			string lotName = null;
+			if (campusName == "")
+			{
+				return false;
+			}
+
+			foreach (Campus campus in mCampuses)
+			{
+				if (campus.GetName() == campusName)
+				{
+					return campus.CheckIfInLotGeoFences(pos);
+				}
+			}
+
+			return false;
+		}
+
+		public string InWhichLot(Plugin.Geolocator.Abstractions.Position pos, string campusName)
+		{
+			string lotName = "";
 
 			if (campusName == "")
 			{
@@ -435,7 +453,10 @@ namespace GMPark
 			}
 
 			return lotName;
+			
 		}
+
+
 
 		public void SpanToCampus(string name)
 		{

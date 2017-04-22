@@ -38,13 +38,28 @@ namespace GMPark
 			grid.RowDefinitions.Add(new RowDefinition { Height = 80 });
 			grid.ColumnDefinitions.Add(new ColumnDefinition { Width = 80 });
 			grid.ColumnDefinitions.Add(new ColumnDefinition { Width = 200 });
+
+			string font;
+
+			switch (Device.RuntimePlatform)
+			{
+				case "iOS":
+					font = "AppleSDGothicNeo-UltraLight";
+					break;
+				case "Android": 
+					font = "Droid Sans Mono";
+					break;
+				default:
+					font = "Comic Sans MS";
+					break;
+			}
 			var labelC = new Label
 			{
 				Text = "Campus: ",
 				TextColor = Color.White,
 				FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label)),
 				FontAttributes = FontAttributes.Bold,
-				FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
+				FontFamily = font,
 				VerticalOptions = LayoutOptions.Center,
 			};
 			grid.Children.Add(labelC, 0, 0);
@@ -54,7 +69,7 @@ namespace GMPark
 				TextColor = Color.White,
 				FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label)),
 				FontAttributes = FontAttributes.Bold,
-				FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
+				FontFamily = font,
 				VerticalOptions = LayoutOptions.Center,
 			};
 			grid.Children.Add(labelN, 1, 0);
@@ -64,7 +79,7 @@ namespace GMPark
 				TextColor = Color.White,
 				FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label)),
 				FontAttributes = FontAttributes.Bold,
-				FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
+				FontFamily = font,
 				VerticalOptions = LayoutOptions.Center,
 			};
 			grid.Children.Add(labelR, 0, 1);
@@ -98,7 +113,7 @@ namespace GMPark
 				TextColor = Color.White,
 				FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label)),
 				FontAttributes = FontAttributes.Bold,
-				FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
+				FontFamily = font,
 				VerticalOptions = LayoutOptions.Center,
 			};
 			grid.Children.Add(labelB, 0, 2);
@@ -157,7 +172,7 @@ namespace GMPark
 				Font = Font.SystemFontOfSize(NamedSize.Large),
 				TextColor = Color.White,
 				BackgroundColor = Color.Transparent,
-				FontFamily = Device.OnPlatform("AppleSDGothicNeo-UltraLight", "Droid Sans Mono", "Comic Sans MS"),
+				FontFamily = font,
 				BorderWidth = 1,
 				BorderColor = Color.White,
 				Margin = new Thickness(4,4,4,4)
@@ -190,7 +205,7 @@ namespace GMPark
 			}
 			else
 			{
-				await DisplayAlert("Alert!", "You missed something", "OK");
+				await DisplayAlert("Must Enter All Fields", "Please enter all fields", "OK");
 			}
 
 		}

@@ -188,6 +188,7 @@ namespace GMPark
 						double lat = Convert.ToDouble(ls[0]), lon = Convert.ToDouble(ls[1]);
 						var loc = new Location(lat, lon);
 						lot.AddBorder(loc);
+						lot.CreateGeoFence();
 					}
 				}
 				Lots.Add(lot);
@@ -288,7 +289,20 @@ namespace GMPark
 				}
 			}
 
-			return null;
+			return "";
+		}
+
+		public bool CheckIfInLotGeoFences(Plugin.Geolocator.Abstractions.Position pos)
+		{
+			foreach (Lot lot in Lots)
+			{
+				if (lot.InFence(pos))
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		public List<Position> GetLotPoints(string lotId)

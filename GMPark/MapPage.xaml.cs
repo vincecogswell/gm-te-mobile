@@ -144,6 +144,7 @@ namespace GMPark
 					{
 						mCurrentCampus = map.InWhichGeofences(args.Position);
 						DisplayAlert("Welcome to " + mCurrentCampus + "!", "We hope you find your way around!", "Okay");
+						DependencyService.Get<ITextToSpeech>().Speak("Welcome to " + mCurrentCampus);
 						onCampus = true;
 					});
 				}
@@ -165,6 +166,7 @@ namespace GMPark
 					{
 						mCurrentLot = map.InWhichLot(args.Position, mCurrentCampus);
 						DisplayAlert("You are in lot " + mCurrentLot + "!", "We hope you find a spot!", "Okay");
+						DependencyService.Get<ITextToSpeech>().Speak("You are in lot " + mCurrentLot);
 					});
 
 					inLot = true;
@@ -175,6 +177,7 @@ namespace GMPark
 					Device.BeginInvokeOnMainThread(() =>
 					{
 						DisplayAlert("You Parked!", "We detected that you parked in " + mLotParked, "Okay");
+						DependencyService.Get<ITextToSpeech>().Speak("You Parked in " + mLotParked);
 					});
 					mShown = true;
 				}

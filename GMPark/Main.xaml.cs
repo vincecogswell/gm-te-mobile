@@ -183,6 +183,7 @@ namespace GMPark
 					{
 						mCurrentCampus = map.InWhichGeofences(args.Position);
 						DisplayAlert("Welcome to " + mCurrentCampus + "!", "We hope you find your way around!", "Okay");
+						DependencyService.Get<ITextToSpeech>().Speak("Welcome to " + mCurrentCampus);
 						onCampus = true;
 						Application.Current.Properties["notification"] = 1;
 					});

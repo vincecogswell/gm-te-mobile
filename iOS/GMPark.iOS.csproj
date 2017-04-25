@@ -158,6 +158,7 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="TextToSpeech_iOS.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="splash_logo.jpg" />

@@ -28,10 +28,20 @@
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="App.xaml" />
+    <EmbeddedResource Include="GMParkPage.xaml" />
     <EmbeddedResource Include="MapPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="ChooseRolePage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EmployeeSignUpPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AdvancedArrivalTimesPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AreYouGoingToOfficePage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="WhereAreYouGoingPage.xaml">
@@ -60,12 +70,24 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GMParkPage.xaml.cs">
+      <DependentUpon>GMParkPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MapPage.xaml.cs">
       <DependentUpon>MapPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="ChooseRolePage.xaml.cs">
       <DependentUpon>ChooseRolePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EmployeeSignUpPage.xaml.cs">
+      <DependentUpon>EmployeeSignUpPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AdvancedArrivalTimesPage.xaml.cs">
+      <DependentUpon>AdvancedArrivalTimesPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AreYouGoingToOfficePage.xaml.cs">
+      <DependentUpon>AreYouGoingToOfficePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="WhereAreYouGoingPage.xaml.cs">
       <DependentUpon>WhereAreYouGoingPage.xaml</DependentUpon>
@@ -99,6 +121,7 @@
     <Compile Include="GMTEMap.cs" />
     <Compile Include="ServerJSON.cs" />
     <Compile Include="Gate.cs" />
+    <Compile Include="ITextToSpeech.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.ComponentModel.DataAnnotations" />

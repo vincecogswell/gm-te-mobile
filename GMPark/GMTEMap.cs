@@ -16,6 +16,8 @@ using Xamarin.Forms.GoogleMaps;
 
 namespace GMPark
 {
+	/* The core class of the whole GMTE application, this object keeps track of all the objects shown on the map
+	 */
 	public class GMTEMap : Map
 	{
 		List<GeoPoly> mCampusGeofences = new List<GeoPoly>();
@@ -30,7 +32,11 @@ namespace GMPark
 			MoveToRegion(span);
 		}
 
-		// get all roles of the campus
+		/* Returns a list of the roles for the name of the campus that is passed
+		 * as the parameter
+		 * Parameters: string (name of the campus)
+		 * Returns: List<Role> (List of roles of the campuses named)
+		 */
 		public List<Role> GetRoles(string campusName)
 		{
 			foreach (Campus campus in mCampuses)
@@ -43,7 +49,9 @@ namespace GMPark
 			return null;
 		}
 
-		// get all campus
+		/* Returns a list of strings containing all the campus names in the map
+		 * Returns: List<string> (the name of each campus that is on the map)
+		 */
 		public List<string> GetCampusList()
 		{
 			var ls = new List<string>();
@@ -56,7 +64,9 @@ namespace GMPark
 			return ls;
 		}
 
-		// get campus name by param campusName
+		/* Gets the ID of the campus based on the name of the campus passed into the function
+		 * Returns: string (the ID of the campus that was passed in)
+		 */
 		public string GetCampusId(string campusName)
 		{
 			foreach (Campus campus in mCampuses)
@@ -69,7 +79,10 @@ namespace GMPark
 			return null;
 		}
 
-		// get lot by id
+		/* Gets a lot object based on the lotId and campusName passed into the function
+		 * Parameters: string (name of campus), int (lotId)
+		 * Returns: Lot (the lot object that is determined by the lotId and campusName)
+		 */
 		public Lot GetLotById(string campusName, int lot)
 		{
 			var str = Convert.ToString(lot);
@@ -84,7 +97,10 @@ namespace GMPark
 			return null;
 		}
 
-		// get id of a building
+		/* Gets a buiding ID based on the buildingName and campusName passed into the function
+		 * Parameters: string (name of campus), string (name of building)
+		 * Returns: string (the building ID that is determined by the lotId and campusName)
+		 */
 		public string GetBuildingId(string campusName, string buildingName)
 		{
 			foreach (Campus campus in mCampuses)
@@ -97,7 +113,10 @@ namespace GMPark
 			return null;
 		}
 
-		// get lot name
+		/* Gets a lot name based on the lotId and campusName passed into the function
+		 * Parameters: string (name of campus), string (ID of lot)
+		 * Returns: string (the building ID that is determined by the lotId and campusName)
+		 */
 		public string GetLotName(string campusName, string lotId)
 		{
 			foreach (Campus campus in mCampuses)
@@ -110,7 +129,10 @@ namespace GMPark
 			return null;
 		}
 
-		// get all building in the campus
+		/* Returns a list of the building names for the name of the campus that is passed
+		* as the parameter
+		* Parameters: string (name of the campus)
+		* Returns: List<string> (List of names of buildings of the campuses named	 */
 		public List<string> GetBuildingList(string campusName)
 		{
 			foreach (Campus campus in mCampuses)
@@ -123,9 +145,9 @@ namespace GMPark
 			return null;
 		}
 
-		/** Gets the campuses from the campuses.json file, converts them to a campus object, then creates
+		/** DO NOT USE WITH API: ONLY TO BE USED WITH TEST .JSON FILES
+		 * Gets the campuses from the campuses.json file, converts them to a campus object, then creates
 		 * a polygon object to visually represent it and adds it to the map.
-		 * Map map map that campuses are to be added to.
 		 */
 		public Campus AddCampus(string name)
 		{
@@ -168,7 +190,11 @@ namespace GMPark
 			return null;
 		}
 
-		// add campus to the map
+		/** DO NOT USE WITH API: ONLY TO BE USED WITH TEST .JSON FILES
+		* Gets the campuses from the campuses.json file, converts them to a campus object, then creates
+		* a polygon object to visually represent it and adds it to the map.
+		* returns: List<Campus> (all the campus objects that are created	 
+		*/
 		public List<Campus> AddCampuses()
 		{
 			var assembly = typeof(MapPage).GetTypeInfo().Assembly;
@@ -206,7 +232,10 @@ namespace GMPark
 			return campuses;
 		}
 
-		// add campus to the map
+		/** DO NOT USE WITH API: ONLY TO BE USED WITH TEST .JSON FILES
+		* Create a polygon object to visually represent it and adds it to the map.
+		* Parameters: List<Campus> (all the campus objects that are to be created)	
+		*/
 		public void AddCampuses(List<Campus> campuses)
 		{
 			foreach (Campus campus in campuses)
@@ -232,7 +261,11 @@ namespace GMPark
 			}
 		}
 
-		// draw all buildings in the map
+		/* Finds the precreated campus that is specified by the parameter, then draws all the buildings on the campus
+		 * for that campus
+		 * Parameters: string (the name of the campus)
+		 * Returns: Task (the task of placing the pins on the map)
+		 * */
 		public async Task DrawBuildings(string campusName)
 		{
 			foreach (Campus campus in mCampuses)
@@ -248,7 +281,10 @@ namespace GMPark
 			}
 		}
 
-		// draw all lots
+		/* Finds the precreated campus that is specified by the parameter, then draws all the lots on the campus
+		 * for that campus
+		 * Parameters: string (the name of the campus)
+		 * */
 		public void DrawLots(string campusName)
 		{
 			foreach (Campus campus in mCampuses)
@@ -315,7 +351,10 @@ namespace GMPark
 			}
 		}
 
-		// draw all gates
+		/* Finds the precreated campus that is specified by the parameter, then draws all the gates on the campus
+		 * for that campus
+		 * Parameters: string (the name of the campus)
+		 * */
 		public void DrawGates(string campusName)
 		{
 			foreach (Campus campus in mCampuses)
@@ -337,7 +376,9 @@ namespace GMPark
 			}
 		}
 
-		// add pin to the map
+		/* Places the building pin on the map given the specified building object
+         * Parameters: Building (the building object to be drawn)
+         */
 		public async Task PlaceBuildingPins(Building building)
 		{
 			foreach (Location loc in building.Entrances)
@@ -353,7 +394,12 @@ namespace GMPark
 			}
 		}
 
-		// find the closed parking lot of a building
+		/* Used primarily during the testing stage, found and returned the closest lot to the building
+		 * specified given the campus name
+		 * Parameters: Task (the task created during the AddBuildings function, string (name of the 
+		 * building), string (the name of the campus that the building is on)
+		 * Returns: Task<Lot> (the lot object that is the closest)
+		 */
 		public async Task<Lot> FindClosestLot(Task addBuild, string building, string campus)
 		{
 			await addBuild;
@@ -370,7 +416,10 @@ namespace GMPark
 			return closest;
 		}
 
-		// detect where the user is
+		/* Cycles through the CampusGeofences to determine which campus the position is in
+         * Parameters: Plugin.Geolocator.Abstractions.Position (the position)
+         * Returns: string (the name of the campus object that the pos is in)
+         */
 		public string InWhichGeofences(Plugin.Geolocator.Abstractions.Position pos)
 		{
 			foreach (GeoPoly fence in mCampusGeofences)
@@ -385,7 +434,10 @@ namespace GMPark
 			return "";
 		}
 
-		// check if user is in the specific area
+		/* Cycles through the CampusGeofences to determine if the position is in a campus geofence
+		 * Parameters: Plugin.Geolocator.Abstractions.Position (the position)
+		 * Returns: bool (true if in a geofence, false if not)
+		 */	
 		public bool CheckInGeofences(Plugin.Geolocator.Abstractions.Position pos)
 		{
 			foreach (GeoPoly fence in mCampusGeofences)
@@ -400,7 +452,10 @@ namespace GMPark
 			return false;
 		}
 
-		// check if user is in the lot
+		/* Cycles through the lot geofences in the campus to determine if the position is in a lot geofence
+		* Parameters: Plugin.Geolocator.Abstractions.Position (the position), string (name of the campus)
+        * Returns: bool (true if in a lot geofence, false if not)  
+		*/
 		public bool CheckInLotGeofences(Plugin.Geolocator.Abstractions.Position pos, string campusName)
 		{
 			if (campusName == "")
@@ -419,7 +474,10 @@ namespace GMPark
 			return false;
 		}
 
-		// check which lot is the user currently in
+		/* Cycles through the lot geofencesnin the campus to determine which lot the position is in
+		* Parameters: Plugin.Geolocator.Abstractions.Position (the position), string (name of the campus)
+		* Returns: string (the name of the lot object that the pos is in)
+		*/
 		public string InWhichLot(Plugin.Geolocator.Abstractions.Position pos, string campusName)
 		{
 			string lotName = "";
@@ -441,8 +499,9 @@ namespace GMPark
 			
 		}
 
-
-
+		/* Spans the map over the campus that is selected by the parameter
+		 * Parameters: string (the name of the campus to be spanned over)
+		 */
 		public void SpanToCampus(string name)
 		{
 			foreach (Campus campus in mCampuses)
@@ -481,6 +540,10 @@ namespace GMPark
 			}
 		}
 
+		/* Spans the map over the building that is selected by the parameters
+        * Parameters: string (the name of the building to be spanned over),
+        * 	string (the name of the campus the building is in) 
+		*/
 		public async void SpanToBuilding(string buildingName, string campusName)
 		{
 			foreach (Campus campus in mCampuses)
@@ -507,6 +570,10 @@ namespace GMPark
 			}
 		}
 
+		/* Spans the map over the buildings and lots that are selected by the parameters
+        * Parameters: string (the name of the campus the building is in),
+        * 	string (the name of the building that is spanned over), List<int> (the list of lotIds to span over)
+		*/
 		public void SpanToLotsAndBuildings(string campusName, string buildingName, List<int> lotOrder)
 		{
 			var ls = new List<Position>();
@@ -539,11 +606,18 @@ namespace GMPark
 			MoveToRegion(MapSpan.FromPositions(ls));		
 		}
 
+		/* Calls the NavigateTo function of a lot object
+		 * Parameters: string (the name of the campus that the lot is in), int (the Id of the lot to be navigated to)
+		 */
 		public void NavigateToLot(string campusName, int lotId)
 		{
 			GetLotById(campusName, lotId).NavigateTo();
 		}
 
+		/* Gets rid of all the lots in the lotOrder that are not accessable by the role name passed
+		 * Parameters: string (name of the campus), string (name of the role), List<int> (list of lot Ids)
+		 * Returns: List<int> (list of lots that are accessible to the role)
+		 */
 		public List<int> PurgeLotList(string campusName, string roleName, List<int> lotList)
 		{
 			foreach (Campus campus in mCampuses)

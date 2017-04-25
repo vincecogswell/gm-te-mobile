@@ -17,6 +17,22 @@ namespace GMPark
 		public static MenuPage Menu;
 		public GMTEMap map;
 
+		List<int> mLotOrder;
+		int mGoingTo;
+		bool onCampus = false;
+		string mCurrentCampus = "";
+		string mCampusName, mBuildingName;
+		string mCurrentLot = "";
+		string mLotParked = "";
+		string mRole = "";
+		bool mTimerStarted = false;
+		double mTimerLength = 0;
+		bool mParked = false;
+		bool inLot = false;
+		bool mShown = false;
+		double MPH = 2.2352;
+		double TimerMax = 90;
+
 		public App()
 		{
 			InitializeComponent();
@@ -59,21 +75,7 @@ namespace GMPark
 				};
 			}
 
-			List<int> mLotOrder;
-			int mGoingTo;
-			bool onCampus = false;
-			string mCurrentCampus = "";
-			string mCampusName, mBuildingName;
-			string mCurrentLot = "";
-			string mLotParked = "";
-			string mRole = "";
-			bool mTimerStarted = false;
-			double mTimerLength = 0;
-			bool mParked = false;
-			bool inLot = false;
-			bool mShown = false;
-			double MPH = 2.2352;
-			double TimerMax = 90;
+
 			    
 			// check geolocation
 			CrossGeolocator.Current.PositionChanged += (o, args) =>
@@ -156,6 +158,31 @@ onCampus = false;
 		protected override void OnResume()
 		{
 			// Handle when your app resumes
+		}
+
+		public bool CheckSpeed(Plugin.Geolocator.Abstractions.Position pos)
+		{
+			if (pos.Speed > MPH)
+			{
+				mTimerStarted = false;
+				mTimerLength = 0;
+				mLotParked = "";
+				return false;
+			}
+
+			else
+			{
+				mTimerLength += .5;
+
+				if (mTimerLength > TimerMax)
+				{
+					mParked = true;
+					return false;
+				}
+
+				return true;
+			}
+
 		}
 	}
 }

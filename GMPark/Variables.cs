@@ -1,4 +1,5 @@
 ﻿/// PLEASE RENAME THIS FILE TO Variables.cs
+/// The API keys used to access Google Maps
 using System;
 namespace GMPark
 {

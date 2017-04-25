@@ -9,7 +9,7 @@ using Xamarin.Forms.GoogleMaps;
 
 namespace GMPark
 {
-	// location class
+	// location class, holds latitude and longitude
 	public class Location
 	{
 		// varibles
@@ -25,7 +25,7 @@ namespace GMPark
 		}
 	}
 
-	// Role class
+	// Role class, holds name and id
 	public class Role
 	{
 		// variables
@@ -54,7 +54,8 @@ namespace GMPark
 		}
 	}
 
-	// campus class
+	/* Campus class that holds all of the objects such as the lots, roles, buildings, and gates associated with it
+	 */
 	public class Campus
 	{
 		// variables
@@ -66,43 +67,61 @@ namespace GMPark
 		public List<Gate> Gates = new List<Gate>();
 		private string Id;
 
-		// contructor
+		/* Constructor
+		 */
 		public Campus()
 		{
 		}
 
+		/* Constructor
+		 * Parameters: string (name of the campus)
+		 */
 		public Campus(string name)
 		{
 			Name = name;
 		}
 
-		// getters and setter for each variables 
+		/* Getter of the roles of the campus
+		* Returns: List<Role> (all the roles associated with the campus)
+		*/
 		public List<Role> GetRoles()
 		{
 			return Roles;
 		}
 
+		/* Getter of the name of the campus
+		 * Returns: string (name of the campus)
+		 */
 		public string GetName()
 		{
 			return Name;
 		}
 
+		/* Setter of the name of the campus
+		 * Parameters: string (name of the campus)
+		 */
 		public void SetName(string name)
 		{
 			Name = name;
 		}
 
+		/* Getter of the id of the campus
+ 		 * Returns: string (id of the campus)	 */
 		public string GetId()
 		{
 			return Id;
 		}
 
+		/* Setter of the id of the campus
+ 		 * Parameters: string (id of the campus)	 */
 		public void SetId(string id)
 		{
 			Id = id;
 		}
 
-		// convert to campus obeject
+		/* Takes in a campus object from the server and converts it to a campus
+		 * Parameters: SCampus (campus object from server to be converted)
+		 */
 		public void ConvertToCampus(SCampus server)
 		{
 			if (server.perimeter.Count == 2)
@@ -136,7 +155,9 @@ namespace GMPark
 			SetName(server.name);
 		}
 
-		// convert to building obeject
+		/* Takes in a buildings object from the server and adds the buildings to the camous
+		 * Parameters: ServerJSONBuildings (buildings object from server to be added)
+		 */
 		public void ConvertBuildings(ServerJSONBuildings server)
 		{
 			foreach (KeyValuePair<string, SBuilding> entry in server.buildings)
@@ -156,7 +177,9 @@ namespace GMPark
 			}
 
 		}
-		// convert to lot obeject
+		/* Takes in a lots object from the server and adds the lots to the campus
+		 * Parameters: ServerJSONLots (lots object from server to be added)
+		 */
 		public void ConvertLots(ServerJSONLots server)
 		{
 			foreach (KeyValuePair<string, SLot> entry in server.lots)
@@ -207,7 +230,9 @@ namespace GMPark
 			}
 		}
 
-		// get all buildings
+		/* Gets a list of all the names of the buildings on the campus
+		 * Returns: List<string> (names of all the buildings on campus)
+		 */
 		public List<string> GetBuildingList()
 		{
 			var ls = new List<string>();
@@ -219,7 +244,11 @@ namespace GMPark
 
 			return ls;
 		}
-		// get all building's id
+
+		/* Gets the id of a building based on the name of the building passed in
+		 * Parameters: string (name of the building)
+		 * Returns: string (id of the building)
+		 */
 		public string GetBuildingId(string buildingName)
 		{
 			foreach (Building build in Buildings)
@@ -232,7 +261,11 @@ namespace GMPark
 
 			return null;
 		}
-		// get lot name
+
+		/* Gets the name of a lot based on the id of the lot passed in
+		 * Parameters: string (id of the lot)
+		 * Returns: string (name of the lot)
+		 */
 		public string GetLotName(string lotId)
 		{
 			foreach (Lot lot in Lots)
@@ -244,7 +277,11 @@ namespace GMPark
 			}
 			return null;
 		}
-		// get lot by id
+
+		/* Gets the lot object based on the id of the lot passed in
+		 * Parameters: string (id of the lot)
+		 * Returns: Lot (lot object to be returned)
+		 */
 		public Lot GetLotById(string lotId)
 		{
 			foreach (Lot lot in Lots)
@@ -257,7 +294,9 @@ namespace GMPark
 			return null;
 		}
 
-		// add roles from server
+		/* Takes in a roles object from the server and adds the roles to the campus
+		 * Parameters: ServerJSONRoles (roles object from server to be added)
+		 */
 		public void AddRoles(ServerJSONRoles server)
 		{
 
@@ -269,7 +308,10 @@ namespace GMPark
 				Roles.Add(r);
 			}
 		}
-		// add gate from server
+
+		/* Takes in a gates object from the server and adds the gates to the campus
+		 * Parameters: ServerJSONGates (gates object from server to be added)
+		 */
 		public void AddGates(ServerJSONGates server)
 		{
 			foreach (KeyValuePair<string, SGate> entry in server.gates)
@@ -291,7 +333,10 @@ namespace GMPark
 			}
 		}
 
-		// check if user is in lot now
+		/* Checks to see which lot the position is in
+         * Parameters: Plugin.Geolocator.Abstractions.Position (position to be checked)
+         * Returns: string (name of the lot that the position is in)
+         */
 		public string CheckInLotGeoFences(Plugin.Geolocator.Abstractions.Position pos)
 		{
 			foreach (Lot lot in Lots)
@@ -305,6 +350,10 @@ namespace GMPark
 			return "";
 		}
 
+		/* Checks to see if the position is in any of the lots
+		 * Parameters: Plugin.Geolocator.Abstractions.Position (position to be checked)
+		 * Returns: bool (true if in a lot geofence, false if not) 
+		 */
 		public bool CheckIfInLotGeoFences(Plugin.Geolocator.Abstractions.Position pos)
 		{
 			foreach (Lot lot in Lots)
@@ -318,7 +367,10 @@ namespace GMPark
 			return false;
 		}
 
-		// get lots locations
+		/* Gets the points of the lot based on the id passed
+		 * Parameters: string (the id of the lot)
+		 * Returns: List<Position> (the boundaries of the lot)
+		 */
 		public List<Position> GetLotPoints(string lotId)
 		{
 			foreach (Lot lot in Lots)
@@ -332,7 +384,10 @@ namespace GMPark
 			return null;
 		}
 
-		// get building entrance
+		/* Gets the entrances of the lot based on the id passed
+		 * Parameters: string (the id of the lot)
+		 * Returns: List<Position> (the entrances of the lot)
+		 */
 		public List<Position> GetBuildingEntrances(string buildingName)
 		{
 			foreach (Building build in Buildings)
@@ -346,7 +401,10 @@ namespace GMPark
 			return null;
 		}
 
-		// get role's id
+		/* Getter of the role id
+		 * Parameters: the name of the role to get the id for
+		 * Returns: string (id of the role)
+		 */
 		public int GetRoleId(string roleName)
 		{
 			foreach (Role role in Roles)
@@ -358,7 +416,10 @@ namespace GMPark
 			}
 			return -1;
 		}
-
+		/* Gets rid of all the lots in the lotOrder that are not accessable by the role id passed
+		 * Parameters: int (id of the role), List<int> (list of lot Ids)
+         * Returns: List<int> (list of lots that are accessible to the role)
+         */
 		public List<int> PurgeLotOrder(int roleId, List<int> lotOrder)
 		{
 			List<int> lots = new List<int>();

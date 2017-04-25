@@ -323,6 +323,10 @@ namespace GMPark
 			{
 				mTimerStarted = false;
 				mTimerLength = 0;
+				var text = "http://35.9.22.105/historical-data/" + mLotOrder[mGoingTo].ToString() + "/0";
+				var uri = new Uri(text);
+				var response = client.GetAsync(uri);
+							
 				mLotParked = "";
 				return false;
 			}
@@ -333,6 +337,9 @@ namespace GMPark
 
 				if (mTimerLength > TimerMax)
 				{
+					var text = "http://35.9.22.105/historical-data/" + mLotOrder[mGoingTo].ToString() + "/1";
+					var uri = new Uri(text);
+					var response = client.GetAsync(uri);
 					mParked = true;
 					return false;
 				}

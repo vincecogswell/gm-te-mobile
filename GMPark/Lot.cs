@@ -21,28 +21,38 @@ namespace GMPark
 		public float Percentage; // the full percentage of a lot
 		private GeoPoly mGeoFence; // geopoly of the lot
 
+		/* Constructor
+		 */
 		public Lot()
 		{
 		}
-
+		/* Constructor
+		 * Parameters: string (id of the lot)
+		 */
 		public Lot(string id)
 		{
 			SetName(id);
 		}
 
-		// check if user is in the lot
+		/* Checks to see if position is in geofence of lot
+         * Parameters: Plugin.Geolocator.Abstractions.Position (position to be checked)
+         * Returns: bool (true if in lot, false if not)
+         */
 		public bool InFence(Plugin.Geolocator.Abstractions.Position pos)
 		{
 			return mGeoFence.InFence(pos);
 		}
 
-		// add border of the lot
+		/* Adds a border to the lot
+		 * Parameters: Location (border of lot)
+		 */
 		public void AddBorder(Location loc)
 		{
 			Locations.Add(loc);
 		}
 
-		// create geofencing area
+		/* Creates the geofence of the lot
+		 */
 		public void CreateGeoFence()
 		{
 			mGeoFence = new GeoPoly(GetName());
@@ -54,7 +64,9 @@ namespace GMPark
 			}
 		}
 
-		// get all points of the geopoly
+		/* Returns a list of all the boundaries of the lot
+		 * Returns: List<Position> (boundaries of the lot)
+		 */
 		public List<Position> GetPoints()
 		{
 			var ls = new List<Position>();
@@ -67,7 +79,9 @@ namespace GMPark
 			return ls;
 		}
 
-		// set accessing time
+		/* Sets which roles can access the lot
+		 * Parameters: List<int> (list of roleids who can access the lot)
+		 */
 		public void SetAccesses(List<int> accesses)
 		{
 			foreach (int i in accesses)
@@ -76,7 +90,10 @@ namespace GMPark
 			}
 		}
 
-		// check if the lot is open for now
+		/* Checks to see if lot is accessible to the roleId
+		 * Parameters: int (the id of the role to be checked)
+		 * Returns: bool (true if lot can be accessed, false if not)
+		 */
 		public bool InAccesses(int roleId)
 		{
 			foreach (int i in Accesses)
@@ -89,7 +106,8 @@ namespace GMPark
 			return false;
 		}
 
-		// navigate user to this lot
+		/* Opens up a navigation application and directs the user to the first entrance of the lotr
+		 */
 		public void NavigateTo()
 		{
 			switch (Device.RuntimePlatform)

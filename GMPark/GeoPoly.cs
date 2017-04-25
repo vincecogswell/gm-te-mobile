@@ -1,4 +1,8 @@
-﻿using System;
+﻿/* Author : Rob
+ * GeoPoly class
+ * Draw on the map, and detect if user is in the polygon
+ */
+using System;
 using System.Collections.Generic;
 using Plugin.Geolocator.Abstractions;
 

@@ -1,3 +1,6 @@
+/* Author : Phyllis Jin
+ * List all building names in selected campus
+ */
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -15,7 +18,9 @@ namespace GMPark
 
 		public WhereAreYouGoingPage(string selectedRole, string campusName)
 		{
+			// initialize map
 			var map = (GMTEMap)Application.Current.Properties["map"];
+			//UI
 			this.BackgroundColor = Color.FromRgb(104, 151, 243);
 			var scroll = new ScrollView();
 
@@ -58,6 +63,7 @@ namespace GMPark
 			Content = scroll;
 		}
 
+		// it will ask the user if they want to update the preference
 		async void OnClicked(object sender, EventArgs args)
 		{
 			var button = (Button)sender;

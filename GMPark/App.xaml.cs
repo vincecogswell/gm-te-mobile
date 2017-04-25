@@ -12,6 +12,7 @@ namespace GMPark
 {
 	public partial class App : Application
 	{
+		// initialize menu page variables
 		public static MasterDetailPage MasterDetailPage;
 		public static MenuPage Menu;
 		public GMTEMap map;
@@ -19,9 +20,10 @@ namespace GMPark
 		public App()
 		{
 			InitializeComponent();
-
+			// create menu page
 			Menu = new MenuPage();
 
+			// set up the main page
 			MasterDetailPage = new MasterDetailPage
 			{
 				Master = Menu,
@@ -37,6 +39,7 @@ namespace GMPark
 			// Handle when your app starts
 		}
 
+		// make sure the app is still working while the phone is in sleeping mode
 		protected override void OnSleep()
 		{
 			if (Application.Current.Properties.ContainsKey("map"))
@@ -72,8 +75,10 @@ namespace GMPark
 			double MPH = 2.2352;
 			double TimerMax = 90;
 			    
+			// check geolocation
 			CrossGeolocator.Current.PositionChanged += (o, args) =>
 			{
+				// check campus
 				if ((map.CheckInGeofences(args.Position))
 				    && (onCampus == false))
 				{
@@ -95,7 +100,7 @@ onCampus = false;
 						mCurrentCampus = "";
 					});
 				}
-
+				// check parking lot
 				if (map.CheckInLotGeofences(args.Position, mCurrentCampus) && (mParked == false) && (inLot == false))
 				{
 					Device.BeginInvokeOnMainThread(() =>

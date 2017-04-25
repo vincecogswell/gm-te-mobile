@@ -1,4 +1,7 @@
-﻿using System;
+﻿/* Struct class
+ * 
+ */
+using System;
 using Xamarin.Forms.GoogleMaps;
 using System.Collections.Generic;
 

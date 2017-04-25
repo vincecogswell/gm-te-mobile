@@ -1,4 +1,8 @@
-﻿using System;
+﻿/* Author : Rob
+ * GeoLine class
+ * GeoLine is the element of GeoPoly
+ */
+using System;
 using Plugin.Geolocator.Abstractions;
 
 namespace GMPark

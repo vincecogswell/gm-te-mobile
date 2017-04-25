@@ -1,4 +1,7 @@
-﻿using System;
+﻿/* Authot : Phyllis Jin
+ * Inheritence Button class, working for sliding menu page
+ */
+using System;
 using System.Net;
 using System.Collections.Generic;
 using System.Reflection;

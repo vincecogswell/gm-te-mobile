@@ -1,4 +1,7 @@
-﻿using System;
+﻿/* Author : Phyllis Jin
+ * Preference page
+ */
+using System;
 using System.Net;
 using System.Collections.Generic;
 using System.Reflection;
@@ -14,19 +17,22 @@ namespace GMPark
 {
 	public partial class EnterUserInfoPage : ContentPage
 	{
+		// variables
 		private string campusName = "False";
 		private string role = "False";
 		private string building = "False";
 		GMTEMap map;
-		// changes commit
 		private Position pos;
+
+		// constructor
 		public EnterUserInfoPage(string campus)
 		{
-			NavigationPage.SetBackButtonTitle(this, "");
-			this.campusName = campus;
-
+			// initialize map
 			map = (GMTEMap)Application.Current.Properties["map"];
 
+			// UI
+			NavigationPage.SetBackButtonTitle(this, "");
+			this.campusName = campus;
 			Title = "Preference";
 			this.BackgroundColor = Color.FromRgb(104, 151, 243);
 			var scroll = new ScrollView();
@@ -53,6 +59,7 @@ namespace GMPark
 					font = "Comic Sans MS";
 					break;
 			}
+			// create pickers
 			var labelC = new Label
 			{
 				Text = "Campus: ",
@@ -130,6 +137,7 @@ namespace GMPark
 				buildingPicker.Items.Add(b);
 			}
 
+			// display selected role if users already saved their preference
 			if (Application.Current.Properties.ContainsKey(campus + "role"))
 			{
 				int i = 0;
@@ -166,7 +174,8 @@ namespace GMPark
 					}
 				};
 			grid.Children.Add(buildingPicker, 1, 2);
-			//Button saveButton = new SaveButton(this.campusName,this.pos,this.role,this.building);
+
+			// button for saving all user's preference
 			Button saveButton = new Button { 
 				Text = "Save",
 				Font = Font.SystemFontOfSize(NamedSize.Large),
@@ -178,8 +187,6 @@ namespace GMPark
 				Margin = new Thickness(4,4,4,4)
 			};
 			saveButton.Clicked += OnClicked;
-			//grid.Children.Add(saveButton, 0, 3);
-			//Grid.SetColumnSpan(saveButton, 2);
 			var stack = new StackLayout{ 
 				HorizontalOptions = LayoutOptions.Center,
 				Children = {
@@ -195,6 +202,7 @@ namespace GMPark
 
 		async void OnClicked(object sender, EventArgs args)
 		{
+			// user must select all fields to save their preference successfully
 			if (this.campusName != "False" && this.role != "False" && this.building != "False")
 			{
 				Application.Current.Properties[campusName + "campus"] = this.campusName;
@@ -203,6 +211,7 @@ namespace GMPark
 				App.MasterDetailPage.Detail = new NavigationPage(new Main(campusName));
 				App.MasterDetailPage.IsPresented = false;
 			}
+			// else display warnning
 			else
 			{
 				await DisplayAlert("Must Enter All Fields", "Please enter all fields", "OK");

@@ -1,4 +1,7 @@
-﻿using System;
+﻿/* Author : Phyllis Jin
+ * List all role names in selected campus
+ */
+using System;
 using System.Collections.Generic;
 
 using Xamarin.Forms;
@@ -7,16 +10,19 @@ namespace GMPark
 {
 	public partial class ChooseRolePage : ContentPage
 	{
+		//variable
 		private string name;
+
+		// consturctor
 		public ChooseRolePage(string campusName)
 		{
+			// initialze map
 			var map = (GMTEMap)Application.Current.Properties["map"];
-			this.BackgroundColor = Color.FromRgb(104, 151, 243);
-
-			NavigationPage.SetBackButtonTitle(this, "");
-
+			// get all role names
 			List<Role> roles = map.GetRoles(campusName);
-
+			//UI
+			this.BackgroundColor = Color.FromRgb(104, 151, 243);
+			NavigationPage.SetBackButtonTitle(this, "");
 			this.name = campusName;
 			var grid = new Grid();
 			int i = 0;
@@ -42,7 +48,7 @@ namespace GMPark
 			Title = "Select a Role";
 			Content = grid;
 		}
-
+		// button click function
 		async void OnClicked(object sender, EventArgs args)
 		{
 			Button button = (Button)sender;

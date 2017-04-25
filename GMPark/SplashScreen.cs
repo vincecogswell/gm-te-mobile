@@ -1,4 +1,7 @@
-﻿using System;
+﻿/* Author : Phyllis Jin
+ * Splash Screen
+ */
+using System;
 using System.Collections.Generic;
 
 using Xamarin.Forms;

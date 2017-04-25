@@ -1,4 +1,7 @@
-﻿using System;
+﻿/* Author : Phyllis Jin
+ * List all campus names as buttons
+ */
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
@@ -12,15 +15,20 @@ namespace GMPark
 	{
 		public ChooseCampus()
 		{
+			// initialze map
 			var map = (GMTEMap)Application.Current.Properties["map"];
+
+			// UI
 			this.BackgroundColor = Color.FromRgb(104, 151, 243);
 			var scroll = new ScrollView();
 
 			var grid = new Grid();
 			int i = 0;
 
+			// get all campuses from map
 			List<string> campuses = map.GetCampusList();
 
+			// add buttons
 			foreach (string campusName in campuses)
 			{
 				grid.RowDefinitions.Add(new RowDefinition { Height = 100 });
@@ -49,11 +57,12 @@ namespace GMPark
 			scroll.Content = grid;
 			Content = scroll;
 		}
+
+		// button click funtion
 		async void OnClicked(object sender, EventArgs args)
 		{
 			var button = (Button)sender;
-			var campus = (Campus)button.CommandParameter;
-			await Navigation.PushAsync(new ChooseRolePage("GM Tech Center"));
+			await Navigation.PushAsync(new ChooseRolePage(button.Text));
 		}
 	}
 }

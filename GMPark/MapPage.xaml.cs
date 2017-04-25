@@ -1,3 +1,6 @@
+/* Map page for this project
+ * User will be directed to this page after navagation
+ */
 using System;
 using System.Net;
 using System.Net.Http;

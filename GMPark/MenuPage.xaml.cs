@@ -1,4 +1,7 @@
-﻿using System;
+﻿/* Authot : Phyllis Jin
+ * Content page thats contains all elements such as logo and campus
+ */
+using System;
 using System.Net.Http;
 using System.Collections.Generic;
 using System.Reflection;
@@ -74,6 +77,7 @@ namespace GMPark
 			Icon = Device.OS == TargetPlatform.iOS ? "menu.png" : null;
 		}
 
+		// call API to get all campus info
 		public async Task<ServerJSON> GetCampuses()
 		{
 			var uri = new Uri("http://35.9.22.105/campuses");
@@ -89,6 +93,7 @@ namespace GMPark
 			}
 		}
 
+		// add all campus which come from API and show them in the menu page
 		public void AddButtons()
 		{
 			if (Application.Current.Properties.ContainsKey("map"))

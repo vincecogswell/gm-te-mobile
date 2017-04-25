@@ -1,3 +1,5 @@
+/* Main page for this project
+ */
 using System;
 using System.Net.Http;
 using System.Collections.Generic;
@@ -26,6 +28,7 @@ namespace GMPark
 		bool refresh = false;
 		private Label l;
 
+		// create the map
 		GMTEMap map = new GMTEMap()
 		{
 			IsShowingUser = true,
@@ -44,19 +47,8 @@ namespace GMPark
 
 			mCurrentCampus = campusName;
 			Title = campusName;
-
-			/*if (Application.Current.Properties.ContainsKey("map"))
-			{
-				map = (GMTEMap)Application.Current.Properties["map"];
-
-			}
-
-			else
-			{*/
-				Application.Current.Properties["map"] = map;
-
-				Refresh();
-			//}
+			Application.Current.Properties["map"] = map;
+			Refresh();
 
 			var scroll = new ScrollView();
 			string font;
@@ -75,6 +67,8 @@ namespace GMPark
 			}
 
 			// Assigns title of page to building that is to be going to
+
+			//display user prefernece info
 			Label cName = new Label
 			{
 				Text = "Campus: N/A",
@@ -104,6 +98,7 @@ namespace GMPark
 				FontFamily = font
 			};
 
+			// All function buttons
 			var nd = new Button()
 			{
 				Text = "New Destination",
@@ -130,6 +125,7 @@ namespace GMPark
 			};
 			call.Clicked += callnum;
 
+			// display the user's preference that stored in their phone
 			if (Application.Current.Properties.ContainsKey(campusName + "campus"))
 			{
 				cName.Text = "Campus: " + Application.Current.Properties[campusName + "campus"];
@@ -143,6 +139,7 @@ namespace GMPark
 				b.Text = "Building: " + Application.Current.Properties[campusName + "building"];
 			}
 
+			// Go button is not clickable if their no user's preference stored
 			if ((Application.Current.Properties.ContainsKey(campusName + "building")) && 
 			    (Application.Current.Properties.ContainsKey(campusName + "role"))
 			    && (Application.Current.Properties.ContainsKey(campusName + "campus")) && 
@@ -156,6 +153,7 @@ namespace GMPark
 				go.IsEnabled = false;
 			}
 
+			// all elements
 			var stack = new StackLayout { Spacing = 0, VerticalOptions = LayoutOptions.FillAndExpand };
 
 			stack.Children.Add(cName);
@@ -172,6 +170,7 @@ namespace GMPark
 
 			NavigationPage.SetBackButtonTitle(this, "");
 
+			// Geofencing
 			AwaitSingle(StartGeoLocation());
 
 			CrossGeolocator.Current.PositionChanged += (o, args) =>
@@ -201,6 +200,8 @@ namespace GMPark
 					});
 				}
 			};
+
+			// Preference button
 			ToolbarItems.Add(new ToolbarItem("Preference", "preference.png", () =>
 			{
 				Navigation.PushAsync(new EnterUserInfoPage(this.Title));
@@ -215,6 +216,7 @@ namespace GMPark
 		}
 
 
+		// click funtion for New Destination button
 		async void newdes(object sender, EventArgs args)
 		{
 			
@@ -229,6 +231,7 @@ namespace GMPark
 
 		}
 
+		// click function for calling a shuttle
 		async void callnum(object sender, EventArgs args)
 		{
 			var ans = await DisplayAlert("Call", "123-123-1234", "Yes", "No");
@@ -237,6 +240,8 @@ namespace GMPark
 				Device.OpenUri(new Uri(String.Format("tel:{0}", "+1231231234")));
 			}
 		}
+
+		// start geofencing
 		public async Task StartGeoLocation()
 		{
 			if (CrossGeolocator.Current.IsGeolocationEnabled)
@@ -260,6 +265,7 @@ namespace GMPark
 			}
 		}
 
+		// get all campuses from database API
 		public async Task<ServerJSON> GetCampuses()
 		{
 			var uri = new Uri("http://35.9.22.105/campuses");
@@ -275,6 +281,7 @@ namespace GMPark
 			}
 		}
 
+		// get all buildings from database API
 		public async Task GetBuildings(Task<List<Campus>> converted)
 		{
 			List<Campus> campuses = await converted;
@@ -293,6 +300,7 @@ namespace GMPark
 			}
 		}
 
+		// get all lots from database API
 		public async Task GetLots(Task<List<Campus>> converted)
 		{
 			List<Campus> campuses = await converted;
@@ -310,7 +318,7 @@ namespace GMPark
 				}
 			}
 		}
-
+		// get all roles from database API
 		public async Task GetRoles(Task<List<Campus>> converted)
 		{
 			List<Campus> campuses = await converted;
@@ -328,6 +336,7 @@ namespace GMPark
 			}
 		}
 
+		// get all gates from database API
 		public async Task GetGates(Task<List<Campus>> converted)
 		{
 			List<Campus> campuses = await converted;
@@ -346,6 +355,7 @@ namespace GMPark
 			}
 		}
 
+		// get all top 3 best lots from database API
 		public async Task GetLotOrder(string buildName, Task<List<Campus>> converted)
 		{
 			List<Campus> campuses = await converted;
@@ -372,7 +382,7 @@ namespace GMPark
 			}
 		}
 				
-
+		// await tasks
 		public async Task AwaitAll(Task thing, Task thing2, Task thing3, Task thing4)
 		{
 			await thing;
@@ -382,11 +392,13 @@ namespace GMPark
 			refresh = false;
 		}
 
+		// awit one task
 		public async Task AwaitSingle(Task thing1)
 		{
 			await thing1;
 		}
 
+		// convert json file to campus ojects
 		public async Task<List<Campus>> ConvertCampuses(Task<ServerJSON> json)
 		{
 			var res = await json;
@@ -421,6 +433,7 @@ namespace GMPark
 			return campuses;
 		}
 
+		// refresh the page
 		public async void Refresh()
 		{
 			refresh = true;

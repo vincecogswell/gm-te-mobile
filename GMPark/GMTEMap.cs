@@ -1,4 +1,8 @@
-﻿using System;
+﻿/* Author : Rob
+ * GMTEMap class
+ * Inheritent from Map class
+ */
+using System;
 using System.Net;
 using System.Collections.Generic;
 using System.Reflection;
@@ -26,6 +30,7 @@ namespace GMPark
 			MoveToRegion(span);
 		}
 
+		// get all roles of the campus
 		public List<Role> GetRoles(string campusName)
 		{
 			foreach (Campus campus in mCampuses)
@@ -38,6 +43,7 @@ namespace GMPark
 			return null;
 		}
 
+		// get all campus
 		public List<string> GetCampusList()
 		{
 			var ls = new List<string>();
@@ -50,6 +56,7 @@ namespace GMPark
 			return ls;
 		}
 
+		// get campus name by param campusName
 		public string GetCampusId(string campusName)
 		{
 			foreach (Campus campus in mCampuses)
@@ -62,6 +69,7 @@ namespace GMPark
 			return null;
 		}
 
+		// get lot by id
 		public Lot GetLotById(string campusName, int lot)
 		{
 			var str = Convert.ToString(lot);
@@ -76,6 +84,7 @@ namespace GMPark
 			return null;
 		}
 
+		// get id of a building
 		public string GetBuildingId(string campusName, string buildingName)
 		{
 			foreach (Campus campus in mCampuses)
@@ -88,6 +97,7 @@ namespace GMPark
 			return null;
 		}
 
+		// get lot name
 		public string GetLotName(string campusName, string lotId)
 		{
 			foreach (Campus campus in mCampuses)
@@ -100,6 +110,7 @@ namespace GMPark
 			return null;
 		}
 
+		// get all building in the campus
 		public List<string> GetBuildingList(string campusName)
 		{
 			foreach (Campus campus in mCampuses)
@@ -157,6 +168,7 @@ namespace GMPark
 			return null;
 		}
 
+		// add campus to the map
 		public List<Campus> AddCampuses()
 		{
 			var assembly = typeof(MapPage).GetTypeInfo().Assembly;
@@ -194,18 +206,9 @@ namespace GMPark
 			return campuses;
 		}
 
+		// add campus to the map
 		public void AddCampuses(List<Campus> campuses)
 		{
-			/*var assembly = typeof(MapPage).GetTypeInfo().Assembly;
-			Stream stream = assembly.GetManifestResourceStream("GMPark.campuses.json");
-			string text = "";
-			using (var reader = new System.IO.StreamReader(stream))
-			{
-				text = reader.ReadToEnd();
-			}
-
-			List<Campus> campuses = JsonConvert.DeserializeObject<List<Campus>>(text);*/
-
 			foreach (Campus campus in campuses)
 			{
 				var polygon = new Polygon();
@@ -229,6 +232,7 @@ namespace GMPark
 			}
 		}
 
+		// draw all buildings in the map
 		public async Task DrawBuildings(string campusName)
 		{
 			foreach (Campus campus in mCampuses)
@@ -244,6 +248,7 @@ namespace GMPark
 			}
 		}
 
+		// draw all lots
 		public void DrawLots(string campusName)
 		{
 			foreach (Campus campus in mCampuses)
@@ -310,6 +315,7 @@ namespace GMPark
 			}
 		}
 
+		// draw all gates
 		public void DrawGates(string campusName)
 		{
 			foreach (Campus campus in mCampuses)
@@ -331,6 +337,7 @@ namespace GMPark
 			}
 		}
 
+		// add pin to the map
 		public async Task PlaceBuildingPins(Building building)
 		{
 			foreach (Location loc in building.Entrances)
@@ -346,6 +353,7 @@ namespace GMPark
 			}
 		}
 
+		// find the closed parking lot of a building
 		public async Task<Lot> FindClosestLot(Task addBuild, string building, string campus)
 		{
 			await addBuild;
@@ -356,39 +364,13 @@ namespace GMPark
 			{
 				if (campusIs.GetName() == campus)
 				{
-					/*foreach (Building build in campusIs.Buildings)
-					{
-						if (building == build.Name)
-						{
-							foreach (Lot lot in campusIs.Lots)
-							{
-								foreach (Location location in lot.Locations)
-								{
-									double currDist =
-										distance(build.Position.Lat, build.Position.Long, location.Lat, location.Long, 'M');
-
-									if (dist < 0)
-									{
-										dist = currDist;
-										closest = lot;
-									}
-
-									else if (currDist < dist)
-									{
-										dist = currDist;
-										closest = lot;
-									}
-								}
-							}
-							break;
-						}
-					}*/
 					break;
 				}
 			}
 			return closest;
 		}
 
+		// detect where the user is
 		public string InWhichGeofences(Plugin.Geolocator.Abstractions.Position pos)
 		{
 			foreach (GeoPoly fence in mCampusGeofences)
@@ -403,6 +385,7 @@ namespace GMPark
 			return "";
 		}
 
+		// check if user is in the specific area
 		public bool CheckInGeofences(Plugin.Geolocator.Abstractions.Position pos)
 		{
 			foreach (GeoPoly fence in mCampusGeofences)
@@ -417,6 +400,7 @@ namespace GMPark
 			return false;
 		}
 
+		// check if user is in the lot
 		public bool CheckInLotGeofences(Plugin.Geolocator.Abstractions.Position pos, string campusName)
 		{
 			if (campusName == "")
@@ -435,6 +419,7 @@ namespace GMPark
 			return false;
 		}
 
+		// check which lot is the user currently in
 		public string InWhichLot(Plugin.Geolocator.Abstractions.Position pos, string campusName)
 		{
 			string lotName = "";
@@ -600,7 +585,6 @@ namespace GMPark
 		//:::           GeoDataSource.com (C) All Rights Reserved 2015                :::
 		//:::                                                                         :::
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
 		private double distance(double lat1, double lon1, double lat2, double lon2, char unit)
 		{
 			double theta = lon1 - lon2;

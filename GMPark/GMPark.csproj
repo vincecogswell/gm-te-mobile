@@ -34,12 +34,6 @@
     <EmbeddedResource Include="ChooseRolePage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Include="EmployeeSignUpPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="AdvancedArrivalTimesPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
     <EmbeddedResource Include="WhereAreYouGoingPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
@@ -72,9 +66,6 @@
     </Compile>
     <Compile Include="ChooseRolePage.xaml.cs">
       <DependentUpon>ChooseRolePage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="AdvancedArrivalTimesPage.xaml.cs">
-      <DependentUpon>AdvancedArrivalTimesPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="WhereAreYouGoingPage.xaml.cs">
       <DependentUpon>WhereAreYouGoingPage.xaml</DependentUpon>
